@@ -6,6 +6,9 @@ from napari_matplotlib.base import SingleAxesWidget
 from napari_matplotlib.util import Interval
 from qtpy.QtWidgets import QHBoxLayout, QLabel
 
+from selectors import CustomLassoSelector
+from artists import CustomScatter
+
 icon_folder_path = (
     Path(__file__).parent / "icons"
 )
@@ -40,6 +43,8 @@ class PlotterWidget(SingleAxesWidget):
 
         # Add selection tools layout to main layout below matplotlib toolbar and above canvas
         self.layout().insertLayout(2, self.selection_tools_layout)
+
+        # TODO: add methods to add an artist (scatter plot for example) and selector (lasso selector for example)
 
     def _build_selection_toolbar_layout(self, label_text="Class:"):
         # Add selection tools layout below canvas
