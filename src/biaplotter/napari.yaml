@@ -1,0 +1,14 @@
+name: biaplotter
+display_name: Plotter (BiAPoL)
+# use 'hidden' to remove plugin from napari hub search results, use public otherwise
+visibility: public
+# see https://napari.org/stable/plugins/manifest.html for valid categories
+categories: [Utilities, Visualization]
+contributions:
+  commands:
+    - id: biaplotter.make_qwidget
+      python_name: biaplotter:PlotterWidget
+      title: Open Plotter
+  widgets:
+    - command: biaplotter.make_qwidget
+      display_name: Plotter
