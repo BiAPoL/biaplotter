@@ -6,8 +6,8 @@ from napari_matplotlib.base import SingleAxesWidget
 from napari_matplotlib.util import Interval
 from qtpy.QtWidgets import QHBoxLayout, QLabel
 
-from selectors import CustomLassoSelector
-from artists import CustomScatter
+# from biaplotter.selectors import CustomLassoSelector
+# from biaplotter.artists import CustomScatter
 
 icon_folder_path = (
     Path(__file__).parent / "icons"
