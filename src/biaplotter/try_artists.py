@@ -14,8 +14,8 @@ scatter_artist = CustomScatterArtist(data=data, ax=axs[0], colormap=plt.cm.plasm
 axs[0].set_title('Custom Scatter Plot')
 
 # Create and display a Custom2DHistogramArtist
-# histogram_artist = Custom2DHistogramArtist(data=data, ax=axs[1], bins=20, colormap=plt.cm.plasma)
-# axs[1].set_title('Custom 2D Histogram')
+histogram_artist = Custom2DHistogramArtist(data=data, ax=axs[1], bins=20, colormap=plt.cm.plasma)
+axs[1].set_title('Custom 2D Histogram')
 
 # Display the initial plots
 plt.show()
@@ -27,7 +27,8 @@ color_indices = np.linspace(0, 1, 100)  # Example color indices
 scatter_artist.color_indices = color_indices[:data.shape[0]]  # Assuming one color per point
 
 # Update and display changes for the Custom2DHistogramArtist
-# histogram_artist.color_indices = color_indices  # Use same indices for simplicity
+histogram_artist.color_indices = color_indices  # Use same indices for simplicity
 
 # After updating color_indices, the figures should be redrawn to show changes
 # Since draw_idle is called within the setter, the plots will update automatically.
+a=1

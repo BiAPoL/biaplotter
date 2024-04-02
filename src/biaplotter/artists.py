@@ -4,11 +4,12 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import Colormap
 
 class AbstractArtist(ABC):
-    def __init__(self, data: np.ndarray, ax: plt.Axes = None, colormap: Colormap = plt.cm.viridis):
+    def __init__(self, data: np.ndarray, ax: plt.Axes = None, colormap: Colormap = plt.cm.viridis, color_indices: np.ndarray = None):
         self._data = data
         self._ax = ax if ax is not None else plt.gca()
         self._visible = True
         self._colormap = colormap
+        self._color_indices = color_indices
         # Initialize any needed attributes here, but abstract properties won't directly interact with them
 
     @property
@@ -70,9 +71,10 @@ class AbstractArtist(ABC):
         return xmin, xmax, ymin, ymax
 
 class CustomScatterArtist(AbstractArtist):
-    def __init__(self, data: np.ndarray, ax: plt.Axes = None, colormap: Colormap = plt.cm.viridis):
-        super().__init__(data, ax, colormap)
+    def __init__(self, data: np.ndarray, ax: plt.Axes = None, colormap: Colormap = plt.cm.viridis, color_indices: np.ndarray = None):
+        super().__init__(data, ax, colormap, color_indices)
         self._scatter = None  # Placeholder for the scatter plot object
+        self.data = data  # Initialize the scatter plot with data
         self.draw()  # Initial draw of the scatter plot
 
     @property
@@ -142,37 +144,70 @@ from matplotlib.cm import ScalarMappable
 from matplotlib.colors import Normalize
 
 class Custom2DHistogramArtist(AbstractArtist):
-    def __init__(self, data: np.ndarray, ax: plt.Axes = None, bins=10, colormap: Colormap = plt.cm.viridis):
-        super().__init__(data, ax, colormap)
+    def __init__(self, data: np.ndarray, ax: plt.Axes = None, bins=10, colormap: Colormap = plt.cm.viridis, color_indices: np.ndarray = None):
+        super().__init__(data, ax, colormap, color_indices)
         self._bins = bins
         self._histogram_image = None  # Placeholder for the histogram image
         self.draw()  # Initial drawing of the histogram
 
-    @AbstractArtist.data.setter
+    @property
+    def data(self) -> np.ndarray:
+        """Returns the data associated with the scatter plot."""
+        return self._data
+
+    @data.setter
     def data(self, value: np.ndarray):
         self._data = value
+        rgba, xedges, yedges = self.generate_histogram_image_and_edges()
+        if self._histogram_image is None:
+            # Initial draw of the histogram
+            self._histogram_image = self._ax.imshow(rgba, extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]], origin='lower')
+        else:
+            # Update the histogram image with new data or colors
+            self._histogram_image.set_data(rgba)
         self.draw()
 
-    @AbstractArtist.visible.setter
+    @property
+    def visible(self) -> bool:
+        """Determines if the scatter plot is currently visible."""
+        return self._visible
+
+    @visible.setter
     def visible(self, value: bool):
         self._visible = value
         if self._histogram_image is not None:
             self._histogram_image.set_visible(value)
         self._ax.figure.canvas.draw_idle()
 
-    @AbstractArtist.bounds.setter
+    @property
+    def bounds(self) -> tuple:
+        return super().compute_bounds(self._data)
+
+    @bounds.setter
     def bounds(self, value: tuple):
         # Updating bounds for a histogram might involve recalculating the histogram
         # or adjusting the axes limits. This example assumes bounds are directly tied to the data.
         pass
 
-    @AbstractArtist.color_indices.setter
+    @property
+    def color_indices(self) -> np.ndarray:
+        return self._color_indices
+    
+
+    @color_indices.setter
     def color_indices(self, indices: np.ndarray):
         self._color_indices = indices
         if indices is not None:
+            rgba, xedges, yedges = self.generate_histogram_image_and_edges()
+            if self._histogram_image is None:
+                # Initial draw of the histogram
+                self._histogram_image = self._ax.imshow(rgba, extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]], origin='lower')
+            else:
+                # Update the histogram image with new data or colors
+                self._histogram_image.set_data(rgba)
             self.draw()  # Redraw to update colors based on the new indices
 
-    def draw(self):
+    def generate_histogram_image_and_edges(self):
         # Calculate the 2D histogram
         H, xedges, yedges = np.histogram2d(self._data[:,0], self._data[:,1], bins=self._bins)
         H = H.T  # Transpose H for the correct orientation
@@ -189,14 +224,10 @@ class Custom2DHistogramArtist(AbstractArtist):
             norm = Normalize(vmin=H.min(), vmax=H.max())
             mappable = ScalarMappable(norm=norm, cmap=self._colormap)
             rgba = mappable.to_rgba(H)
+        return rgba, xedges, yedges
         
-        if self._histogram_image is None:
-            # Initial draw of the histogram
-            self._histogram_image = self._ax.imshow(rgba, extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]], origin='lower')
-        else:
-            # Update the histogram image with new data or colors
-            self._histogram_image.set_data(rgba)
 
+    def draw(self):       
         self._ax.figure.canvas.draw_idle()
 
 
