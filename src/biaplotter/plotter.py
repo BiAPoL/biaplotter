@@ -1,5 +1,6 @@
 import numpy as np
 from pathlib import Path
+from enum import Enum, auto
 from nap_plot_tools import CustomToolbarWidget, QtColorSpinBox, make_cat10_mod_cmap
 from napari.layers import Labels, Points, Tracks
 from napari_matplotlib.base import SingleAxesWidget
@@ -7,13 +8,17 @@ from napari_matplotlib.util import Interval
 from qtpy.QtWidgets import QHBoxLayout, QLabel
 
 # from biaplotter.selectors import CustomLassoSelector
-# from biaplotter.artists import CustomScatter
+from biaplotter.artists import Scatter, Histogram2D
 
 icon_folder_path = (
     Path(__file__).parent / "icons"
 )
 
-class PlotterWidget(SingleAxesWidget):
+class PlottingType(Enum):
+    HISTOGRAM = auto()
+    SCATTER = auto()
+
+class CanvasWidget(SingleAxesWidget):
     # Amount of available input layers
     n_layers_input = Interval(1, None)
     # All layers that have a .features attributes
@@ -44,7 +49,14 @@ class PlotterWidget(SingleAxesWidget):
         # Add selection tools layout to main layout below matplotlib toolbar and above canvas
         self.layout().insertLayout(2, self.selection_tools_layout)
 
-        # TODO: add methods to add an artist (scatter plot for example) and selector (lasso selector for example)
+
+        # Create artists
+        self.scatter_artist = Scatter(ax=self.axes, colormap=self.colormap)
+        self.scatter_artist.visible = False
+        self.histogram2d_artist = Histogram2D(ax=self.axes)
+
+
+
 
     def _build_selection_toolbar_layout(self, label_text="Class:"):
         # Add selection tools layout below canvas
@@ -65,3 +77,12 @@ class PlotterWidget(SingleAxesWidget):
             print("Selector enabled")
         else:
             print("Selector disabled")
+
+    def switch_plotting_type(self, plotting_type):
+        if plotting_type == PlottingType.HISTOGRAM:
+            self.scatter_artist.visible = False
+            self.histogram2d_artist.visible = True
+        elif plotting_type == PlottingType.SCATTER:
+            self.scatter_artist.visible = True
+            self.histogram2d_artist.visible = False
+    
