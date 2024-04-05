@@ -135,8 +135,6 @@ class BaseEllipseSelector(Selector):
     def data(self, value: np.ndarray):
         self._data = value
 
-import napari
-
 class InteractiveEllipseSelector(BaseEllipseSelector):
     def __init__(self, ax: plt.Axes, canvas_widget: QWidget, data: np.ndarray = None):
         super().__init__(ax, data)
@@ -144,8 +142,8 @@ class InteractiveEllipseSelector(BaseEllipseSelector):
         self.name = 'Interactive Ellipse Selector'
         self.canvas_widget = canvas_widget
         self.viewer = self.canvas_widget.viewer
-        self.viewer.bind_key("d", self._func)
-        self.viewer.bind_key("e", self._func2)
+        self.viewer.bind_key("d", self._func) # testing
+        self.viewer.bind_key("e", self._func2) # testing
         self.selected_indices = None  # To store indices of selected points
         # Get initial class value
         self._class_value = self.canvas_widget.class_spinbox.value
@@ -157,8 +155,6 @@ class InteractiveEllipseSelector(BaseEllipseSelector):
         self.canvas_widget.class_spinbox.color_spinbox_value_changed_signal.connect(self.set_class_value)
         # Connect artist_changed_signal (emitted by canvas widget when the current artist changes) to update active_artist
         self.canvas_widget.artist_changed_signal.connect(self.set_active_artist)
-
-        # self.canvas_widget.canvas.mpl_connect('key_press_event', self.on_key_press)
 
     def _func(self, viewer):
         print('d key pressed')
@@ -196,30 +192,6 @@ class InteractiveEllipseSelector(BaseEllipseSelector):
     def on_select(self, eclick, erelease):
         """Selects points within the ellipse and assigns them the current class value, updating colors."""
         self.selected_indices = super().on_select(eclick, erelease)
-        # # TODO: Update color indices only if ENTER is pressed or something similar
-        # color_indices = self._active_artist.color_indices
-        # color_indices[self.selected_indices] = self._class_value
-        # self._active_artist.color_indices = color_indices
-        # print(self.selected_indices)
-
-    # def on_key_press(self, event):
-    #     print('press', event.key)
-
-    # @napari.Viewer.bind_key('enter')
-    # def print_key(self):
-    #     print('pressed enter')
-
-    # def on_key_press(self, event):
-    #     """Handles key press events; specifically looking for the ENTER key."""
-    #     if event.key == 'enter':
-    #         if self.selected_indices is not None:
-    #             # Update color indices only if ENTER is pressed
-    #             color_indices = self._active_artist.color_indices
-    #             color_indices[self.selected_indices] = self._class_value
-    #             self._active_artist.color_indices = color_indices
-    #             # Reset selected indices to None
-    #             self.selected_indices = None
-
-    #             self.disable()
+     
     
         
