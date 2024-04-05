@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import Colormap, ListedColormap
 from nap_plot_tools.cmap import make_cat10_mod_cmap
+from psygnal import Signal
 
 cat10_mod_cmap = make_cat10_mod_cmap()
 cat10_mod_cmap_first_opaque = make_cat10_mod_cmap(first_color_transparent=False)
@@ -59,11 +60,13 @@ class AbstractArtist(ABC):
 
 
 class Scatter(AbstractArtist):
+    data_changed_signal = Signal(np.ndarray)
     def __init__(self, data: np.ndarray = None, ax: plt.Axes = None, colormap: Colormap = cat10_mod_cmap_first_opaque, color_indices: np.ndarray = None):
         super().__init__(data, ax, colormap, color_indices)
         self._scatter = None  # Placeholder for the scatter plot object
         self.data = data  # Initialize the scatter plot with data
         self.draw()  # Initial draw of the scatter plot
+
 
     @property
     def data(self) -> np.ndarray:
@@ -72,13 +75,16 @@ class Scatter(AbstractArtist):
 
     @data.setter
     def data(self, value: np.ndarray):
-        """Sets the data for the scatter plot, updating the display as needed."""
+        """Sets the data for the scatter plot, updating the display as needed."""           
         if value is None or len(value) == 0:
             return
         self._data = value
+        # emit signal
+        self.data_changed_signal.emit(self._data)
         if self._scatter is None:
             # If the scatter plot hasn't been created yet, do so now
-            self._scatter = self._ax.scatter(value[:, 0], value[:, 1], facecolors=self._colormap(1), edgecolors=None)  # Default color
+            self._scatter = self._ax.scatter(value[:, 0], value[:, 1])
+            self.color_indices = 0 # Set default color index
         else:
             # If the scatter plot already exists, just update its data
             self._scatter.set_offsets(value)
@@ -119,12 +125,14 @@ class Scatter(AbstractArtist):
             # normalized_indices = indices / np.max(indices)
             new_colors = self._colormap(indices)
             self._scatter.set_facecolor(new_colors)
+            self._scatter.set_edgecolor(None)
         self.draw()
 
     def draw(self):
         self._ax.figure.canvas.draw_idle()
 
 class Histogram2D(AbstractArtist):
+    data_changed_signal = Signal(np.ndarray)
     def __init__(self, data: np.ndarray = None, ax: plt.Axes = None, colormap: Colormap = cat10_mod_cmap, color_indices: np.ndarray = None, bins=20, histogram_colormap: Colormap = plt.cm.viridis):
         super().__init__(data, ax, colormap, color_indices)
         self._histogram = None  # Placeholder for the 2D histogram artist
@@ -145,6 +153,8 @@ class Histogram2D(AbstractArtist):
         if value is None or len(value) == 0:
             return
         self._data = value
+        # emit signal
+        self.data_changed_signal.emit(self._data)
         # Remove the existing histogram to redraw
         if self._histogram is not None:
             for artist in self._histogram[-1]:
