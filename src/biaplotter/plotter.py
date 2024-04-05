@@ -6,23 +6,33 @@ from napari.layers import Labels, Points, Tracks
 from napari_matplotlib.base import SingleAxesWidget
 from napari_matplotlib.util import Interval
 from qtpy.QtWidgets import QHBoxLayout, QLabel
+from psygnal import Signal
+from qtpy.QtCore import Qt
 
 # from biaplotter.selectors import CustomLassoSelector
 from biaplotter.artists import Scatter, Histogram2D
+from biaplotter.selectors import InteractiveRectangleSelector, InteractiveEllipseSelector
 
 icon_folder_path = (
     Path(__file__).parent / "icons"
 )
 
-class PlottingType(Enum):
-    HISTOGRAM = auto()
+class ArtistType(Enum):
+    HISTOGRAM2D = auto()
     SCATTER = auto()
+
+class SelectorType(Enum):
+    LASSO = auto()
+    ELLIPSE = auto()
+    RECTANGLE = auto()
 
 class CanvasWidget(SingleAxesWidget):
     # Amount of available input layers
     n_layers_input = Interval(1, None)
     # All layers that have a .features attributes
     input_layer_types = (Labels, Points, Tracks)
+    # # Signal emitted when the current artist changes
+    artist_changed_signal = Signal(ArtistType)
 
     def __init__(self, napari_viewer, parent=None, label_text="Class:"):
         super().__init__(napari_viewer, parent=parent)
@@ -51,11 +61,25 @@ class CanvasWidget(SingleAxesWidget):
 
 
         # Create artists
-        self.scatter_artist = Scatter(ax=self.axes, colormap=self.colormap)
-        self.scatter_artist.visible = False
-        self.histogram2d_artist = Histogram2D(ax=self.axes)
+        self.artists = {}
+        self.add_artist(ArtistType.SCATTER, Scatter(ax=self.axes, colormap=self.colormap))
+        self.add_artist(ArtistType.HISTOGRAM2D, Histogram2D(ax=self.axes))
+        # Set histogram2d as the default artist 
+        self.set_active_artist(ArtistType.HISTOGRAM2D)
 
-
+        # Create selectors
+        self.selectors = {}
+        self.add_selector(SelectorType.ELLIPSE, InteractiveEllipseSelector(ax=self.axes, canvas_widget=self))
+        self.add_selector(SelectorType.RECTANGLE, InteractiveRectangleSelector(self.axes, self))
+        # Enable ellipse selector by default (temporary, this should be done via the GUI)
+        self.enable_selector(SelectorType.ELLIPSE)
+        # Connect data_changed signals from each artist to set data in each selector
+        for artist in self.artists.values():
+            for selector in self.selectors.values():
+                print(artist, ' being connected to ', selector)
+                artist.data_changed_signal.connect(selector.set_data)
+        
+        self.artist_changed_signal
 
 
     def _build_selection_toolbar_layout(self, label_text="Class:"):
@@ -78,11 +102,73 @@ class CanvasWidget(SingleAxesWidget):
         else:
             print("Selector disabled")
 
-    def switch_plotting_type(self, plotting_type):
-        if plotting_type == PlottingType.HISTOGRAM:
-            self.scatter_artist.visible = False
-            self.histogram2d_artist.visible = True
-        elif plotting_type == PlottingType.SCATTER:
-            self.scatter_artist.visible = True
-            self.histogram2d_artist.visible = False
+    # def on_current_artist_changed(self, artist_type):
+    #     self.current_artist_changed_signal.emit(artist_type)
+
+    def get_active_artist(self):
+        for artist in self.artists.values():
+            if artist.visible:
+                return artist
+
+    def set_active_artist(self, new_artist_type):
+        for artist_type, artist in self.artists.items():
+            if artist_type == new_artist_type:
+                artist.visible = True
+            else:
+                artist.visible = False
+        # Emit signal to notify that the current artist has changed
+        self.artist_changed_signal.emit(new_artist_type)
+
+    def add_artist(self, artist_type, artist_instance, visible=False):
+        """
+        Adds a new artist instance to the artists dictionary.
+
+        Parameters:
+        - artist_type (ArtistType): The type of the artist, defined by the ArtistType enum.
+        - artist_instance: An instance of the artist class.
+        """
+        if artist_type in self.artists:
+            raise ValueError(f"Artist '{artist_type.name}' already exists.")
+        self.artists[artist_type] = artist_instance
+        artist_instance.visible = visible
+
+    def add_selector(self, selector_type, selector_instance):
+        """
+        Adds a new selector instance to the selectors dictionary.
+
+        Parameters:
+        - selector_type (SelectorType): The type of the selector, defined by the SelectorType enum.
+        - selector_instance: An instance of the selector class.
+        """
+        if selector_type in self.selectors:
+            raise ValueError(f"Selector '{selector_type.name}' already exists.")
+        self.selectors[selector_type] = selector_instance
+
+    def enable_selector(self, selector_type):
+        """
+        Enables the specified selector by its type.
+
+        Parameters:
+        - selector_type (SelectorType): The type of the selector to enable.
+        """
+        if selector_type not in self.selectors:
+            raise ValueError(f"Selector '{selector_type.name}' does not exist.")
+        for selector in self.selectors.values():
+            selector.disable()  # Disable all selectors first
+        self.selectors[selector_type].enable()  # Then enable the requested one
+        print(f"Enabled selector: {selector_type.name}")
+
+    def disable_selector(self, selector_type):
+        """
+        Disables the specified selector by its type.
+
+        Parameters:
+        - selector_type (SelectorType): The type of the selector to disable.
+        """
+        if selector_type not in self.selectors:
+            raise ValueError(f"Selector '{selector_type.name}' does not exist.")
+        self.selectors[selector_type].disable()
+        print(f"Disabled selector: {selector_type.name}")
+
+
     
