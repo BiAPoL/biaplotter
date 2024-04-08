@@ -5,7 +5,43 @@ from matplotlib.widgets import LassoSelector, RectangleSelector, EllipseSelector
 from qtpy.QtWidgets import QWidget
 import matplotlib.pyplot as plt
 
+class Selector(ABC):
+    def __init__(self, ax: plt.Axes, data: np.ndarray):
+        self.ax = ax
+        self.canvas = ax.figure.canvas
+        self._data = data
+        self.selector = None
+    
+    @abstractmethod
+    def on_select(self, vertices):
+        pass
+    
+    @property
+    @abstractmethod
+    def data(self) -> np.ndarray:
+        """Abstract property for the selector's data."""
+        pass
 
+    @data.setter
+    @abstractmethod
+    def data(self, value: np.ndarray):
+        """Abstract setter for the selector's data."""
+        pass
+
+    def enable(self):
+        if self.selector:
+            self.selector.set_active(True)
+    
+    def disable(self):
+        if self.selector:
+            self.selector.set_active(False)
+
+    def remove(self):
+        if self.selector:
+            self.disable()
+            self.selector.clear()
+            self.selector.disconnect_events()
+            self.selector = None
 
 class BaseRectangleSelector(Selector):
     def __init__(self, ax: plt.Axes, data: np.ndarray = None):
