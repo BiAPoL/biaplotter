@@ -122,7 +122,6 @@ class Scatter(AbstractArtist):
             indices = indices.astype(int)
         self._color_indices = indices
         if indices is not None and self._scatter is not None:
-            # normalized_indices = indices / np.max(indices)
             new_colors = self._colormap(indices)
             self._scatter.set_facecolor(new_colors)
             self._scatter.set_edgecolor(None)
@@ -161,6 +160,10 @@ class Histogram2D(AbstractArtist):
                 artist.remove()
         # Draw the new histogram
         self._histogram = self._ax.hist2d(value[:, 0], value[:, 1], bins=self._bins, cmap=self._histogram_colormap, zorder=1)
+        if self._color_indices is None:
+            self.color_indices = 0 # Set default color index
+        else:
+            self.color_indices = self._color_indices
         self.draw()
 
     @property
