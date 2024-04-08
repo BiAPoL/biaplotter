@@ -11,7 +11,7 @@ from qtpy.QtCore import Qt
 
 # from biaplotter.selectors import CustomLassoSelector
 from biaplotter.artists import Scatter, Histogram2D
-from biaplotter.selectors import InteractiveRectangleSelector, InteractiveEllipseSelector
+from biaplotter.selectors import InteractiveRectangleSelector, InteractiveEllipseSelector, InteractiveLassoSelector
 
 icon_folder_path = (
     Path(__file__).parent / "icons"
@@ -42,15 +42,30 @@ class CanvasWidget(SingleAxesWidget):
 
         # Add button to selection_toolbar
         self.selection_toolbar.add_custom_button(
-            name="Lasso Selection",
+            name=SelectorType.LASSO.name,
             tooltip="Click to enable/disable Lasso selection",
             default_icon_path=icon_folder_path / "lasso.png",
             checkable=True,
             checked_icon_path=icon_folder_path / "lasso_checked.png",
+            callback=self.on_enable_selector,
         )
-        # Connect button to callback
-        self.selection_toolbar.connect_button_callback(
-            name="Lasso Selection", callback=self.on_enable_selector
+        # Add button to selection_toolbar
+        self.selection_toolbar.add_custom_button(
+            name=SelectorType.ELLIPSE.name,
+            tooltip="Click to enable/disable Ellipse selection",
+            default_icon_path=icon_folder_path / "ellipse.png",
+            checkable=True,
+            checked_icon_path=icon_folder_path / "ellipse_checked.png",
+            callback=self.on_enable_selector,
+        )
+        # Add button to selection_toolbar
+        self.selection_toolbar.add_custom_button(
+            name=SelectorType.RECTANGLE.name,
+            tooltip="Click to enable/disable Rectangle selection",
+            default_icon_path=icon_folder_path / "rectangle.png",
+            checkable=True,
+            checked_icon_path=icon_folder_path / "rectangle_checked.png",
+            callback=self.on_enable_selector,
         )
 
         # Set selection class colormap
@@ -69,18 +84,16 @@ class CanvasWidget(SingleAxesWidget):
 
         # Create selectors
         self.selectors = {}
+        self.add_selector(SelectorType.LASSO, InteractiveLassoSelector(ax=self.axes, canvas_widget=self))
         self.add_selector(SelectorType.ELLIPSE, InteractiveEllipseSelector(ax=self.axes, canvas_widget=self))
         self.add_selector(SelectorType.RECTANGLE, InteractiveRectangleSelector(self.axes, self))
-        # Enable ellipse selector by default (temporary, this should be done via the GUI)
-        self.enable_selector(SelectorType.ELLIPSE)
+        # # Enable ellipse selector by default (temporary, this should be done via the GUI)
+        # self.enable_selector(SelectorType.ELLIPSE)
         # Connect data_changed signals from each artist to set data in each selector
         for artist in self.artists.values():
             for selector in self.selectors.values():
                 print(artist, ' being connected to ', selector)
                 artist.data_changed_signal.connect(selector.set_data)
-        
-        self.artist_changed_signal
-
 
     def _build_selection_toolbar_layout(self, label_text="Class:"):
         # Add selection tools layout below canvas
@@ -97,10 +110,25 @@ class CanvasWidget(SingleAxesWidget):
         return selection_tools_layout
 
     def on_enable_selector(self, checked):
+        sender_name = self.sender().text()
+        # print(sender_name)
         if checked:
-            print("Selector enabled")
+            # If the button is checked, disable all other buttons
+            for button_name, button in self.selection_toolbar.buttons.items():
+                if button.isChecked() and button_name != sender_name:
+                    button.setChecked(False)
+            # Remove all selectors
+            for selector in self.selectors.values():
+                selector.remove()
+            # Create the chosen selector
+            for selector_type, selector in self.selectors.items():
+                if selector_type.name == sender_name:
+                    selector.create_selector()
         else:
-            print("Selector disabled")
+            # If the button is unchecked, remove the selector
+            for selector_type, selector in self.selectors.items():
+                if selector_type.name == sender_name:
+                    selector.remove()
 
     # def on_current_artist_changed(self, artist_type):
     #     self.current_artist_changed_signal.emit(artist_type)
