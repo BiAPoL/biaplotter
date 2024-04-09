@@ -1,16 +1,71 @@
-from abc import ABC, abstractmethod
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.colors import Colormap, ListedColormap
+
+from matplotlib.colors import Colormap
+from matplotlib.collections import QuadMesh
+from abc import ABC, abstractmethod
 from nap_plot_tools.cmap import make_cat10_mod_cmap
 from psygnal import Signal
+from typing import Tuple
+
 
 cat10_mod_cmap = make_cat10_mod_cmap()
-cat10_mod_cmap_first_opaque = make_cat10_mod_cmap(first_color_transparent=False)
+cat10_mod_cmap_first_opaque = make_cat10_mod_cmap(
+    first_color_transparent=False)
+
 
 class AbstractArtist(ABC):
-    def __init__(self, data: np.ndarray, ax: plt.Axes = None, colormap: Colormap = cat10_mod_cmap_first_opaque, color_indices: np.ndarray = None):
+    """Abstract base class for artists in the BIAPlotter.
+
+    Parameters
+        ----------
+        ax : plt.Axes, optional
+            axes to plot on, by default None
+        data : (N, 2) np.ndarray
+            data to be plotted
+        colormap : Colormap, optional
+            a colormap to use for the artist, by default cat10_mod_cmap_first_opaque from nap_plot_tools
+        color_indices : (N,) np.ndarray, optional
+            array of indices to map to the colormap, by default None
+
+    Attributes
+    ----------
+    data : (N, 2) np.ndarray
+        data to be plotted
+    visible : bool
+        visibility of the artist
+    color_indices : (N,) np.ndarray
+        array of indices to map to the colormap
+
+    Methods
+    -------
+    data(value: np.ndarray)
+        sets the data for the artist
+    visible(value: bool)
+        sets the visibility of the artist
+    color_indices(indices: np.ndarray)
+        sets the indices to map to the colormap
+    draw()
+        draws or redraws the artist
+
+    """
+
+    def __init__(self, ax: plt.Axes = None, data: np.ndarray = None, colormap: Colormap = cat10_mod_cmap_first_opaque, color_indices: np.ndarray = None):
+        """Initializes the abstract artist.
+
+        Parameters
+        ----------
+        ax : plt.Axes, optional
+            axes to plot on, by default None
+        data : (N, 2) np.ndarray
+            data to be plotted
+        colormap : Colormap, optional
+            a colormap to use for the artist, by default cat10_mod_cmap_first_opaque from nap_plot_tools
+        color_indices : (N,) np.ndarray, optional
+            array of indices to map to the colormap, by default None
+        """
         self._data = data
+        # Get current axes if none are provided
         self._ax = ax if ax is not None else plt.gca()
         self._visible = True
         self._colormap = colormap
@@ -58,15 +113,83 @@ class AbstractArtist(ABC):
         pass
 
 
-
 class Scatter(AbstractArtist):
-    data_changed_signal = Signal(np.ndarray)
-    def __init__(self, data: np.ndarray = None, ax: plt.Axes = None, colormap: Colormap = cat10_mod_cmap_first_opaque, color_indices: np.ndarray = None):
-        super().__init__(data, ax, colormap, color_indices)
-        self._scatter = None  # Placeholder for the scatter plot object
-        self.data = data  # Initialize the scatter plot with data
-        self.draw()  # Initial draw of the scatter plot
+    """Scatter plot artist for the BIAPlotter.
 
+    Parameters
+    ----------
+    ax : plt.Axes, optional
+        axes to plot on, by default None
+    data : (N, 2) np.ndarray
+        data to be plotted
+    colormap : Colormap, optional
+        a colormap to use for the artist, by default cat10_mod_cmap_first_opaque from nap_plot_tools
+    color_indices : (N,) np.ndarray, optional
+        array of indices to map to the colormap, by default None
+
+    Attributes
+    ----------
+    data : (N, 2) np.ndarray
+        data to be plotted
+    visible : bool
+        visibility of the artist
+    color_indices : (N,) np.ndarray
+        array of indices to map to the colormap
+
+    Methods
+    -------
+    data(value: np.ndarray)
+        sets the data for the artist
+    visible(value: bool)
+        sets the visibility of the artist
+    color_indices(indices: np.ndarray)
+        sets the indices to map to the colormap
+    draw()
+        draws or redraws the artist
+
+    Notes
+    -----
+    The Scatter class emits a data_changed_signal when the data is changed.
+
+    Signals
+    -------
+    data_changed_signal : Signal
+        emitted when the data is changed
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import matplotlib.pyplot as plt
+    >>> from biaplotter.artists import Scatter
+    >>> data = np.random.rand(100, 2)
+    >>> fig, ax = plt.subplots()
+    >>> scatter = Scatter(ax)
+    >>> scatter.data = data
+    >>> scatter.visible = True
+    >>> scatter.color_indices = np.random.randint(0, 10, 100)
+    >>> plt.show()
+    """
+
+    data_changed_signal = Signal(np.ndarray)
+
+    def __init__(self, ax: plt.Axes = None, data: np.ndarray = None, colormap: Colormap = cat10_mod_cmap_first_opaque, color_indices: np.ndarray = None):
+        """Initializes the scatter plot artist.
+
+        Parameters
+        ----------
+        ax : plt.Axes, optional
+            axes to plot on, by default None
+        data : (N, 2) np.ndarray, optional
+            data to be plotted, by default None
+        colormap : Colormap, optional
+            a colormap to use for the artist, by default cat10_mod_cmap_first_opaque from nap_plot_tools
+        color_indices : (N,) np.ndarray, optional
+            array of indices to map to the colormap, by default None
+        """
+        super().__init__(ax, data, colormap, color_indices)
+        self._scatter = None
+        self.data = data
+        self.draw()  # Initial draw of the scatter plot
 
     @property
     def data(self) -> np.ndarray:
@@ -75,8 +198,10 @@ class Scatter(AbstractArtist):
 
     @data.setter
     def data(self, value: np.ndarray):
-        """Sets the data for the scatter plot, updating the display as needed."""           
-        if value is None or len(value) == 0:
+        """Sets the data for the scatter plot, updating the display as needed."""
+        if value is None:
+            return
+        if len(value) == 0:
             return
         self._data = value
         # emit signal
@@ -84,7 +209,7 @@ class Scatter(AbstractArtist):
         if self._scatter is None:
             # If the scatter plot hasn't been created yet, do so now
             self._scatter = self._ax.scatter(value[:, 0], value[:, 1])
-            self.color_indices = 0 # Set default color index
+            self.color_indices = 0  # Set default color index
         else:
             # If the scatter plot already exists, just update its data
             self._scatter.set_offsets(value)
@@ -128,17 +253,89 @@ class Scatter(AbstractArtist):
         self.draw()
 
     def draw(self):
+        """Draws or redraws the scatter plot."""
         self._ax.figure.canvas.draw_idle()
 
+
 class Histogram2D(AbstractArtist):
+    """2D histogram artist for the BIAPlotter.
+
+    Parameters
+    ----------
+    ax : plt.Axes, optional
+        axes to plot on, by default None
+    data : (N, 2) np.ndarray
+        data to be plotted
+    overlay_colormap : Colormap, optional
+        a colormap to use for the artist overlay, by default cat10_mod_cmap from nap_plot_tools
+    color_indices : (N,) np.ndarray, optional
+        array of indices to map to the colormap, by default None
+    bins : int, optional
+        number of bins for the histogram, by default 20
+    histogram_colormap : Colormap, optional
+        colormap for the histogram, by default plt.cm.viridis
+
+    Attributes
+    ----------
+    data : (N, 2) np.ndarray
+        data to be plotted
+    visible : bool
+        visibility of the artist
+    color_indices : (N,) np.ndarray
+        array of indices to map to the colormap
+    bins : int
+        number of bins for the histogram
+    histogram_colormap : Colormap
+        colormap for the histogram
+
+    Methods
+    -------
+    data(value: np.ndarray)
+        sets the data for the artist
+    visible(value: bool)
+        sets the visibility of the artist
+    color_indices(indices: np.ndarray)
+        sets the indices to map to the colormap
+    draw()
+        draws or redraws the artist
+
+    Notes
+    -----
+    The Histogram2D class emits a data_changed_signal when the data is changed.
+
+    Signals
+    -------
+    data_changed_signal : Signal
+        emitted when the data is changed
+
+    """
+
     data_changed_signal = Signal(np.ndarray)
-    def __init__(self, data: np.ndarray = None, ax: plt.Axes = None, colormap: Colormap = cat10_mod_cmap, color_indices: np.ndarray = None, bins=20, histogram_colormap: Colormap = plt.cm.viridis):
-        super().__init__(data, ax, colormap, color_indices)
-        self._histogram = None  # Placeholder for the 2D histogram artist
-        self._bins = bins  # Number of bins for the histogram
-        self._histogram_colormap = histogram_colormap  # Colormap for the histogram
-        self._overlay = None  # Placeholder for the overlay
-        self.data = data  # Initialize the histogram with data
+
+    def __init__(self, ax: plt.Axes = None, data: np.ndarray = None, overlay_colormap: Colormap = cat10_mod_cmap, color_indices: np.ndarray = None, bins=20, histogram_colormap: Colormap = plt.cm.viridis):
+        super().__init__(ax, data, overlay_colormap, color_indices)
+        """Initializes the 2D histogram artist.
+
+        Parameters
+        ----------
+        ax : plt.Axes, optional
+            axes to plot on, by default None
+        data : (N, 2) np.ndarray, optional
+            data to be plotted, by default None
+        overlay_colormap : Colormap, optional
+            a colormap to use for the artist overlay, by default cat10_mod_cmap from nap_plot_tools
+        color_indices : (N,) np.ndarray, optional
+            array of indices to map to the overlay colormap, by default None
+        bins : int, optional
+            number of bins for the histogram, by default 20
+        histogram_colormap : Colormap, optional
+            colormap for the histogram, by default plt.cm.viridis
+        """
+        self._histogram = None
+        self._bins = bins
+        self._histogram_colormap = histogram_colormap
+        self._overlay = None
+        self.data = data
         self.draw()  # Initial draw of the histogram
 
     @property
@@ -149,7 +346,9 @@ class Histogram2D(AbstractArtist):
     @data.setter
     def data(self, value: np.ndarray):
         """Sets the data for the 2D histogram, updating the display as needed."""
-        if value is None or len(value) == 0:
+        if value is None:
+            return
+        if len(value) == 0:
             return
         self._data = value
         # emit signal
@@ -159,9 +358,10 @@ class Histogram2D(AbstractArtist):
             for artist in self._histogram[-1]:
                 artist.remove()
         # Draw the new histogram
-        self._histogram = self._ax.hist2d(value[:, 0], value[:, 1], bins=self._bins, cmap=self._histogram_colormap, zorder=1)
+        self._histogram = self._ax.hist2d(
+            value[:, 0], value[:, 1], bins=self._bins, cmap=self._histogram_colormap, zorder=1)
         if self._color_indices is None:
-            self.color_indices = 0 # Set default color index
+            self.color_indices = 0  # Set default color index
         else:
             self.color_indices = self._color_indices
         self.draw()
@@ -184,11 +384,12 @@ class Histogram2D(AbstractArtist):
 
     @property
     def color_indices(self) -> np.ndarray:
-        # This property might be less relevant for histograms, as color mapping is often handled differently
+        """Gets the current color indices used for the 2D histogram underlying data."""
         return self._color_indices
 
     @color_indices.setter
     def color_indices(self, indices: np.ndarray):
+        """Sets color indices for the 2D histogram underlying data and updates colors accordingly."""
         # Check if indices are a scalar
         if np.isscalar(indices):
             indices = np.full(len(self._data), indices)
@@ -197,20 +398,49 @@ class Histogram2D(AbstractArtist):
             indices = indices.astype(int)
         self._color_indices = indices
         h, xedges, yedges, _ = self._histogram
-         # Create empty overlay
+        # Create empty overlay
         overlay_rgba = np.zeros((*h.shape, 4), dtype=float)
         output_max = np.zeros(h.shape, dtype=float)
         for i in np.unique(self._color_indices):
             # Filter data by class
             data_filtered_by_class = self._data[self._color_indices == i]
             # Calculate histogram of filtered data while fixing the bins
-            histogram_filtered_by_class, _, _ = np.histogram2d(data_filtered_by_class[:, 0], data_filtered_by_class[:, 1], bins=[xedges, yedges])
+            histogram_filtered_by_class, _, _ = np.histogram2d(
+                data_filtered_by_class[:, 0], data_filtered_by_class[:, 1], bins=[xedges, yedges])
             class_mask = histogram_filtered_by_class > output_max
             output_max = np.maximum(histogram_filtered_by_class, output_max)
             overlay_rgba[class_mask] = self._colormap(i)
         # Draw the overlay
-        self.overlay = self._ax.imshow(overlay_rgba.swapaxes(0, 1), origin='lower', extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]], aspect='auto', alpha=1, zorder=2)
+        self.overlay = self._ax.imshow(overlay_rgba.swapaxes(0, 1), origin='lower', extent=[
+                                       xedges[0], xedges[-1], yedges[0], yedges[-1]], aspect='auto', alpha=1, zorder=2)
         self.draw()
+
+    @property
+    def bins(self) -> int:
+        """Returns the number of bins for the histogram."""
+        return self._bins
+
+    @bins.setter
+    def bins(self, value: int):
+        """Sets the number of bins for the histogram."""
+        self._bins = value
+        self.data = self._data
+
+    @property
+    def histogram_colormap(self) -> Colormap:
+        """Returns the colormap for the histogram."""
+        return self._histogram_colormap
+
+    @histogram_colormap.setter
+    def histogram_colormap(self, value: Colormap):
+        """Sets the colormap for the histogram."""
+        self._histogram_colormap = value
+        self.data = self._data
+
+    @property
+    def histogram(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray, QuadMesh]:
+        """Returns the 2D histogram matplotlib object."""
+        return self._histogram
 
     def draw(self):
         """Draws or redraws the 2D histogram."""
