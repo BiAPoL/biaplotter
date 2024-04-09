@@ -1,7 +1,7 @@
 import numpy as np
 
 from biaplotter.plotter import (
-    PlotterWidget
+    CanvasWidget
 )
 
 
@@ -12,10 +12,10 @@ def test_example_q_widget(make_napari_viewer, capsys):
     # viewer.add_image(np.random.random((100, 100)))
 
     # create our widget, passing in the viewer
-    plotter = PlotterWidget(viewer)
+    widget = CanvasWidget(viewer)
 
     # Check button callback function
-    plotter.on_enable_selector(True)
+    widget.on_enable_selector(True)
 
     # read captured output and check that it's as we expected
     captured = capsys.readouterr()
