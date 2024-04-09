@@ -17,14 +17,17 @@ icon_folder_path = (
     Path(__file__).parent / "icons"
 )
 
+
 class ArtistType(Enum):
     HISTOGRAM2D = auto()
     SCATTER = auto()
+
 
 class SelectorType(Enum):
     LASSO = auto()
     ELLIPSE = auto()
     RECTANGLE = auto()
+
 
 class CanvasWidget(SingleAxesWidget):
     # Amount of available input layers
@@ -38,7 +41,8 @@ class CanvasWidget(SingleAxesWidget):
         super().__init__(napari_viewer, parent=parent)
 
         # Add selection tools layout below canvas
-        self.selection_tools_layout = self._build_selection_toolbar_layout(label_text=label_text)
+        self.selection_tools_layout = self._build_selection_toolbar_layout(
+            label_text=label_text)
 
         # Add button to selection_toolbar
         self.selection_toolbar.add_custom_button(
@@ -74,19 +78,22 @@ class CanvasWidget(SingleAxesWidget):
         # Add selection tools layout to main layout below matplotlib toolbar and above canvas
         self.layout().insertLayout(2, self.selection_tools_layout)
 
-
         # Create artists
         self.artists = {}
-        self.add_artist(ArtistType.SCATTER, Scatter(ax=self.axes, colormap=self.colormap))
+        self.add_artist(ArtistType.SCATTER, Scatter(
+            ax=self.axes, colormap=self.colormap))
         self.add_artist(ArtistType.HISTOGRAM2D, Histogram2D(ax=self.axes))
-        # Set histogram2d as the default artist 
+        # Set histogram2d as the default artist
         self.set_active_artist(ArtistType.HISTOGRAM2D)
 
         # Create selectors
         self.selectors = {}
-        self.add_selector(SelectorType.LASSO, InteractiveLassoSelector(ax=self.axes, canvas_widget=self))
-        self.add_selector(SelectorType.ELLIPSE, InteractiveEllipseSelector(ax=self.axes, canvas_widget=self))
-        self.add_selector(SelectorType.RECTANGLE, InteractiveRectangleSelector(self.axes, self))
+        self.add_selector(SelectorType.LASSO, InteractiveLassoSelector(
+            ax=self.axes, canvas_widget=self))
+        self.add_selector(SelectorType.ELLIPSE, InteractiveEllipseSelector(
+            ax=self.axes, canvas_widget=self))
+        self.add_selector(SelectorType.RECTANGLE,
+                          InteractiveRectangleSelector(self.axes, self))
         # # Enable ellipse selector by default (temporary, this should be done via the GUI)
         # self.enable_selector(SelectorType.ELLIPSE)
         # Connect data_changed signals from each artist to set data in each selector
@@ -169,34 +176,6 @@ class CanvasWidget(SingleAxesWidget):
         - selector_instance: An instance of the selector class.
         """
         if selector_type in self.selectors:
-            raise ValueError(f"Selector '{selector_type.name}' already exists.")
+            raise ValueError(
+                f"Selector '{selector_type.name}' already exists.")
         self.selectors[selector_type] = selector_instance
-
-    def enable_selector(self, selector_type):
-        """
-        Enables the specified selector by its type.
-
-        Parameters:
-        - selector_type (SelectorType): The type of the selector to enable.
-        """
-        if selector_type not in self.selectors:
-            raise ValueError(f"Selector '{selector_type.name}' does not exist.")
-        for selector in self.selectors.values():
-            selector.disable()  # Disable all selectors first
-        self.selectors[selector_type].enable()  # Then enable the requested one
-        print(f"Enabled selector: {selector_type.name}")
-
-    def disable_selector(self, selector_type):
-        """
-        Disables the specified selector by its type.
-
-        Parameters:
-        - selector_type (SelectorType): The type of the selector to disable.
-        """
-        if selector_type not in self.selectors:
-            raise ValueError(f"Selector '{selector_type.name}' does not exist.")
-        self.selectors[selector_type].disable()
-        print(f"Disabled selector: {selector_type.name}")
-
-
-    

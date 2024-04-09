@@ -28,17 +28,14 @@ class Selector(ABC):
         """Abstract setter for the selector's data."""
         pass
 
-    def enable(self):
-        if self.selector:
-            self.selector.set_active(True)
-    
-    def disable(self):
-        if self.selector:
-            self.selector.set_active(False)
+    @abstractmethod
+    def create_selector(self, *args, **kwargs):
+        """Abstract method to create a selector."""
+        pass
 
     def remove(self):
+        """Removes the selector from the canvas."""
         if self.selector:
-            self.disable()
             self.selector.clear()
             self.selector.disconnect_events()
             self.selector = None
@@ -93,7 +90,6 @@ class InteractiveRectangleSelector(BaseRectangleSelector):
 
     def apply_selection(self):
         if self.selected_indices is not None:
-            # Update color indices only if 'e' is pressed
             color_indices = self._active_artist.color_indices
             color_indices[self.selected_indices] = self._class_value
             self._active_artist.color_indices = color_indices
@@ -128,7 +124,6 @@ class BaseEllipseSelector(Selector):
         super().__init__(ax, data)
         self.name = 'Ellipse Selector'
         self.data = data
-        # self.create_selector()
 
     def on_select(self, eclick, erelease):
         if self._data is None or len(self._data) == 0:
@@ -176,7 +171,6 @@ class InteractiveEllipseSelector(BaseEllipseSelector):
 
     def apply_selection(self):
         if self.selected_indices is not None:
-            # Update color indices only if 'e' is pressed
             color_indices = self._active_artist.color_indices
             color_indices[self.selected_indices] = self._class_value
             self._active_artist.color_indices = color_indices
@@ -249,7 +243,6 @@ class InteractiveLassoSelector(BaseLassoSelector):
 
     def apply_selection(self):
         if self.selected_indices is not None:
-            # Update color indices only if 'e' is pressed
             color_indices = self._active_artist.color_indices
             color_indices[self.selected_indices] = self._class_value
             self._active_artist.color_indices = color_indices
