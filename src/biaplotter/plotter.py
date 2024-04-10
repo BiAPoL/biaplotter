@@ -94,13 +94,11 @@ class CanvasWidget(SingleAxesWidget):
             ax=self.axes, canvas_widget=self))
         self.add_selector(SelectorType.RECTANGLE,
                           InteractiveRectangleSelector(self.axes, self))
-        # # Enable ellipse selector by default (temporary, this should be done via the GUI)
-        # self.enable_selector(SelectorType.ELLIPSE)
         # Connect data_changed signals from each artist to set data in each selector
         for artist in self.artists.values():
             for selector in self.selectors.values():
                 print(artist, ' being connected to ', selector)
-                artist.data_changed_signal.connect(selector.set_data)
+                artist.data_changed_signal.connect(selector.update_data)
 
     def _build_selection_toolbar_layout(self, label_text="Class:"):
         # Add selection tools layout below canvas
@@ -136,6 +134,7 @@ class CanvasWidget(SingleAxesWidget):
             for selector_type, selector in self.selectors.items():
                 if selector_type.name == sender_name:
                     selector.remove()
+            
 
     # def on_current_artist_changed(self, artist_type):
     #     self.current_artist_changed_signal.emit(artist_type)
