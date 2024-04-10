@@ -412,8 +412,11 @@ class Histogram2D(AbstractArtist):
             class_mask = histogram_filtered_by_class > output_max
             output_max = np.maximum(histogram_filtered_by_class, output_max)
             overlay_rgba[class_mask] = self._colormap(i)
+        # Remove the existing overlay to redraw
+        if self._overlay is not None:
+            self._overlay.remove()
         # Draw the overlay
-        self.overlay = self._ax.imshow(overlay_rgba.swapaxes(0, 1), origin='lower', extent=[
+        self._overlay = self._ax.imshow(overlay_rgba.swapaxes(0, 1), origin='lower', extent=[
                                        xedges[0], xedges[-1], yedges[0], yedges[-1]], aspect='auto', alpha=1, zorder=2)
         self.draw()
 
