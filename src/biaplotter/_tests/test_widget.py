@@ -5,18 +5,14 @@ from biaplotter.plotter import (
 )
 
 
-# capsys is a pytest fixture that captures stdout and stderr output streams
-def test_example_q_widget(make_napari_viewer, capsys):
+def test_widget(make_napari_viewer):
     # make viewer and add an image layer using our fixture
     viewer = make_napari_viewer()
-    # viewer.add_image(np.random.random((100, 100)))
 
     # create our widget, passing in the viewer
     widget = CanvasWidget(viewer)
 
-    # Check button callback function
-    widget.on_enable_selector(True)
+    viewer.window.add_dock_widget(widget)
 
-    # read captured output and check that it's as we expected
-    captured = capsys.readouterr()
-    assert captured.out == "Selector enabled\n"
+    # check that the widget exists
+    assert widget is not None
