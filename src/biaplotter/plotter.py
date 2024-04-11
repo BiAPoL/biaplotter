@@ -97,7 +97,6 @@ class CanvasWidget(SingleAxesWidget):
         # Connect data_changed signals from each artist to set data in each selector
         for artist in self.artists.values():
             for selector in self.selectors.values():
-                print(artist, ' being connected to ', selector)
                 artist.data_changed_signal.connect(selector.update_data)
 
     def _build_selection_toolbar_layout(self, label_text="Class:"):
