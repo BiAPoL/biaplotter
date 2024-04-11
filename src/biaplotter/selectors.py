@@ -47,7 +47,7 @@ class Selector(ABC):
         Removes the selector from the canvas.
     """
 
-    def __init__(self, ax: plt.Axes, data: np.ndarray):
+    def __init__(self, ax: plt.Axes = None, data: np.ndarray = None):
         """Initializes the selector.
 
         Parameters
