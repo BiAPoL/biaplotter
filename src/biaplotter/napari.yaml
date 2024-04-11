@@ -1,5 +1,5 @@
 name: biaplotter
-display_name: Plotter (BiAPoL)
+display_name: Canvas Widget from BiAPoL
 # use 'hidden' to remove plugin from napari hub search results, use public otherwise
 visibility: public
 # see https://napari.org/stable/plugins/manifest.html for valid categories
