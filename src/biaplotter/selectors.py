@@ -296,7 +296,7 @@ class Interactive(Selector):
         The data to be selected.
 
     Additional Attributes
-    ----------
+    --------------------
     canvas_widget : biaplotter.plotter.CanvasWidget
         The canvas widget to which the selector is applied.
     _selected_indices : (N,) np.ndarray
@@ -353,7 +353,7 @@ class Interactive(Selector):
         # Get initial class value
         self._class_value = self.canvas_widget.class_spinbox.value
         # Get initial active artist
-        self._active_artist = self.canvas_widget.get_active_artist()
+        self._active_artist = self.canvas_widget.active_artist
 
         # Connect external signals to internal slots
         # Connect class_spinbox_value_changed signal (emitted by colorspinbox when its value changes) to update current_class_value
@@ -424,7 +424,7 @@ class Interactive(Selector):
 
     def update_active_artist(self):
         """Handles the artist_changed_signal from the canvas widget to update the active artist."""
-        self._active_artist = self.canvas_widget.get_active_artist()
+        self._active_artist = self.canvas_widget.active_artist
 
 
 class InteractiveRectangleSelector(Interactive, BaseRectangleSelector):
