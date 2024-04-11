@@ -14,7 +14,7 @@ cat10_mod_cmap_first_opaque = make_cat10_mod_cmap(
     first_color_transparent=False)
 
 
-class AbstractArtist(ABC):
+class Artist(ABC):
     """Abstract base class for artists in the BIAPlotter.
 
     Parameters
@@ -109,7 +109,7 @@ class AbstractArtist(ABC):
         pass
 
 
-class Scatter(AbstractArtist):
+class Scatter(Artist):
     """Scatter plot artist for the BiAPlotter.
 
     Inherits all parameters and attributes from AbstractArtist.
@@ -246,7 +246,7 @@ class Scatter(AbstractArtist):
         self._ax.figure.canvas.draw_idle()
 
 
-class Histogram2D(AbstractArtist):
+class Histogram2D(Artist):
     """2D histogram artist for the BiAPlotter.
 
     Inherits all parameters and attributes from AbstractArtist.
