@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from biaplotter.artists import Scatter
 
 from biaplotter.artists import (
     Scatter, Histogram2D
