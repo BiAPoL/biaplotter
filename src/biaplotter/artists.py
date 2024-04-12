@@ -202,7 +202,9 @@ class Scatter(Artist):
         else:
             # If the scatter plot already exists, just update its data
             self._scatter.set_offsets(value)
-        if self._color_indices is not None:
+        if self._color_indices is None:
+            self.color_indices = 0  # Set default color index
+        else:
             # Update colors if color indices are set
             self.color_indices = self._color_indices
         self.draw()
