@@ -4,7 +4,7 @@ from pathlib import Path
 from enum import Enum, auto
 from nap_plot_tools import CustomToolbarWidget, QtColorSpinBox, make_cat10_mod_cmap
 from napari.layers import Labels, Points, Tracks
-from napari_matplotlib.base import SingleAxesWidget
+from napari_matplotlib.base import BaseNapariMPLWidget
 from napari_matplotlib.util import Interval
 from qtpy.QtWidgets import QHBoxLayout, QLabel, QWidget
 from psygnal import Signal
@@ -32,7 +32,7 @@ class SelectorType(Enum):
     RECTANGLE = auto()
 
 
-class CanvasWidget(SingleAxesWidget):
+class CanvasWidget(BaseNapariMPLWidget):
     """A widget that contains a canvas with matplotlib axes and a selection toolbar.
 
     The widget includes a selection toolbar with buttons to enable/disable selection tools.
@@ -105,7 +105,7 @@ class CanvasWidget(SingleAxesWidget):
 
     def __init__(self, napari_viewer: "napari.viewer.Viewer", parent: Optional[QWidget] = None, label_text: str = "Class:"):
         super().__init__(napari_viewer, parent=parent)
-
+        self.add_single_axes()
         # Add selection tools layout below canvas
         self.selection_tools_layout = self._build_selection_toolbar_layout(
             label_text=label_text)
@@ -142,7 +142,7 @@ class CanvasWidget(SingleAxesWidget):
         self.colormap = make_cat10_mod_cmap(first_color_transparent=False)
 
         # Add selection tools layout to main layout below matplotlib toolbar and above canvas
-        self.layout().insertLayout(2, self.selection_tools_layout)
+        self.layout().insertLayout(1, self.selection_tools_layout)
 
         # Create artists
         self._active_artist = None
