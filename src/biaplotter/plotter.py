@@ -213,6 +213,7 @@ class CanvasWidget(SingleAxesWidget):
                     button.setChecked(False)
             # Remove all selectors
             for selector in self.selectors.values():
+                selector.selected_indices = None
                 selector.remove()
             # Create the chosen selector
             for selector_type, selector in self.selectors.items():
@@ -222,6 +223,7 @@ class CanvasWidget(SingleAxesWidget):
             # If the button is unchecked, remove the selector
             for selector_type, selector in self.selectors.items():
                 if selector_type.name == sender_name:
+                    selector.selected_indices = None
                     selector.remove()
 
     @property

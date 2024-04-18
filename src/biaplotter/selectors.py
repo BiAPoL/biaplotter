@@ -381,8 +381,6 @@ class Interactive(Selector):
     @selected_indices.setter
     def selected_indices(self, value: np.ndarray):
         """Sets the indices of the selected points."""
-        if value is None:
-            return
         self._selected_indices = value
 
     def on_button_press(self, event):
