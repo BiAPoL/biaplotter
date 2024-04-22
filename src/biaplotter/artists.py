@@ -267,7 +267,7 @@ class Histogram2D(Artist):
     bins : int, optional
         number of bins for the histogram, by default 20
     histogram_colormap : Colormap, optional
-        colormap for the histogram, by default plt.cm.viridis
+        colormap for the histogram, by default plt.cm.magma
 
     Additional Attributes
     ---------------------
@@ -317,7 +317,7 @@ class Histogram2D(Artist):
 
     data_changed_signal = Signal(np.ndarray)
 
-    def __init__(self, ax: plt.Axes = None, data: np.ndarray = None, colormap: Colormap = cat10_mod_cmap, color_indices: np.ndarray = None, bins=20, histogram_colormap: Colormap = plt.cm.viridis):
+    def __init__(self, ax: plt.Axes = None, data: np.ndarray = None, colormap: Colormap = cat10_mod_cmap, color_indices: np.ndarray = None, bins=20, histogram_colormap: Colormap = plt.cm.magma):
         super().__init__(ax, data, colormap, color_indices)
         """Initializes the 2D histogram artist.
 
@@ -334,7 +334,7 @@ class Histogram2D(Artist):
         bins : int, optional
             number of bins for the histogram, by default 20
         histogram_colormap : Colormap, optional
-            colormap for the histogram, by default plt.cm.viridis
+            colormap for the histogram, by default plt.cm.magma
         """
         self._histogram = None
         self._bins = bins
