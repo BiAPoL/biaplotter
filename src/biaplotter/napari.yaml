@@ -1,14 +1,14 @@
 name: biaplotter
 display_name: Canvas Widget from BiAPoL
 # use 'hidden' to remove plugin from napari hub search results, use public otherwise
-visibility: public
+visibility: hidden
 # see https://napari.org/stable/plugins/manifest.html for valid categories
 categories: [Utilities, Visualization]
 contributions:
   commands:
     - id: biaplotter.make_qwidget
-      python_name: biaplotter:PlotterWidget
-      title: Open Plotter
+      python_name: biaplotter:CanvasWidget
+      title: Open Interactive Canvas
   widgets:
     - command: biaplotter.make_qwidget
-      display_name: Plotter
+      display_name: Interactive Canvas
