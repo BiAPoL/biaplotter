@@ -4,7 +4,16 @@
 format: jb-book
 root: intro
 parts:
-- caption: API
+- caption: Examples
   chapters:
-  - file: classes
+  - file: examples_intro
+    sections:
+    - file: examples/scatter_artist_example
+- caption: API Reference
+  chapters:
+  - file: modules
+    sections:
+    - file: plotter_api
+    - file: artists_api
+    - file: selectors_api
 

@@ -69,33 +69,18 @@ class CanvasWidget(BaseNapariMPLWidget):
     _active_artist : Union[Scatter, Histogram2D]
         Stores the active artist.
 
-    Properties
-    ----------
-    active_artist : Union[Scatter, Histogram2D]
-        Returns the active artist.
+    Notes
+    -----
 
-    Methods
-    -------
-    _build_selection_toolbar_layout(label_text: str = "Class:")
-        Builds the selection toolbar layout.
-    on_enable_selector(checked: bool)
-        Enables or disables the selected selector.
-    add_artist(artist_type: ArtistType, artist_instance: Union[Scatter, Histogram2D], visible: bool=False)
-        Adds a new artist instance to the artists dictionary.
-    add_selector(selector_type: SelectorType, selector_instance: Union[InteractiveRectangleSelector, InteractiveEllipseSelector, InteractiveLassoSelector])
-        Adds a new selector instance to the selectors dictionary.
+    Signals and Slots:
 
-    Signals
-    -------
-    artist_changed_signal : Signal
-        Signal emitted when the current artist changes.
+    This class emits the **`artist_changed_signal`** signal when the current artist changes.
 
-    Signals and Slots
-    -----------------
-    This class automatically connects the `data_changed_signal` signal from each artist to the `update_data` slot in each selector.
+    This class automatically connects the **`data_changed_signal`** signal from each artist to the **`update_data`** slot in each selector.
     This allows artists to notify selectors when the data changes. Selectors can then synchronize their data with the artist's data.
 
     """
+
     # Amount of available input layers
     n_layers_input = Interval(1, None)
     # All layers that have a .features attributes
@@ -228,24 +213,25 @@ class CanvasWidget(BaseNapariMPLWidget):
 
     @property
     def active_artist(self):
-        """Returns the active artist."""
+        """Sets or returns the active artist.
+        
+        If set, makes the selected artist visible and all other artists invisible.
+
+        Returns
+        -------
+        Union[Scatter, Histogram2D]
+            The active artist.
+
+        Notes
+        -----
+        artist_changed_signal : Signal
+            Signal emitted when the current artist changes.
+        """
         return self._active_artist
 
     @active_artist.setter
     def active_artist(self, value: Union[Scatter, Histogram2D]):
         """Sets the active artist.
-
-        Makes the selected artist visible and all other artists invisible.
-
-        Parameters
-        ----------
-        value : Artist
-            The new artist to set as active.
-
-        Signals
-        -------
-        artist_changed_signal : Signal
-            Signal emitted when the current artist changes.
         """
         self._active_artist = value
         for artist in self.artists.values():
