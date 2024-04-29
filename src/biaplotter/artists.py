@@ -4,13 +4,9 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import Colormap
 from matplotlib.collections import QuadMesh
 from abc import ABC, abstractmethod
-from nap_plot_tools.cmap import make_cat10_mod_cmap
+from nap_plot_tools.cmap import cat10_mod_cmap, cat10_mod_cmap_first_transparent
 from psygnal import Signal
 from typing import Tuple
-
-cat10_mod_cmap = make_cat10_mod_cmap()
-cat10_mod_cmap_first_opaque = make_cat10_mod_cmap(
-    first_color_transparent=False)
 
 
 class Artist(ABC):
@@ -23,7 +19,7 @@ class Artist(ABC):
         data : (N, 2) np.ndarray
             data to be plotted
         colormap : Colormap, optional
-            a colormap to use for the artist, by default cat10_mod_cmap_first_opaque from nap_plot_tools
+            a colormap to use for the artist, by default cat10_mod_cmap from nap_plot_tools
         color_indices : (N,) np.ndarray, optional
             array of indices to map to the colormap, by default None
 
@@ -42,7 +38,7 @@ class Artist(ABC):
 
     """
 
-    def __init__(self, ax: plt.Axes = None, data: np.ndarray = None, colormap: Colormap = cat10_mod_cmap_first_opaque, color_indices: np.ndarray = None):
+    def __init__(self, ax: plt.Axes = None, data: np.ndarray = None, colormap: Colormap = cat10_mod_cmap, color_indices: np.ndarray = None):
         """Initializes the abstract artist.
         """
         self._data = data
@@ -107,7 +103,7 @@ class Scatter(Artist):
     data : (N, 2) np.ndarray
         data to be plotted
     colormap : Colormap, optional
-        a colormap to use for the artist, by default cat10_mod_cmap_first_opaque from nap_plot_tools
+        a colormap to use for the artist, by default cat10_mod_cmap from nap_plot_tools
     color_indices : (N,) np.ndarray[int] or int, optional
         array of indices to map to the colormap, by default None
 
@@ -138,7 +134,7 @@ class Scatter(Artist):
 
     data_changed_signal = Signal(np.ndarray)
 
-    def __init__(self, ax: plt.Axes = None, data: np.ndarray = None, colormap: Colormap = cat10_mod_cmap_first_opaque, color_indices: np.ndarray = None):
+    def __init__(self, ax: plt.Axes = None, data: np.ndarray = None, colormap: Colormap = cat10_mod_cmap, color_indices: np.ndarray = None):
         """Initializes the scatter plot artist.
         """
         super().__init__(ax, data, colormap, color_indices)
@@ -255,7 +251,7 @@ class Histogram2D(Artist):
     data : (N, 2) np.ndarray
         data to be plotted
     colormap : Colormap, optional
-        a colormap to use for the artist overlay, by default cat10_mod_cmap from nap_plot_tools (first color is transparent)
+        a colormap to use for the artist overlay, by default cat10_mod_cmap_first_transparent from nap_plot_tools (first color is transparent)
     color_indices : (N,) np.ndarray[int] or int, optional
         array of indices to map to the colormap, by default None
     bins : int, optional
@@ -286,7 +282,7 @@ class Histogram2D(Artist):
 
     data_changed_signal = Signal(np.ndarray)
 
-    def __init__(self, ax: plt.Axes = None, data: np.ndarray = None, colormap: Colormap = cat10_mod_cmap, color_indices: np.ndarray = None, bins=20, histogram_colormap: Colormap = plt.cm.magma):
+    def __init__(self, ax: plt.Axes = None, data: np.ndarray = None, colormap: Colormap = cat10_mod_cmap_first_transparent, color_indices: np.ndarray = None, bins=20, histogram_colormap: Colormap = plt.cm.magma):
         super().__init__(ax, data, colormap, color_indices)
         """Initializes the 2D histogram artist.
         """

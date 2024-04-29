@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 from enum import Enum, auto
-from nap_plot_tools import CustomToolbarWidget, QtColorSpinBox, make_cat10_mod_cmap
+from nap_plot_tools import CustomToolbarWidget, QtColorSpinBox, cat10_mod_cmap_first_transparent
 from napari.layers import Labels, Points, Tracks
 from napari_matplotlib.base import BaseNapariMPLWidget
 from napari_matplotlib.util import Interval
@@ -124,7 +124,7 @@ class CanvasWidget(BaseNapariMPLWidget):
         )
 
         # Set selection class colormap
-        self.colormap = make_cat10_mod_cmap(first_color_transparent=False)
+        self.colormap = cat10_mod_cmap_first_transparent
 
         # Add selection tools layout to main layout below matplotlib toolbar and above canvas
         self.layout().insertLayout(1, self.selection_tools_layout)
