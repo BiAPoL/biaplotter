@@ -72,13 +72,15 @@ class CanvasWidget(BaseNapariMPLWidget):
     Notes
     -----
 
+    Signals:
+
+        * **artist_changed_signal** emitted when the current artist changes.
+
     Signals and Slots:
 
-    This class emits the **`artist_changed_signal`** signal when the current artist changes.
+        This class automatically connects the following signals to slots:
 
-    This class automatically connects the **`data_changed_signal`** signal from each artist to the **`update_data`** slot in each selector.
-    This allows artists to notify selectors when the data changes. Selectors can then synchronize their data with the artist's data.
-
+        * **data_changed_signal** from each artist to the **update_data** slot in each selector. This allows artists to notify selectors when the data changes. Selectors can then synchronize their data with the artist's data.  
     """
 
     # Amount of available input layers
@@ -214,7 +216,7 @@ class CanvasWidget(BaseNapariMPLWidget):
     @property
     def active_artist(self):
         """Sets or returns the active artist.
-        
+
         If set, makes the selected artist visible and all other artists invisible.
 
         Returns

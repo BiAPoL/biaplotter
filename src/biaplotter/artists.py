@@ -6,35 +6,35 @@ from matplotlib.collections import QuadMesh
 from abc import ABC, abstractmethod
 from nap_plot_tools.cmap import cat10_mod_cmap, cat10_mod_cmap_first_transparent
 from psygnal import Signal
-from typing import Tuple
+from typing import Tuple, List
 
 
 class Artist(ABC):
-    """Abstract base class for artists in the BIAPlotter.
+    """Abstract base class for artists in the BiAPlotter.
 
     Parameters
-        ----------
-        ax : plt.Axes, optional
-            axes to plot on, by default None
-        data : (N, 2) np.ndarray
-            data to be plotted
-        colormap : Colormap, optional
-            a colormap to use for the artist, by default cat10_mod_cmap from nap_plot_tools
-        color_indices : (N,) np.ndarray, optional
-            array of indices to map to the colormap, by default None
+    ----------
+    ax : plt.Axes, optional
+        axes to plot on, by default None
+    data : (N, 2) np.ndarray
+        data to be plotted
+    colormap : Colormap, optional
+        a colormap to use for the artist, by default cat10_mod_cmap from nap-plot-tools
+    color_indices : (N,) np.ndarray, optional
+        array of indices to map to the colormap, by default None
 
     Attributes
     ----------
-    _data : (N, 2) np.ndarray
-        stores data to be plotted
     _ax : plt.Axes
         stores axes to plot on
-    _visible : bool
-        stores visibility of the artist
-    _colormap : Colormap
-        stores the colormap to use for the artist
     _color_indices : (N,) np.ndarray
         stores the array of indices to map to the colormap
+    _colormap : Colormap
+        stores the colormap to use for the artist
+    _data : (N, 2) np.ndarray
+        stores data to be plotted
+    _visible : bool
+        stores visibility of the artist
 
     """
 
@@ -103,7 +103,7 @@ class Scatter(Artist):
     data : (N, 2) np.ndarray
         data to be plotted
     colormap : Colormap, optional
-        a colormap to use for the artist, by default cat10_mod_cmap from nap_plot_tools
+        a colormap to use for the artist, by default cat10_mod_cmap from nap-plot-tools
     color_indices : (N,) np.ndarray[int] or int, optional
         array of indices to map to the colormap, by default None
 
@@ -114,9 +114,9 @@ class Scatter(Artist):
 
     Notes
     -----
-    Signals and Slots:
+    **Signals:**
 
-    This class emits the **`data_changed_signal`** signal when data changes.
+        * **data_changed_signal** emitted when the data is changed.
 
     Examples
     --------
@@ -251,7 +251,7 @@ class Histogram2D(Artist):
     data : (N, 2) np.ndarray
         data to be plotted
     colormap : Colormap, optional
-        a colormap to use for the artist overlay, by default cat10_mod_cmap_first_transparent from nap_plot_tools (first color is transparent)
+        a colormap to use for the artist overlay, by default cat10_mod_cmap_first_transparent from nap-plot-tools (first color is transparent)
     color_indices : (N,) np.ndarray[int] or int, optional
         array of indices to map to the colormap, by default None
     bins : int, optional
@@ -261,10 +261,10 @@ class Histogram2D(Artist):
 
     Other Parameters
     ----------------
-    _histogram : Tuple[np.ndarray, np.ndarray, np.ndarray, QuadMesh]
-        stores the 2D histogram matplotlib object
     _bins : int
         stores the number of bins for the histogram
+    _histogram : Tuple[np.ndarray, np.ndarray, np.ndarray, QuadMesh]
+        stores the 2D histogram matplotlib object
     _histogram_colormap : Colormap
         stores the colormap for the histogram
     _overlay : AxesImage
@@ -272,12 +272,10 @@ class Histogram2D(Artist):
 
     Notes
     -----
-    The Histogram2D class emits a **`data_changed_signal`** when the data is changed.
+    **Signals:**
 
-    Signals
-    -------
-    data_changed_signal : Signal
-        emitted when the data is changed
+        * **data_changed_signal** emitted when the data is changed.
+
     """
 
     data_changed_signal = Signal(np.ndarray)
@@ -447,19 +445,19 @@ class Histogram2D(Artist):
         """
         return self._histogram
 
-    def indices_in_above_threshold_patches(self, threshold: int) -> np.ndarray:
+    def indices_in_above_threshold_patches(self, threshold: int) -> List[int]:
         """
         Returns the indices of the points in that fall into the bins
         of the 2D histogram exceeding a specified threshold.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         threshold : int
             The count threshold to exceed.
 
-        Returns:
-        --------
-        indices : list
+        Returns
+        -------
+        indices : List[int]
             list of indices of points falling into the exceeding bins.
         """
         counts, xedges, yedges, _ = self._histogram
