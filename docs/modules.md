@@ -1,5 +1,5 @@
 # Modules
 
-- [plotter](plotter_api.md)
-- [artists](artists_api.md)
-- [selectors](selectors_api.md)
+- [Plotter](plotter_api.md)
+- [Artists](artists_api.md)
+- [Selectors](selectors_api.md)
