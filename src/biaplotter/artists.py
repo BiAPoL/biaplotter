@@ -176,11 +176,17 @@ class Scatter(Artist):
         else:
             # If the scatter plot already exists, just update its data
             self._scatter.set_offsets(value)
+        
         if self._color_indices is None:
             self.color_indices = 0  # Set default color index
         else:
-            # Update colors if color indices are set
-            self.color_indices = self._color_indices
+            # Update colors if color indices are set, resize if data shape has changed
+            color_indices_size = len(self._color_indices)
+            color_indices = np.resize(self._color_indices, self._data.shape[0])
+            if len(color_indices) > color_indices_size:
+                # fill with zeros where new data is larger
+                color_indices[color_indices_size:] = 0
+            self.color_indices = color_indices
         self.draw()
 
     @property
@@ -328,7 +334,13 @@ class Histogram2D(Artist):
         if self._color_indices is None:
             self.color_indices = 0  # Set default color index
         else:
-            self.color_indices = self._color_indices
+            # Update colors if color indices are set, resize if data shape has changed
+            color_indices_size = len(self._color_indices)
+            color_indices = np.resize(self._color_indices, self._data.shape[0])
+            if len(color_indices) > color_indices_size:
+                # fill with zeros where new data is larger
+                color_indices[color_indices_size:] = 0
+            self.color_indices = color_indices
         self.draw()
 
     @property
