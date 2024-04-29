@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 from enum import Enum, auto
-from nap_plot_tools import CustomToolbarWidget, QtColorSpinBox, cat10_mod_cmap_first_transparent
+from nap_plot_tools import CustomToolbarWidget, QtColorSpinBox
 from napari.layers import Labels, Points, Tracks
 from napari_matplotlib.base import BaseNapariMPLWidget
 from napari_matplotlib.util import Interval
@@ -60,8 +60,6 @@ class CanvasWidget(BaseNapariMPLWidget):
         The selection toolbar.
     class_spinbox : QtColorSpinBox
         The color class spinbox.
-    colormap : matplotlib.colors.ListedColormap
-        The colormap to use for the color class spinbox.
     artists : dict
         Dictionary of artists.
     selectors : dict
@@ -125,17 +123,13 @@ class CanvasWidget(BaseNapariMPLWidget):
             callback=self.on_enable_selector,
         )
 
-        # Set selection class colormap
-        self.colormap = cat10_mod_cmap_first_transparent
-
         # Add selection tools layout to main layout below matplotlib toolbar and above canvas
         self.layout().insertLayout(1, self.selection_tools_layout)
 
         # Create artists
         self._active_artist = None
         self.artists = {}
-        self.add_artist(ArtistType.SCATTER, Scatter(
-            ax=self.axes, colormap=self.colormap))
+        self.add_artist(ArtistType.SCATTER, Scatter(ax=self.axes))
         self.add_artist(ArtistType.HISTOGRAM2D, Histogram2D(ax=self.axes))
         # Set histogram2d as the default artist
         self.active_artist = self.artists[ArtistType.HISTOGRAM2D]
