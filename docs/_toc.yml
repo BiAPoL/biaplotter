@@ -6,16 +6,12 @@ root: intro
 parts:
 - caption: Examples
   chapters:
-  - file: examples_intro
-    sections:
-    - file: examples/scatter_artist_example
-    - file: examples/histogram_artist_example
-    - file: examples/canvas_widget_example
+  - file: examples/scatter_artist_example
+  - file: examples/histogram_artist_example
+  - file: examples/canvas_widget_example
 - caption: API Reference
   chapters:
-  - file: modules
-    sections:
-    - file: plotter_api
-    - file: artists_api
-    - file: selectors_api
+  - file: plotter_api
+  - file: artists_api
+  - file: selectors_api
 
