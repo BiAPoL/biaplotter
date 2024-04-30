@@ -82,3 +82,6 @@ target/
 # PyBuilder
 .idea
 venv/
+
+# videos
+*.mp4
