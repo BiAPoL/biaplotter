@@ -2,7 +2,8 @@
 
 # BiaPlotter
 
-Here you find documentation for the BiaPlotter.
+Here you find documentation for the BiaPlotter, an interactive plotting canvas for selecting data from 2D plots integrated to [napari](https://napari.org/stable/).
+This package is not intended to be a napari plugin by itself, but it is intended to be derived by other napari plugins that need to select data from 2D plots.
 
 ## Table of Contents
 
