@@ -5,4 +5,4 @@ sphinx-inline-tabs
 sphinx-examples
 sphinx-proof
 sphinx-hoverxref
-pyqt5
+napari
