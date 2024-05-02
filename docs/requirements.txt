@@ -6,3 +6,4 @@ sphinx-examples
 sphinx-proof
 sphinx-hoverxref
 napari
+PyQt5
