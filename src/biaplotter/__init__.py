@@ -4,5 +4,5 @@ from .artists import Scatter, Histogram2D
 from .selectors import InteractiveRectangleSelector, InteractiveEllipseSelector, InteractiveLassoSelector
 
 __all__ = (
-    "CanvasWidget",
+    "CanvasWidget", "Scatter", "Histogram2D", "InteractiveRectangleSelector", "InteractiveEllipseSelector", "InteractiveLassoSelector"
 )

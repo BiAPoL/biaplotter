@@ -48,25 +48,6 @@ class CanvasWidget(BaseNapariMPLWidget):
     label_text : str, optional
         The text to display next to the class spinbox, by default "Class:".
 
-    Attributes
-    ----------
-    n_layers_input : Interval
-        Amount of available input layers.
-    input_layer_types : tuple
-        All layers that have a .features attributes.
-    selection_tools_layout : QHBoxLayout
-        The selection tools layout.
-    selection_toolbar : CustomToolbarWidget
-        The selection toolbar.
-    class_spinbox : QtColorSpinBox
-        The color class spinbox.
-    artists : dict
-        Dictionary of artists.
-    selectors : dict
-        Dictionary of selectors.
-    _active_artist : Union[Scatter, Histogram2D]
-        Stores the active artist.
-
     Notes
     -----
 
@@ -81,20 +62,21 @@ class CanvasWidget(BaseNapariMPLWidget):
         * **data_changed_signal** from each artist to the **update_data** slot in each selector. This allows artists to notify selectors when the data changes. Selectors can then synchronize their data with the artist's data.  
     """
 
-    # Amount of available input layers
-    n_layers_input = Interval(1, None)
-    # All layers that have a .features attributes
-    input_layer_types = (Labels, Points, Tracks)
-    # # Signal emitted when the current artist changes
-    artist_changed_signal = Signal(ArtistType)
+    #: Signal emitted when the current artist changes
+    _artist_changed_signal: Signal = Signal(ArtistType)
 
     def __init__(self, napari_viewer: "napari.viewer.Viewer", parent: Optional[QWidget] = None, label_text: str = "Class:"):
         super().__init__(napari_viewer, parent=parent)
         self.add_single_axes()
         # Add selection tools layout below canvas
-        self.selection_tools_layout = self._build_selection_toolbar_layout(
+        selection_tools_layout, selection_toolbar, class_spinbox = self._build_selection_toolbar_layout(
             label_text=label_text)
-        print(icon_folder_path)
+        #: The selection tools layout.
+        self.selection_tools_layout: QHBoxLayout = selection_tools_layout
+        #: The selection toolbar.
+        self.selection_toolbar: CustomToolbarWidget = selection_toolbar
+        #: The color class spinbox.
+        self.class_spinbox: QtColorSpinBox = class_spinbox
         # Add button to selection_toolbar
         self.selection_toolbar.add_custom_button(
             name=SelectorType.LASSO.name,
@@ -127,15 +109,18 @@ class CanvasWidget(BaseNapariMPLWidget):
         self.layout().insertLayout(1, self.selection_tools_layout)
 
         # Create artists
-        self._active_artist = None
-        self.artists = {}
+        #: Stores the active artist.
+        self._active_artist: Scatter | Histogram2D = None
+        #: Dictionary of artists.
+        self.artists: dict = {}
         self.add_artist(ArtistType.SCATTER, Scatter(ax=self.axes))
         self.add_artist(ArtistType.HISTOGRAM2D, Histogram2D(ax=self.axes))
         # Set histogram2d as the default artist
         self.active_artist = self.artists[ArtistType.HISTOGRAM2D]
 
         # Create selectors
-        self.selectors = {}
+        #: Dictionary of selectors.
+        self.selectors: dict = {}
         self.add_selector(SelectorType.LASSO, InteractiveLassoSelector(
             ax=self.axes, canvas_widget=self))
         self.add_selector(SelectorType.ELLIPSE, InteractiveEllipseSelector(
@@ -160,21 +145,26 @@ class CanvasWidget(BaseNapariMPLWidget):
 
         Returns
         -------
-        QHBoxLayout
-            The selection toolbar layout.
+        selection_tools_layout : QHBoxLayout
+            The selection tools layout.
+        selection_toolbar : CustomToolbarWidget
+            The toolbar widget
+        class_spinbox : QtColorSpinBox
+            The color class spinbox.
         """
         # Add selection tools layout below canvas
         selection_tools_layout = QHBoxLayout()
         # Add selection toolbar
-        self.selection_toolbar = CustomToolbarWidget(self)
+        selection_toolbar = CustomToolbarWidget(self)
         selection_tools_layout.addWidget(self.selection_toolbar)
         # Add class spinbox
         selection_tools_layout.addWidget(QLabel(label_text))
-        self.class_spinbox = QtColorSpinBox(first_color_transparent=False)
+        # Add color class spinbox
+        class_spinbox = QtColorSpinBox(first_color_transparent=False)
         selection_tools_layout.addWidget(self.class_spinbox)
         # Add stretch to the right to push buttons to the left
         selection_tools_layout.addStretch(1)
-        return selection_tools_layout
+        return selection_tools_layout, selection_toolbar, class_spinbox
 
     def on_enable_selector(self, checked: bool):
         """Enables or disables the selected selector.
@@ -208,6 +198,17 @@ class CanvasWidget(BaseNapariMPLWidget):
                     selector.remove()
 
     @property
+    def artist_changed_signal(self):
+        """Signal emitted when the current artist changes.
+
+        Returns
+        -------
+        Signal
+            The artist changed signal.
+        """
+        return self._artist_changed_signal
+
+    @property
     def active_artist(self):
         """Sets or returns the active artist.
 
@@ -215,7 +216,7 @@ class CanvasWidget(BaseNapariMPLWidget):
 
         Returns
         -------
-        Union[Scatter, Histogram2D]
+        Scatter or Histogram2D
             The active artist.
 
         Notes
@@ -226,7 +227,7 @@ class CanvasWidget(BaseNapariMPLWidget):
         return self._active_artist
 
     @active_artist.setter
-    def active_artist(self, value: Union[Scatter, Histogram2D]):
+    def active_artist(self, value: Scatter | Histogram2D):
         """Sets the active artist.
         """
         self._active_artist = value
@@ -242,7 +243,7 @@ class CanvasWidget(BaseNapariMPLWidget):
         # Emit signal to notify that the current artist has changed
         self.artist_changed_signal.emit(active_artist_type)
 
-    def add_artist(self, artist_type: ArtistType, artist_instance: Union[Scatter, Histogram2D], visible: bool = False):
+    def add_artist(self, artist_type: ArtistType, artist_instance: Scatter | Histogram2D, visible: bool = False):
         """
         Adds a new artist instance to the artists dictionary.
 
@@ -250,7 +251,7 @@ class CanvasWidget(BaseNapariMPLWidget):
         ----------
         artist_type : ArtistType
             The type of the artist, defined by the ArtistType enum.
-        artist_instance : Union[Scatter, Histogram2D]
+        artist_instance : Scatter or Histogram2D
             An instance of the artist class.
         """
         if artist_type in self.artists:
@@ -258,7 +259,7 @@ class CanvasWidget(BaseNapariMPLWidget):
         self.artists[artist_type] = artist_instance
         artist_instance.visible = visible
 
-    def add_selector(self, selector_type: SelectorType, selector_instance: Union[InteractiveRectangleSelector, InteractiveEllipseSelector, InteractiveLassoSelector]):
+    def add_selector(self, selector_type: SelectorType, selector_instance: InteractiveRectangleSelector | InteractiveEllipseSelector | InteractiveLassoSelector):
         """
         Adds a new selector instance to the selectors dictionary.
 
@@ -266,7 +267,7 @@ class CanvasWidget(BaseNapariMPLWidget):
         ----------
         selector_type : SelectorType
             The type of the selector, defined by the SelectorType enum.
-        selector_instance : Union[InteractiveRectangleSelector, InteractiveEllipseSelector, InteractiveLassoSelector]
+        selector_instance : InteractiveRectangleSelector or InteractiveEllipseSelector or InteractiveLassoSelector
             An instance of the selector class.
         """
         if selector_type in self.selectors:
