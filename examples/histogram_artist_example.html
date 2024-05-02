@@ -2,11 +2,11 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Histogram2D Artist &#8212; BiaPlotter</title>
   
@@ -18,18 +18,18 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -45,19 +45,21 @@
     <link rel="stylesheet" type="text/css" href="../_static/css/tooltipster-sideTip-light.min.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/tooltipster-sideTip-borderless.min.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/micromodal.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css?v=6ad1a40c" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
-  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=2b91c5f0"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
     <script src="../_static/tabs.js?v=3ee01567"></script>
     <script src="../_static/js/hoverxref.js"></script>
     <script src="../_static/js/tooltipster.bundle.min.js"></script>
@@ -66,16 +68,12 @@
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
-    <script src="../_static/jquery.js?v=5d32c60e"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/design-tabs.js?v=36754332"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
-    <script async="async" src="../_static/sphinx-thebe.js?v=afe5de03"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>window.MathJax = {"tex": {"macros": {"N": "\\mathbb{N}", "floor": ["\\lfloor#1\\rfloor", 1], "bmat": ["\\left[\\begin{array}"], "emat": ["\\end{array}\\right]"]}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'examples/histogram_artist_example';</script>
@@ -92,10 +90,9 @@ const thebe_selector_output = ".output, .cell_output"
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
   
   <div id="pst-scroll-pixel-helper"></div>
-
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>
@@ -136,11 +133,14 @@ const thebe_selector_output = ".output, .cell_output"
 </form></div>
   </div>
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -174,7 +174,18 @@ const thebe_selector_output = ".output, .cell_output"
   
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
@@ -405,10 +416,10 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="histogram2d-artist">
-<h1>Histogram2D Artist<a class="headerlink" href="#histogram2d-artist" title="Permalink to this heading">#</a></h1>
+<h1>Histogram2D Artist<a class="headerlink" href="#histogram2d-artist" title="Link to this heading">#</a></h1>
 <p>In this example notebook, we show how to create a histogram 2D plot using the <code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code> class. The <code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code> class is a subclass of the <code class="docutils literal notranslate"><span class="pre">Artist</span></code> class.</p>
 <p>It has a simplified interface for creating histogram 2D plots and updating some of its properties, like assigning different classes to underlying points and displaying bins/patches with different colors based on a categorical colormap.</p>
 <p>It can be imported like shown below:</p>
@@ -431,31 +442,31 @@ document.write(`
 <span class="ne">----&gt; </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">biaplotter.artists</span> <span class="kn">import</span> <span class="n">Histogram2D</span>
 <span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
-<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.8.18</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">biaplotter</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">2</span>
+<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.9.19</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.9</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">biaplotter</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">2</span>
 <span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.0.1&quot;</span>
 <span class="ne">----&gt; </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">.plotter</span> <span class="kn">import</span> <span class="n">CanvasWidget</span>
 <span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">.artists</span> <span class="kn">import</span> <span class="n">Scatter</span><span class="p">,</span> <span class="n">Histogram2D</span>
 <span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="kn">from</span> <span class="nn">.selectors</span> <span class="kn">import</span> <span class="n">InteractiveRectangleSelector</span><span class="p">,</span> <span class="n">InteractiveEllipseSelector</span><span class="p">,</span> <span class="n">InteractiveLassoSelector</span>
 
-<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.8.18</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">biaplotter</span><span class="o">/</span><span class="n">plotter</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">5</span>
+<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.9.19</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.9</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">biaplotter</span><span class="o">/</span><span class="n">plotter</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">5</span>
 <span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
 <span class="ne">----&gt; </span><span class="mi">5</span> <span class="kn">from</span> <span class="nn">nap_plot_tools</span> <span class="kn">import</span> <span class="n">CustomToolbarWidget</span><span class="p">,</span> <span class="n">QtColorSpinBox</span>
 <span class="g g-Whitespace">      </span><span class="mi">6</span> <span class="kn">from</span> <span class="nn">napari.layers</span> <span class="kn">import</span> <span class="n">Labels</span><span class="p">,</span> <span class="n">Points</span><span class="p">,</span> <span class="n">Tracks</span>
 <span class="g g-Whitespace">      </span><span class="mi">7</span> <span class="kn">from</span> <span class="nn">napari_matplotlib.base</span> <span class="kn">import</span> <span class="n">BaseNapariMPLWidget</span>
 
-<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.8.18</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">nap_plot_tools</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">3</span>
+<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.9.19</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.9</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">nap_plot_tools</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">3</span>
 <span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.1.0&quot;</span>
 <span class="ne">----&gt; </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">.tools</span> <span class="kn">import</span> <span class="n">QtColorSpinBox</span><span class="p">,</span> <span class="n">CustomToolbarWidget</span>
 <span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="kn">from</span> <span class="nn">.cmap</span> <span class="kn">import</span> <span class="n">cat10_mod_cmap</span><span class="p">,</span> <span class="n">cat10_mod_cmap_first_transparent</span><span class="p">,</span> <span class="n">make_cat10_mod_cmap</span><span class="p">,</span> <span class="n">get_custom_cat10based_cmap_list</span> <span class="c1"># get_custom_cat10based_cmap_list is deprecated</span>
 
-<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.8.18</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">nap_plot_tools</span><span class="o">/</span><span class="n">tools</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">2</span>
+<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.9.19</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.9</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">nap_plot_tools</span><span class="o">/</span><span class="n">tools</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">2</span>
 <span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">nap_plot_tools.cmap</span> <span class="kn">import</span> <span class="n">make_cat10_mod_cmap</span>
 <span class="ne">----&gt; </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">qtpy.QtCore</span> <span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QSize</span><span class="p">,</span> <span class="n">QRect</span><span class="p">,</span> <span class="n">Signal</span>
 <span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">qtpy.QtGui</span> <span class="kn">import</span> <span class="n">QColor</span><span class="p">,</span> <span class="n">QPainter</span><span class="p">,</span> <span class="n">QPixmap</span>
 <span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="kn">from</span> <span class="nn">qtpy.QtWidgets</span> <span class="kn">import</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QToolButton</span><span class="p">,</span> <span class="n">QToolBar</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QSizePolicy</span>
 
-<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.8.18</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">qtpy</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">287</span>
+<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.9.19</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.9</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">qtpy</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">287</span>
 <span class="g g-Whitespace">    </span><span class="mi">284</span>     <span class="n">QT6</span> <span class="o">=</span> <span class="n">PYSIDE6</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="g g-Whitespace">    </span><span class="mi">286</span> <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
 <span class="ne">--&gt; </span><span class="mi">287</span>     <span class="k">raise</span> <span class="n">QtBindingsNotFoundError</span> <span class="kn">from</span> <span class="kc">None</span>
@@ -468,7 +479,7 @@ document.write(`
 </div>
 </div>
 <section id="creating-a-histogram-2d-plot">
-<h2>Creating a Histogram 2D Plot<a class="headerlink" href="#creating-a-histogram-2d-plot" title="Permalink to this heading">#</a></h2>
+<h2>Creating a Histogram 2D Plot<a class="headerlink" href="#creating-a-histogram-2d-plot" title="Link to this heading">#</a></h2>
 <p>To create an empty histogram 2D plot, just instanciate the <code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code> class and provide an axes object as an argument.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -483,7 +494,7 @@ document.write(`
 </div>
 </section>
 <section id="adding-data-to-the-histogram-2d-artist">
-<h2>Adding Data to the Histogram 2D Artist<a class="headerlink" href="#adding-data-to-the-histogram-2d-artist" title="Permalink to this heading">#</a></h2>
+<h2>Adding Data to the Histogram 2D Artist<a class="headerlink" href="#adding-data-to-the-histogram-2d-artist" title="Link to this heading">#</a></h2>
 <p>To add data to the histogram 2D plot, just feed the property <code class="docutils literal notranslate"><span class="pre">data</span></code> with a (N, 2) shaped numpy array. The plot gets updated automatically every time one of its properties is changed.</p>
 <p>Below, we have a small function to generate 2 gaussian distributions with different means and standard deviations.</p>
 <div class="cell docutils container">
@@ -514,7 +525,7 @@ document.write(`
 </div>
 </section>
 <section id="assigning-classes-to-data-points">
-<h2>Assigning Classes to Data Points<a class="headerlink" href="#assigning-classes-to-data-points" title="Permalink to this heading">#</a></h2>
+<h2>Assigning Classes to Data Points<a class="headerlink" href="#assigning-classes-to-data-points" title="Link to this heading">#</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code> artist comes with a custom categorical colormap, which can be used to assign different classes to underlying points and display the bins/patches with the corresponding class color as an overlay.</p>
 <p>You can access the histogram current categorical colormap via its private <code class="docutils literal notranslate"><span class="pre">_colormap</span></code> attribute.</p>
 <div class="cell docutils container">
@@ -611,7 +622,7 @@ document.write(`
 </div>
 </section>
 <section id="changing-histogram-colormap">
-<h2>Changing Histogram Colormap<a class="headerlink" href="#changing-histogram-colormap" title="Permalink to this heading">#</a></h2>
+<h2>Changing Histogram Colormap<a class="headerlink" href="#changing-histogram-colormap" title="Link to this heading">#</a></h2>
 <p>You can change the histogram colormap by setting the <code class="docutils literal notranslate"><span class="pre">histogram_colormap</span></code> attribute. Below, we show the default histogram colormap, which is <code class="docutils literal notranslate"><span class="pre">magma</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -645,7 +656,7 @@ document.write(`
 </div>
 </section>
 <section id="changing-histogram-bins">
-<h2>Changing Histogram Bins<a class="headerlink" href="#changing-histogram-bins" title="Permalink to this heading">#</a></h2>
+<h2>Changing Histogram Bins<a class="headerlink" href="#changing-histogram-bins" title="Link to this heading">#</a></h2>
 <p>You can set the number of bins in the histogram by setting the <code class="docutils literal notranslate"><span class="pre">bins</span></code> attribute. The default number of bins is 20.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -660,7 +671,7 @@ document.write(`
 </div>
 </section>
 <section id="histogram-visibility">
-<h2>Histogram Visibility<a class="headerlink" href="#histogram-visibility" title="Permalink to this heading">#</a></h2>
+<h2>Histogram Visibility<a class="headerlink" href="#histogram-visibility" title="Link to this heading">#</a></h2>
 <p>Optionally, hide/show the artist by setting the <code class="docutils literal notranslate"><span class="pre">visible</span></code> attribute.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -744,6 +755,7 @@ document.write(`
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> Contents
@@ -780,7 +792,7 @@ By Marcelo Leomil Zoccoler
 
   <p class="copyright">
     
-      © Copyright 2022.
+      © Copyright 2023.
       <br/>
     
   </p>
@@ -804,8 +816,8 @@ By Marcelo Leomil Zoccoler
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
   <footer class="bd-footer">
   </footer>
