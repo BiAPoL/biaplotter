@@ -1,0 +1,813 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Histogram2D Artist &#8212; BiaPlotter</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=4c969af8" />
+    <link rel="stylesheet" type="text/css" href="../_static/proof.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-examples.css?v=e236af4b" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/tooltipster.custom.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/tooltipster.bundle.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/tooltipster-sideTip-shadow.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/tooltipster-sideTip-punk.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/tooltipster-sideTip-noir.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/tooltipster-sideTip-light.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/tooltipster-sideTip-borderless.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/micromodal.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css?v=6ad1a40c" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=2b91c5f0"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../_static/tabs.js?v=3ee01567"></script>
+    <script src="../_static/js/hoverxref.js"></script>
+    <script src="../_static/js/tooltipster.bundle.min.js"></script>
+    <script src="../_static/js/micromodal.min.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=afe5de03"></script>
+    <script>window.MathJax = {"tex": {"macros": {"N": "\\mathbb{N}", "floor": ["\\lfloor#1\\rfloor", 1], "bmat": ["\\left[\\begin{array}"], "emat": ["\\end{array}\\right]"]}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/histogram_artist_example';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Canvas Widget" href="canvas_widget_example.html" />
+    <link rel="prev" title="Scatter Artist" href="scatter_artist_example.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="BiaPlotter - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="BiaPlotter - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    BiaPlotter
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="scatter_artist_example.html">Scatter Artist</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Histogram2D Artist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_widget_example.html">Canvas Widget</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../plotter_api.html">Plotter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../artists_api.html">Artists</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selectors_api.html">Selectors</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/BiAPoL/biaplotter" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/BiAPoL/biaplotter/issues/new?title=Issue%20on%20page%20%2Fexamples/histogram_artist_example.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/examples/histogram_artist_example.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Histogram2D Artist</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-histogram-2d-plot">Creating a Histogram 2D Plot</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-data-to-the-histogram-2d-artist">Adding Data to the Histogram 2D Artist</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assigning-classes-to-data-points">Assigning Classes to Data Points</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#changing-histogram-colormap">Changing Histogram Colormap</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#changing-histogram-bins">Changing Histogram Bins</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#histogram-visibility">Histogram Visibility</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="histogram2d-artist">
+<h1>Histogram2D Artist<a class="headerlink" href="#histogram2d-artist" title="Permalink to this heading">#</a></h1>
+<p>In this example notebook, we show how to create a histogram 2D plot using the <code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code> class. The <code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code> class is a subclass of the <code class="docutils literal notranslate"><span class="pre">Artist</span></code> class.</p>
+<p>It has a simplified interface for creating histogram 2D plots and updating some of its properties, like assigning different classes to underlying points and displaying bins/patches with different colors based on a categorical colormap.</p>
+<p>It can be imported like shown below:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">biaplotter.artists</span> <span class="kn">import</span> <span class="n">Histogram2D</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">QtBindingsNotFoundError</span><span class="g g-Whitespace">                   </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">3</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="ne">----&gt; </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">biaplotter.artists</span> <span class="kn">import</span> <span class="n">Histogram2D</span>
+<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.8.18</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">biaplotter</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">2</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.0.1&quot;</span>
+<span class="ne">----&gt; </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">.plotter</span> <span class="kn">import</span> <span class="n">CanvasWidget</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">.artists</span> <span class="kn">import</span> <span class="n">Scatter</span><span class="p">,</span> <span class="n">Histogram2D</span>
+<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="kn">from</span> <span class="nn">.selectors</span> <span class="kn">import</span> <span class="n">InteractiveRectangleSelector</span><span class="p">,</span> <span class="n">InteractiveEllipseSelector</span><span class="p">,</span> <span class="n">InteractiveLassoSelector</span>
+
+<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.8.18</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">biaplotter</span><span class="o">/</span><span class="n">plotter</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">5</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
+<span class="ne">----&gt; </span><span class="mi">5</span> <span class="kn">from</span> <span class="nn">nap_plot_tools</span> <span class="kn">import</span> <span class="n">CustomToolbarWidget</span><span class="p">,</span> <span class="n">QtColorSpinBox</span>
+<span class="g g-Whitespace">      </span><span class="mi">6</span> <span class="kn">from</span> <span class="nn">napari.layers</span> <span class="kn">import</span> <span class="n">Labels</span><span class="p">,</span> <span class="n">Points</span><span class="p">,</span> <span class="n">Tracks</span>
+<span class="g g-Whitespace">      </span><span class="mi">7</span> <span class="kn">from</span> <span class="nn">napari_matplotlib.base</span> <span class="kn">import</span> <span class="n">BaseNapariMPLWidget</span>
+
+<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.8.18</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">nap_plot_tools</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">3</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.1.0&quot;</span>
+<span class="ne">----&gt; </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">.tools</span> <span class="kn">import</span> <span class="n">QtColorSpinBox</span><span class="p">,</span> <span class="n">CustomToolbarWidget</span>
+<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="kn">from</span> <span class="nn">.cmap</span> <span class="kn">import</span> <span class="n">cat10_mod_cmap</span><span class="p">,</span> <span class="n">cat10_mod_cmap_first_transparent</span><span class="p">,</span> <span class="n">make_cat10_mod_cmap</span><span class="p">,</span> <span class="n">get_custom_cat10based_cmap_list</span> <span class="c1"># get_custom_cat10based_cmap_list is deprecated</span>
+
+<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.8.18</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">nap_plot_tools</span><span class="o">/</span><span class="n">tools</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">2</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">nap_plot_tools.cmap</span> <span class="kn">import</span> <span class="n">make_cat10_mod_cmap</span>
+<span class="ne">----&gt; </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">qtpy.QtCore</span> <span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QSize</span><span class="p">,</span> <span class="n">QRect</span><span class="p">,</span> <span class="n">Signal</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">qtpy.QtGui</span> <span class="kn">import</span> <span class="n">QColor</span><span class="p">,</span> <span class="n">QPainter</span><span class="p">,</span> <span class="n">QPixmap</span>
+<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="kn">from</span> <span class="nn">qtpy.QtWidgets</span> <span class="kn">import</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QToolButton</span><span class="p">,</span> <span class="n">QToolBar</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QSizePolicy</span>
+
+<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.8.18</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">qtpy</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">287</span>
+<span class="g g-Whitespace">    </span><span class="mi">284</span>     <span class="n">QT6</span> <span class="o">=</span> <span class="n">PYSIDE6</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="g g-Whitespace">    </span><span class="mi">286</span> <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">287</span>     <span class="k">raise</span> <span class="n">QtBindingsNotFoundError</span> <span class="kn">from</span> <span class="kc">None</span>
+<span class="g g-Whitespace">    </span><span class="mi">288</span> <span class="k">else</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">289</span>     <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">QT_API</span><span class="p">]</span> <span class="o">=</span> <span class="n">API</span>
+
+<span class="ne">QtBindingsNotFoundError</span>: No Qt bindings could be found
+</pre></div>
+</div>
+</div>
+</div>
+<section id="creating-a-histogram-2d-plot">
+<h2>Creating a Histogram 2D Plot<a class="headerlink" href="#creating-a-histogram-2d-plot" title="Permalink to this heading">#</a></h2>
+<p>To create an empty histogram 2D plot, just instanciate the <code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code> class and provide an axes object as an argument.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">histogram</span> <span class="o">=</span> <span class="n">Histogram2D</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/ed677fe7b0f5f38d48caa0ab8c4daf4732bb40f161b78a8109858b641c89bf0d.png" src="../_images/ed677fe7b0f5f38d48caa0ab8c4daf4732bb40f161b78a8109858b641c89bf0d.png" />
+</div>
+</div>
+</section>
+<section id="adding-data-to-the-histogram-2d-artist">
+<h2>Adding Data to the Histogram 2D Artist<a class="headerlink" href="#adding-data-to-the-histogram-2d-artist" title="Permalink to this heading">#</a></h2>
+<p>To add data to the histogram 2D plot, just feed the property <code class="docutils literal notranslate"><span class="pre">data</span></code> with a (N, 2) shaped numpy array. The plot gets updated automatically every time one of its properties is changed.</p>
+<p>Below, we have a small function to generate 2 gaussian distributions with different means and standard deviations.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_samples</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="k">def</span> <span class="nf">generate_gaussian_data</span><span class="p">(</span><span class="n">n_samples</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a 2D dataset with two Gaussian clusters.&quot;&quot;&quot;</span>
+    <span class="c1"># Gaussian 1</span>
+    <span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">y1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span>
+    <span class="c1"># Gaussian 2</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">y2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">x_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">])</span>
+    <span class="n">y_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">generate_gaussian_data</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span>
+<span class="n">histogram</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+<span class="n">fig</span> <span class="c1"># show the updated figure</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/f5839e781f537f8c0d0d062eae9ba7679663f51668a3839db350077607c03f8c.png" src="../_images/f5839e781f537f8c0d0d062eae9ba7679663f51668a3839db350077607c03f8c.png" />
+</div>
+</div>
+</section>
+<section id="assigning-classes-to-data-points">
+<h2>Assigning Classes to Data Points<a class="headerlink" href="#assigning-classes-to-data-points" title="Permalink to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code> artist comes with a custom categorical colormap, which can be used to assign different classes to underlying points and display the bins/patches with the corresponding class color as an overlay.</p>
+<p>You can access the histogram current categorical colormap via its private <code class="docutils literal notranslate"><span class="pre">_colormap</span></code> attribute.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">_colormap</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div style="vertical-align: middle;"><strong>cat10_modified_first_transparent</strong> </div><div class="cmap"><img alt="cat10_modified_first_transparent colormap" title="cat10_modified_first_transparent" style="border: 1px solid #555;" src="data:image/png;base64,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"></div><div style="vertical-align: middle; max-width: 514px; display: flex; justify-content: space-between;"><div style="float: left;"><div title="#e6e6fa00" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #e6e6fa00;"></div> under</div><div style="margin: 0 auto; display: inline-block;">bad <div title="#00000000" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #00000000;"></div></div><div style="float: right;">over <div title="#bcbcbcff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #bcbcbcff;"></div></div></div></div>
+</div>
+<p>To assign classes to underlying points, just feed the property <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> with a (N,) shaped numpy array containing integers. These integers will be used as indices to the colormap.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code> has a convenience method called <code class="docutils literal notranslate"><span class="pre">indices_in_above_threshold_patches</span></code>, which returns an array with the indices of the points that are inside the patches that are above a certain threshold.</p>
+<p>Below, we get the indices of points that fall in patches that are above two thresholds and we color them with the first 2 non-transparent colors (<code class="docutils literal notranslate"><span class="pre">color_indices</span></code> <code class="docutils literal notranslate"><span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">2</span></code>) of the histogram categorical colormap (color index <code class="docutils literal notranslate"><span class="pre">0</span></code> is transparent for the histogram).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">threshold_1</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">threshold_2</span> <span class="o">=</span> <span class="mi">4</span>
+
+<span class="n">indices_in_patches_above_threshold_1</span> <span class="o">=</span> <span class="n">histogram</span><span class="o">.</span><span class="n">indices_in_above_threshold_patches</span><span class="p">(</span><span class="n">threshold_1</span><span class="p">)</span>
+<span class="n">indices_in_patches_above_threshold_2</span> <span class="o">=</span> <span class="n">histogram</span><span class="o">.</span><span class="n">indices_in_above_threshold_patches</span><span class="p">(</span><span class="n">threshold_2</span><span class="p">)</span>
+
+<span class="n">color_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">color_indices</span><span class="p">[</span><span class="n">indices_in_patches_above_threshold_1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">color_indices</span><span class="p">[</span><span class="n">indices_in_patches_above_threshold_2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="n">histogram</span><span class="o">.</span><span class="n">color_indices</span> <span class="o">=</span> <span class="n">color_indices</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/98cd5ad8c79f2b1d7263127c9ab6c93f05bcd753677649cf619447da4dea4dc5.png" src="../_images/98cd5ad8c79f2b1d7263127c9ab6c93f05bcd753677649cf619447da4dea4dc5.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Histogram color_indices:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">histogram</span><span class="o">.</span><span class="n">color_indices</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Histogram color_indices:
+ [0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0
+ 0 0 1 0 1 0 0 0 0 1 1 0 0 0 1 1 0 2 0 0 1 0 0 0 2 1 0 1 2 0 0 0 1 0 0 1 1
+ 1 0 1 1 0 1 0 1 1 1 2 0 0 1 1 1 1 2 0 0 0 0 0 1 1 1]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Colors are kept if new data is added, but they may not make sense anymore.</p>
+<p>For example, below, patches where data was previously colored received more data (with ‘unlabelled’ colors (color index 0)), thus many patches are transparent again (dominant color index is 0).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Adding 400 more samples</span>
+<span class="n">n_samples</span> <span class="o">=</span> <span class="mi">400</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">data</span><span class="p">,</span> <span class="n">generate_gaussian_data</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)])</span>
+
+<span class="n">histogram</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/c15ffb2392c975e10beb52ea8245252659ff4d6ebf4c40045de576517908a9f2.png" src="../_images/c15ffb2392c975e10beb52ea8245252659ff4d6ebf4c40045de576517908a9f2.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Histogram color_indices (up to 100th index):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">histogram</span><span class="o">.</span><span class="n">color_indices</span><span class="p">[:</span><span class="mi">100</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Histogram color_indices (up to 100th index):
+ [0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0
+ 0 0 1 0 1 0 0 0 0 1 1 0 0 0 1 1 0 2 0 0 1 0 0 0 2 1 0 1 2 0 0 0 1 0 0 1 1
+ 1 0 1 1 0 1 0 1 1 1 2 0 0 1 1 1 1 2 0 0 0 0 0 1 1 1]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Set <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> to <code class="docutils literal notranslate"><span class="pre">0</span></code> to reset the colors.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">color_indices</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/50a5cc5d39cd964d68627238e759e30a3ae616b78fac693cbe7e8bc67b847695.png" src="../_images/50a5cc5d39cd964d68627238e759e30a3ae616b78fac693cbe7e8bc67b847695.png" />
+</div>
+</div>
+</section>
+<section id="changing-histogram-colormap">
+<h2>Changing Histogram Colormap<a class="headerlink" href="#changing-histogram-colormap" title="Permalink to this heading">#</a></h2>
+<p>You can change the histogram colormap by setting the <code class="docutils literal notranslate"><span class="pre">histogram_colormap</span></code> attribute. Below, we show the default histogram colormap, which is <code class="docutils literal notranslate"><span class="pre">magma</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">histogram_colormap</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div style="vertical-align: middle;"><strong>magma</strong> </div><div class="cmap"><img alt="magma colormap" title="magma" style="border: 1px solid #555;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAABACAYAAABsv8+/AAAAFHRFWHRUaXRsZQBtYWdtYSBjb2xvcm1hcCO8Z6IAAAAadEVYdERlc2NyaXB0aW9uAG1hZ21hIGNvbG9ybWFw3ePORAAAADB0RVh0QXV0aG9yAE1hdHBsb3RsaWIgdjMuOC40LCBodHRwczovL21hdHBsb3RsaWIub3JnZM6ytAAAADJ0RVh0U29mdHdhcmUATWF0cGxvdGxpYiB2My44LjQsIGh0dHBzOi8vbWF0cGxvdGxpYi5vcmdKaC2TAAACNUlEQVR4nO3WS5KjMBAFwJL6/mdmFg12UCDsnu3L3DhUKn2wCccbVT9bVVXV+P2ouY/28Zjn+mI89nG1cZ9/jV/1n/v6ct3PbX3W8/xxzuzn1rG+3aPXl+NFfWv3Os5/9f9+v2Pr+7T5Nu6fY1Ufva/25+999Tiex2vwWlfnvmO+99d5/ji319/n9X3v+9fnP4+/7fu8bvvuXpfx9nzOPt/Xv/tX63v9PH7fY2v79ue4H1/3Pe8zPvUt6u/fbzvv07+HPn8Zn+9x7ev33Otza+vqVL+sn/fjutTbfc5/i8v+uvTVqe940HX/aPX7F230F6O96J/mjwuNXv/42R7oct58Xj/6/Kp//nHdqv9c3+Z9fdVfX/fPtv9z3//vO2/7jp8ZAAgiAABAIAEAAAIJAAAQSAAAgEACAAAEEgAAIJAAAACBBAAACCQAAEAgAQAAAgkAABBIAACAQAIAAAQSAAAgkAAAAIEEAAAIJAAAQCABAAACCQAAEEgAAIBAAgAABBIAACCQAAAAgQQAAAgkAABAIAEAAAIJAAAQSAAAgEACAAAEEgAAIJAAAACBBAAACCQAAEAgAQAAAgkAABBIAACAQAIAAAQSAAAgkAAAAIEEAAAIJAAAQCABAAACCQAAEEgAAIBAAgAABBIAACCQAAAAgQQAAAgkAABAIAEAAAIJAAAQSAAAgEACAAAEEgAAIJAAAACBBAAACCQAAEAgAQAAAgkAABBIAACAQAIAAAQSAAAg0D8FVi814EhgQgAAAABJRU5ErkJggg=="></div><div style="vertical-align: middle; max-width: 514px; display: flex; justify-content: space-between;"><div style="float: left;"><div title="#000004ff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #000004ff;"></div> under</div><div style="margin: 0 auto; display: inline-block;">bad <div title="#00000000" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #00000000;"></div></div><div style="float: right;">over <div title="#fcfdbfff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #fcfdbfff;"></div></div></div></div>
+</div>
+<p>Here we display another colormap from matplotlib (<code class="docutils literal notranslate"><span class="pre">viridis</span></code>) and assign it to the histogram.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div style="vertical-align: middle;"><strong>viridis</strong> </div><div class="cmap"><img alt="viridis colormap" title="viridis" style="border: 1px solid #555;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAABACAYAAABsv8+/AAAAFnRFWHRUaXRsZQB2aXJpZGlzIGNvbG9ybWFwrE0mCwAAABx0RVh0RGVzY3JpcHRpb24AdmlyaWRpcyBjb2xvcm1hcAtjl3IAAAAwdEVYdEF1dGhvcgBNYXRwbG90bGliIHYzLjguNCwgaHR0cHM6Ly9tYXRwbG90bGliLm9yZ2TOsrQAAAAydEVYdFNvZnR3YXJlAE1hdHBsb3RsaWIgdjMuOC40LCBodHRwczovL21hdHBsb3RsaWIub3JnSmgtkwAAAiJJREFUeJzt1kGSmzAURdEv2FqWkP0vJfQgMhQCGceV2Ttn4pL0EVQPum771X5vVVXVWv39XfrPeV193V5zS98f1sf5/fPjey73zu6/3Hv/uz2cz57f9vP68rxO9+/zre7nhvvG+et6vH92bw3PDfcsD+eX59+/53n96f3362/f87/vf5yr93Of72/fPV9P89tX3zGeH3OT8/07Zs+/32+TuXZZD8/VODf8W5uuH/b7vctlfuv7NazH8/t7ZnP7bz2cD3NL+/Ph3Hl+/efz83vWun/vuL++nquH9eu9w/uu6/vvOO49f/8xf77vOj+8b7Y/fMfse9ca/y7nv+d62a++X+f1vt+G/b7u+/u6TxzzS//tc2053QMABBEAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAoB9ucImHxcKZtAAAAABJRU5ErkJggg=="></div><div style="vertical-align: middle; max-width: 514px; display: flex; justify-content: space-between;"><div style="float: left;"><div title="#440154ff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #440154ff;"></div> under</div><div style="margin: 0 auto; display: inline-block;">bad <div title="#00000000" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #00000000;"></div></div><div style="float: right;">over <div title="#fde725ff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #fde725ff;"></div></div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">histogram_colormap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/c78002a526e5c05467ea0a9dfc4190dac2fe87d7156ff564ad0b309f565c95ac.png" src="../_images/c78002a526e5c05467ea0a9dfc4190dac2fe87d7156ff564ad0b309f565c95ac.png" />
+</div>
+</div>
+</section>
+<section id="changing-histogram-bins">
+<h2>Changing Histogram Bins<a class="headerlink" href="#changing-histogram-bins" title="Permalink to this heading">#</a></h2>
+<p>You can set the number of bins in the histogram by setting the <code class="docutils literal notranslate"><span class="pre">bins</span></code> attribute. The default number of bins is 20.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/f85840ab5c2bed8dbc481859b5d8fa64d364724933f3e880112affa5c752270b.png" src="../_images/f85840ab5c2bed8dbc481859b5d8fa64d364724933f3e880112affa5c752270b.png" />
+</div>
+</div>
+</section>
+<section id="histogram-visibility">
+<h2>Histogram Visibility<a class="headerlink" href="#histogram-visibility" title="Permalink to this heading">#</a></h2>
+<p>Optionally, hide/show the artist by setting the <code class="docutils literal notranslate"><span class="pre">visible</span></code> attribute.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/0d7e3f1d86b8feaa05130db0aedb5ade3303d2aae57219443f391c1f657ba056.png" src="../_images/0d7e3f1d86b8feaa05130db0aedb5ade3303d2aae57219443f391c1f657ba056.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/f85840ab5c2bed8dbc481859b5d8fa64d364724933f3e880112affa5c752270b.png" src="../_images/f85840ab5c2bed8dbc481859b5d8fa64d364724933f3e880112affa5c752270b.png" />
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./examples"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="scatter_artist_example.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Scatter Artist</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="canvas_widget_example.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Canvas Widget</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-histogram-2d-plot">Creating a Histogram 2D Plot</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-data-to-the-histogram-2d-artist">Adding Data to the Histogram 2D Artist</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assigning-classes-to-data-points">Assigning Classes to Data Points</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#changing-histogram-colormap">Changing Histogram Colormap</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#changing-histogram-bins">Changing Histogram Bins</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#histogram-visibility">Histogram Visibility</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Marcelo Leomil Zoccoler
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
