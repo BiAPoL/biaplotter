@@ -23,10 +23,8 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest, windows-latest, macos-13, macos-14]
-        python-version: ['3.8', '3.9', '3.10']
+        python-version: ['3.9', '3.10']
         exclude:
-          - python-version: "3.8"
-            platform: macos-14
           - python-version: "3.9"
             platform: macos-14
 
