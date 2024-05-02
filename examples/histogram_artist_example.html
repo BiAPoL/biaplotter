@@ -79,7 +79,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'examples/histogram_artist_example';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Canvas Widget" href="canvas_widget_example.html" />
+    <link rel="next" title="Plotter" href="../plotter_api.html" />
     <link rel="prev" title="Scatter Artist" href="scatter_artist_example.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -199,7 +199,6 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="scatter_artist_example.html">Scatter Artist</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Histogram2D Artist</a></li>
-<li class="toctree-l1"><a class="reference internal" href="canvas_widget_example.html">Canvas Widget</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="nav bd-sidenav">
@@ -433,50 +432,6 @@ document.write(`
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">QtBindingsNotFoundError</span><span class="g g-Whitespace">                   </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">3</span>
-<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="ne">----&gt; </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">biaplotter.artists</span> <span class="kn">import</span> <span class="n">Histogram2D</span>
-<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-
-<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.9.19</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.9</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">biaplotter</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">2</span>
-<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.0.1&quot;</span>
-<span class="ne">----&gt; </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">.plotter</span> <span class="kn">import</span> <span class="n">CanvasWidget</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">.artists</span> <span class="kn">import</span> <span class="n">Scatter</span><span class="p">,</span> <span class="n">Histogram2D</span>
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="kn">from</span> <span class="nn">.selectors</span> <span class="kn">import</span> <span class="n">InteractiveRectangleSelector</span><span class="p">,</span> <span class="n">InteractiveEllipseSelector</span><span class="p">,</span> <span class="n">InteractiveLassoSelector</span>
-
-<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.9.19</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.9</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">biaplotter</span><span class="o">/</span><span class="n">plotter</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">5</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
-<span class="ne">----&gt; </span><span class="mi">5</span> <span class="kn">from</span> <span class="nn">nap_plot_tools</span> <span class="kn">import</span> <span class="n">CustomToolbarWidget</span><span class="p">,</span> <span class="n">QtColorSpinBox</span>
-<span class="g g-Whitespace">      </span><span class="mi">6</span> <span class="kn">from</span> <span class="nn">napari.layers</span> <span class="kn">import</span> <span class="n">Labels</span><span class="p">,</span> <span class="n">Points</span><span class="p">,</span> <span class="n">Tracks</span>
-<span class="g g-Whitespace">      </span><span class="mi">7</span> <span class="kn">from</span> <span class="nn">napari_matplotlib.base</span> <span class="kn">import</span> <span class="n">BaseNapariMPLWidget</span>
-
-<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.9.19</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.9</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">nap_plot_tools</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">3</span>
-<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.1.0&quot;</span>
-<span class="ne">----&gt; </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">.tools</span> <span class="kn">import</span> <span class="n">QtColorSpinBox</span><span class="p">,</span> <span class="n">CustomToolbarWidget</span>
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="kn">from</span> <span class="nn">.cmap</span> <span class="kn">import</span> <span class="n">cat10_mod_cmap</span><span class="p">,</span> <span class="n">cat10_mod_cmap_first_transparent</span><span class="p">,</span> <span class="n">make_cat10_mod_cmap</span><span class="p">,</span> <span class="n">get_custom_cat10based_cmap_list</span> <span class="c1"># get_custom_cat10based_cmap_list is deprecated</span>
-
-<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.9.19</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.9</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">nap_plot_tools</span><span class="o">/</span><span class="n">tools</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">2</span>
-<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">nap_plot_tools.cmap</span> <span class="kn">import</span> <span class="n">make_cat10_mod_cmap</span>
-<span class="ne">----&gt; </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">qtpy.QtCore</span> <span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QSize</span><span class="p">,</span> <span class="n">QRect</span><span class="p">,</span> <span class="n">Signal</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">qtpy.QtGui</span> <span class="kn">import</span> <span class="n">QColor</span><span class="p">,</span> <span class="n">QPainter</span><span class="p">,</span> <span class="n">QPixmap</span>
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="kn">from</span> <span class="nn">qtpy.QtWidgets</span> <span class="kn">import</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QToolButton</span><span class="p">,</span> <span class="n">QToolBar</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QSizePolicy</span>
-
-<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.9.19</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.9</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">qtpy</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">287</span>
-<span class="g g-Whitespace">    </span><span class="mi">284</span>     <span class="n">QT6</span> <span class="o">=</span> <span class="n">PYSIDE6</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="g g-Whitespace">    </span><span class="mi">286</span> <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">287</span>     <span class="k">raise</span> <span class="n">QtBindingsNotFoundError</span> <span class="kn">from</span> <span class="kc">None</span>
-<span class="g g-Whitespace">    </span><span class="mi">288</span> <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">289</span>     <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">QT_API</span><span class="p">]</span> <span class="o">=</span> <span class="n">API</span>
-
-<span class="ne">QtBindingsNotFoundError</span>: No Qt bindings could be found
-</pre></div>
-</div>
-</div>
 </div>
 <section id="creating-a-histogram-2d-plot">
 <h2>Creating a Histogram 2D Plot<a class="headerlink" href="#creating-a-histogram-2d-plot" title="Link to this heading">#</a></h2>
@@ -489,7 +444,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ed677fe7b0f5f38d48caa0ab8c4daf4732bb40f161b78a8109858b641c89bf0d.png" src="../_images/ed677fe7b0f5f38d48caa0ab8c4daf4732bb40f161b78a8109858b641c89bf0d.png" />
+<img alt="../_images/e31401c8857f5c6af71ce3480f5ffd1c513ec207433282f4b54c2825e474a247.png" src="../_images/e31401c8857f5c6af71ce3480f5ffd1c513ec207433282f4b54c2825e474a247.png" />
 </div>
 </div>
 </section>
@@ -520,7 +475,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/f5839e781f537f8c0d0d062eae9ba7679663f51668a3839db350077607c03f8c.png" src="../_images/f5839e781f537f8c0d0d062eae9ba7679663f51668a3839db350077607c03f8c.png" />
+<img alt="../_images/78ef851a0a09cb0c75fe31a26cf2550f640ec7f37bcb4f312a7e68df88c5ff5c.png" src="../_images/78ef851a0a09cb0c75fe31a26cf2550f640ec7f37bcb4f312a7e68df88c5ff5c.png" />
 </div>
 </div>
 </section>
@@ -558,7 +513,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/98cd5ad8c79f2b1d7263127c9ab6c93f05bcd753677649cf619447da4dea4dc5.png" src="../_images/98cd5ad8c79f2b1d7263127c9ab6c93f05bcd753677649cf619447da4dea4dc5.png" />
+<img alt="../_images/229255752435d1fa21ab4c0517aee472d2275b88e882e8eadf832b90f6c58539.png" src="../_images/229255752435d1fa21ab4c0517aee472d2275b88e882e8eadf832b90f6c58539.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -590,7 +545,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/c15ffb2392c975e10beb52ea8245252659ff4d6ebf4c40045de576517908a9f2.png" src="../_images/c15ffb2392c975e10beb52ea8245252659ff4d6ebf4c40045de576517908a9f2.png" />
+<img alt="../_images/a19486660a435dd84e3c1f4d9ca71e157a096597b7e5e376e9dd10bb0934b22f.png" src="../_images/a19486660a435dd84e3c1f4d9ca71e157a096597b7e5e376e9dd10bb0934b22f.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -617,7 +572,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/50a5cc5d39cd964d68627238e759e30a3ae616b78fac693cbe7e8bc67b847695.png" src="../_images/50a5cc5d39cd964d68627238e759e30a3ae616b78fac693cbe7e8bc67b847695.png" />
+<img alt="../_images/cedfbbf708946dba97db318649dc6e63f328c1f9f5fda9fa2a0f94f64ecc9ae6.png" src="../_images/cedfbbf708946dba97db318649dc6e63f328c1f9f5fda9fa2a0f94f64ecc9ae6.png" />
 </div>
 </div>
 </section>
@@ -651,7 +606,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/c78002a526e5c05467ea0a9dfc4190dac2fe87d7156ff564ad0b309f565c95ac.png" src="../_images/c78002a526e5c05467ea0a9dfc4190dac2fe87d7156ff564ad0b309f565c95ac.png" />
+<img alt="../_images/8e053dd2dd62c0ee618279b0132fa3dbe7e2b1ac0148845010a9eb912a4421f0.png" src="../_images/8e053dd2dd62c0ee618279b0132fa3dbe7e2b1ac0148845010a9eb912a4421f0.png" />
 </div>
 </div>
 </section>
@@ -666,7 +621,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/f85840ab5c2bed8dbc481859b5d8fa64d364724933f3e880112affa5c752270b.png" src="../_images/f85840ab5c2bed8dbc481859b5d8fa64d364724933f3e880112affa5c752270b.png" />
+<img alt="../_images/9faef55888c1137f662f41f938f7996af6226a905915147bdd528c3bab685469.png" src="../_images/9faef55888c1137f662f41f938f7996af6226a905915147bdd528c3bab685469.png" />
 </div>
 </div>
 </section>
@@ -681,7 +636,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/0d7e3f1d86b8feaa05130db0aedb5ade3303d2aae57219443f391c1f657ba056.png" src="../_images/0d7e3f1d86b8feaa05130db0aedb5ade3303d2aae57219443f391c1f657ba056.png" />
+<img alt="../_images/ebaf7243849b36dbe49ee6f7940197ca859757add804f47d46d2b37b5bfdd01c.png" src="../_images/ebaf7243849b36dbe49ee6f7940197ca859757add804f47d46d2b37b5bfdd01c.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -692,7 +647,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/f85840ab5c2bed8dbc481859b5d8fa64d364724933f3e880112affa5c752270b.png" src="../_images/f85840ab5c2bed8dbc481859b5d8fa64d364724933f3e880112affa5c752270b.png" />
+<img alt="../_images/9faef55888c1137f662f41f938f7996af6226a905915147bdd528c3bab685469.png" src="../_images/9faef55888c1137f662f41f938f7996af6226a905915147bdd528c3bab685469.png" />
 </div>
 </div>
 </section>
@@ -738,11 +693,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="canvas_widget_example.html"
+       href="../plotter_api.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Canvas Widget</p>
+        <p class="prev-next-title">Plotter</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
