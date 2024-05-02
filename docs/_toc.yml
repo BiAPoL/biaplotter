@@ -8,6 +8,7 @@ parts:
   chapters:
   - file: examples/scatter_artist_example
   - file: examples/histogram_artist_example
+  - file: examples/canvas_widget_example
 - caption: API Reference
   chapters:
   - file: plotter_api
