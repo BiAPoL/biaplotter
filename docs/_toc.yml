@@ -1,0 +1,17 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: intro
+parts:
+- caption: Examples
+  chapters:
+  - file: examples/scatter_artist_example
+  - file: examples/histogram_artist_example
+  - file: examples/canvas_widget_example
+- caption: API Reference
+  chapters:
+  - file: plotter_api
+  - file: artists_api
+  - file: selectors_api
+

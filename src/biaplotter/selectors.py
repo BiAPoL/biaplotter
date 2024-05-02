@@ -18,10 +18,10 @@ class Selector(ABC):
 
     Parameters
     ----------
-    ax : plt.Axes
-        The axes to which the selector will be applied.
+    ax : plt.Axes, optional
+        axes to which the selector will be applied.
     data : np.ndarray
-        The data to be selected.
+        data to be selected.
 
     Attributes
     ----------
@@ -32,30 +32,10 @@ class Selector(ABC):
     _selector : Any
         Stores the selector object.
 
-    Properties
-    ----------
-    data : np.ndarray
-        Gets or sets the data to be selected.
-
-    Methods
-    -------
-    on_select(vertices: np.ndarray)
-        Abstract method to select points based on the selector's shape.
-    create_selector()
-        Abstract method to create a selector.
-    remove()
-        Removes the selector from the canvas.
     """
 
     def __init__(self, ax: plt.Axes = None, data: np.ndarray = None):
         """Initializes the selector.
-
-        Parameters
-        ----------
-        ax : plt.Axes
-            The axes to which the selector will be applied.
-        data : np.ndarray
-            The data to be selected.
         """
         self._ax = ax
         self._data = data
@@ -100,44 +80,39 @@ class BaseRectangleSelector(Selector):
     Parameters
     ----------
     ax : plt.Axes
-        The axes to which the selector will be applied.
+        axes to which the selector will be applied.
     data : (N, 2) np.ndarray
-        The data to be selected.
+        data to be selected.
 
-    Additonal Attributes
-    --------------------
+    Other Parameters
+    ----------------
     name : str
-        The name of the selector.
-
-    Properties
-    ----------
-    data : (N, 2) np.ndarray
-        Gets or sets the data to be selected.
-
-    Methods
-    -------
-    on_select(eclick, erelease)
-        Selects points within the rectangle and returns their indices.
-    create_selector()
-        Creates a rectangle selector.    
+        The name of the selector, set to 'Rectangle Selector' by default.
+  
     """
 
     def __init__(self, ax: plt.Axes, data: np.ndarray = None):
         """Initializes the rectangle selector.
-
-        Parameters
-        ----------
-        ax : plt.Axes
-            The axes to which the selector will be applied.
-        data : (N, 2) np.ndarray
-            The data to be selected.
         """
         super().__init__(ax, data)
         self.name = 'Rectangle Selector'
         self.data = data
 
     def on_select(self, eclick, erelease) -> np.ndarray:
-        """Selects points within the rectangle and returns their indices."""
+        """Selects points within the rectangle and returns their indices.
+        
+        Parameters
+        ----------
+        eclick : MouseEvent
+            The press event.
+        erelease : MouseEvent
+            The release event.
+
+        Returns
+        -------
+        np.ndarray
+            The indices of the selected points.
+        """
         if self._data is None or len(self._data) == 0:
             return
         x1, y1 = eclick.xdata, eclick.ydata
@@ -149,7 +124,7 @@ class BaseRectangleSelector(Selector):
 
     @property
     def data(self) -> np.ndarray:
-        """Gets the data from which points will be selected."""
+        """Gets or sets the data from which points will be selected."""
         return self._data
 
     @data.setter
@@ -157,7 +132,7 @@ class BaseRectangleSelector(Selector):
         """Sets the data from which points will be selected."""
         self._data = value
 
-    def create_selector(self, *args, **kwargs):
+    def create_selector(self):
         """Creates a rectangle selector.
 
         Useblit is set to True to improve performance.
@@ -180,44 +155,38 @@ class BaseEllipseSelector(Selector):
     Parameters
     ----------
     ax : plt.Axes
-        The axes to which the selector will be applied.
+        axes to which the selector will be applied.
     data : np.ndarray
-        The data to be selected.
+        data to be selected.
 
-    Additional Attributes
-    --------------------
+    Other Parameters
+    ----------------
     name : str
-        The name of the selector.
+        name of the selector, set to 'Ellipse Selector' by default.
 
-    Properties
-    ----------
-    data : np.ndarray
-        Gets or sets the data to be selected.
-
-    Methods
-    -------
-    on_select(eclick, erelease)
-        Selects points within the ellipse and returns their indices.
-    create_selector()
-        Creates an ellipse selector.
     """
 
     def __init__(self, ax: plt.Axes, data: np.ndarray = None):
         """Initializes the ellipse selector.
-
-        Parameters
-        ----------
-        ax : plt.Axes
-            The axes to which the selector will be applied.
-        data : np.ndarray
-            The data to be selected.
         """
         super().__init__(ax, data)
         self.name = 'Ellipse Selector'
         self.data = data
 
     def on_select(self, eclick, erelease):
-        """Selects points within the ellipse and returns their indices."""
+        """Selects points within the ellipse and returns their indices.
+        
+        Parameters
+        ----------
+        eclick : MouseEvent
+            The press event.
+        erelease : MouseEvent
+            The release event.
+            
+        Returns
+        -------
+        np.ndarray
+            The indices of the selected points."""
         if self._data is None or len(self._data) == 0:
             return
         center = np.array([(eclick.xdata + erelease.xdata) / 2,
@@ -231,7 +200,7 @@ class BaseEllipseSelector(Selector):
 
     @property
     def data(self) -> np.ndarray:
-        """Gets the data from which points will be selected."""
+        """Gets or sets the data from which points will be selected."""
         return self._data
 
     @data.setter
@@ -254,12 +223,42 @@ class BaseEllipseSelector(Selector):
 
 
 class BaseLassoSelector(Selector):
+    """Base class for creating a lasso selector.
+
+    Inherits all parameters and attributes from Selector.
+    For parameter and attribute details, see the Selector class documentation.
+
+    Parameters
+    ----------
+    ax : plt.Axes
+        axes to which the selector will be applied.
+    data : np.ndarray
+        data to be selected.
+
+    Other Parameters
+    ----------------
+    name : str
+        The name of the selector, set to 'Lasso Selector' by default.
+
+    """
     def __init__(self, ax: plt.Axes, data: np.ndarray = None):
         super().__init__(ax, data)
         self.name = 'Lasso Selector'
         self.data = data
 
     def on_select(self, vertices):
+        """Selects points within the lasso and returns their indices.	
+
+        Parameters
+        ----------
+        vertices : np.ndarray
+            The vertices of the lasso.
+
+        Returns
+        -------
+        np.ndarray
+            The indices of the selected points.
+        """
         if self._data is None or len(self._data) == 0:
             return
         path = mplPath(vertices)
@@ -269,13 +268,20 @@ class BaseLassoSelector(Selector):
 
     @property
     def data(self) -> np.ndarray:
+        """Gets or sets the data from which points will be selected."""
         return self._data
 
     @data.setter
     def data(self, value: np.ndarray):
+        """Sets the data from which points will be selected."""
         self._data = value
 
     def create_selector(self):
+        """Creates a lasso selector.
+
+        Useblit is set to True to improve performance.
+        Left mouse button is used to draw the lasso.
+        """
         self._selector = LassoSelector(self._ax, self.on_select, useblit=True, button=[
             1], props={'color': 'r', 'linestyle': '--'})
 
@@ -284,21 +290,19 @@ class Interactive(Selector):
     """Interactive selector class.
 
     Inherits all parameters and attributes from Selector.
-    To be used as a base class for interactive selectors.
+    To be used as a base class together with a selector to turn selectors interactive.
 
     Parameters
     ----------
     ax : plt.Axes
-        The axes to which the selector will be applied.
+        axes to which the selector will be applied.
     canvas_widget : biaplotter.plotter.CanvasWidget
-        The canvas widget to which the selector will be applied.
-    data : (N, 2) np.ndarray
-        The data to be selected.
+        canvas widget to which the selector will be applied.
+    data : (N, 2) np.ndarray, optional
+        data to be selected.
 
-    Additional Attributes
-    --------------------
-    canvas_widget : biaplotter.plotter.CanvasWidget
-        The canvas widget to which the selector is applied.
+    Other Parameters
+    ----------------
     _selected_indices : (N,) np.ndarray
         Stores the indices of the selected points.
     _class_value : int
@@ -306,33 +310,22 @@ class Interactive(Selector):
     _active_artist : biaplotter.artists.Artist
         Stores the active artist.
 
-    Properties
-    ----------
-    class_value : int
-        Gets the current class value.
-    selected_indices : (N,) np.ndarray
-        Gets or sets the indices of the selected points. 
-
-    Methods
-    -------
-    on_button_press(event)
-        Handles the button press event. Right-click applies the selection.
-    apply_selection()
-        Applies the selection to the data, updating the colors.
-    create_selector()
-        Creates the rectangle selector and connects the button press event.
-    remove()
-        Removes the selector from the canvas and disconnects the button press event.
-
-    Slots
+    Notes
     -----
-    update_class_value(value: int)
-        Connects to the color_spinbox_value_changed_signal from the canvas widget to update the class value.
-    update_data(value: np.ndarray)
-        Connects to the data_changed_signal from the active artist to update the selector data. Not connected in this class.
-    update_active_artist()
-        Connects to the artist_changed_signal from the canvas widget to update the active artist.
-        """
+    **Slots:**
+
+        * **update_class_value** method intended to be connected by the **color_spinbox_value_changed_signal** emitted by the canvas_widget to have class_value synchronized.
+        * **update_data** method intended to be connected by the **data_changed_signal** emitted by the active_artist to have the selector data synchronized.
+        * **update_active_artist** method intended to be connected by the **artist_changed_signal** emitted by the canvas_widget to have the active_artist synchronized.
+
+    **Signals and Slots:**
+
+        This class automatically connects the following signals to slots:
+
+        * **color_spinbox_value_changed_signal** emitted by the canvas_widget to **update_class_value** slot.
+        * **data_changed_signal** emitted by the active_artist to **update_data** slot.
+
+    """
 
     def __init__(self, ax: plt.Axes, canvas_widget: "CanvasWidget", data: np.ndarray = None):
         """Initializes the interactive rectangle selector.
@@ -340,11 +333,11 @@ class Interactive(Selector):
         Parameters
         ----------
         ax : plt.Axes
-            The axes to which the selector will be applied.
+            axes to which the selector will be applied.
         canvas_widget : biaplotter.plotter.CanvasWidget
-            The canvas widget to which the selector will be applied.
+            canvas widget to which the selector will be applied.
         data : (N, 2) np.ndarray
-            The data to be selected.
+            data to be selected.
         """
         super().__init__(ax, data)
         self.canvas_widget = canvas_widget
@@ -365,7 +358,7 @@ class Interactive(Selector):
 
     @property
     def class_value(self):
-        """Gets the current class value."""
+        """Gets or sets the current class value."""
         return self._class_value
 
     @class_value.setter
@@ -375,7 +368,7 @@ class Interactive(Selector):
 
     @property
     def selected_indices(self):
-        """Gets the indices of the selected points."""
+        """Gets or sets the indices of the selected points."""
         return self._selected_indices
 
     @selected_indices.setter
@@ -384,7 +377,12 @@ class Interactive(Selector):
         self._selected_indices = value
 
     def on_button_press(self, event):
-        """Handles the button press event. Right-click applies the selection."""
+        """Handles the button press event. Right-click applies the selection.
+        
+        Parameters
+        ----------
+        event : MouseEvent
+            The button press event."""
         if event.button == 3:
             self.apply_selection()
 
@@ -401,7 +399,7 @@ class Interactive(Selector):
         self.create_selector()
 
     def create_selector(self):
-        """Creates the rectangle selector and connects the button press event."""
+        """Creates the selector and connects the button press event."""
         super().create_selector()
         self.canvas_widget.canvas.mpl_connect(
             'button_press_event', self.on_button_press)
@@ -413,15 +411,27 @@ class Interactive(Selector):
             'button_press_event', self.on_button_press))
 
     def update_class_value(self, value: int):
-        """Handles the color_spinbox_value_changed_signal from the canvas widget to update the class value."""
+        """Update the class value.
+        
+        Notes
+        -----
+        This slot is connected to the **color_spinbox_value_changed_signal** emitted by the canvas widget."""
         self.class_value = value
 
     def update_data(self, value: np.ndarray):
-        """Handles the data_changed_signal from the active artist to update the selector data."""
+        """Update the selector data.
+        
+        Notes
+        -----
+        This slot is connected to the **data_changed_signal** emitted by the active artist."""
         self.data = value
 
     def update_active_artist(self):
-        """Handles the artist_changed_signal from the canvas widget to update the active artist."""
+        """Update the active artist.
+        
+        Notes
+        -----
+        This slot is connected to the **artist_changed_signal** emitted by the canvas widget."""
         self._active_artist = self.canvas_widget.active_artist
 
 
@@ -437,18 +447,14 @@ class InteractiveRectangleSelector(Interactive, BaseRectangleSelector):
         The axes to which the selector will be applied.
     canvas_widget : biaplotter.plotter.CanvasWidget
         The canvas widget to which the selector will be applied.
-    data : (N, 2) np.ndarray
+    data : (N, 2) np.ndarray, optional
         The data to be selected.
 
-    Additional Attributes
-    --------------------
+    Other Parameters
+    ----------------
     name : str
-        The name of the selector.
+        The name of the selector, set to 'Interactive Rectangle Selector' by default.
 
-    Methods
-    -------
-    on_select(eclick, erelease)
-        Selects points within the rectangle and assigns them to selected indices.
     """
 
     def __init__(self, ax: plt.Axes, canvas_widget: "CanvasWidget", data: np.ndarray = None):
@@ -457,7 +463,19 @@ class InteractiveRectangleSelector(Interactive, BaseRectangleSelector):
         self.name = 'Interactive Rectangle Selector'
 
     def on_select(self, eclick, erelease):
-        """Selects points within the rectangle and assigns them to selected indices."""
+        """Selects points within the rectangle and assigns them to selected indices.
+        
+        Parameters
+        ----------
+        eclick : MouseEvent
+            The press event.
+        erelease : MouseEvent
+            The release event.
+            
+        Returns
+        -------
+        np.ndarray
+            The indices of the selected points."""
         self.selected_indices = super().on_select(eclick, erelease)
 
 
@@ -473,8 +491,13 @@ class InteractiveEllipseSelector(Interactive, BaseEllipseSelector):
         The axes to which the selector will be applied.
     canvas_widget : biaplotter.plotter.CanvasWidget
         The canvas widget to which the selector will be applied.
-    data : (N, 2) np.ndarray
+    data : (N, 2) np.ndarray, optional
         The data to be selected.
+
+    Other Parameters
+    ----------------
+    name : str
+        The name of the selector, set to 'Interactive Ellipse Selector' by default.
     """
 
     def __init__(self, ax: plt.Axes, canvas_widget: "CanvasWidget", data: np.ndarray = None):
@@ -483,7 +506,19 @@ class InteractiveEllipseSelector(Interactive, BaseEllipseSelector):
         self.name = 'Interactive Ellipse Selector'
 
     def on_select(self, eclick, erelease):
-        """Selects points within the ellipse and assigns them to selected indices."""
+        """Selects points within the ellipse and assigns them to selected indices.
+        
+        Parameters
+        ----------
+        eclick : MouseEvent
+            The press event.
+        erelease : MouseEvent
+            The release event.
+            
+        Returns
+        -------
+        np.ndarray
+            The indices of the selected points."""
         self.selected_indices = super().on_select(eclick, erelease)
 
 
@@ -499,8 +534,13 @@ class InteractiveLassoSelector(Interactive, BaseLassoSelector):
         The axes to which the selector will be applied.
     canvas_widget : biaplotter.plotter.CanvasWidget
         The canvas widget to which the selector will be applied.
-    data : (N, 2) np.ndarray
+    data : (N, 2) np.ndarray, optional
         The data to be selected.
+
+    Other Parameters
+    ----------------
+    name : str
+        The name of the selector, set to 'Interactive Lasso Selector' by default.
     """
 
     def __init__(self, ax: plt.Axes, canvas_widget: "CanvasWidget", data: np.ndarray = None):
@@ -509,6 +549,16 @@ class InteractiveLassoSelector(Interactive, BaseLassoSelector):
         self.name = 'Interactive Lasso Selector'
 
     def on_select(self, vertices: np.ndarray):
-        """Selects points within the lasso and assigns them the current class value, updating colors."""
+        """Selects points within the lasso and assigns them the current class value, updating colors.
+        
+        Parameters
+        ----------
+        vertices : np.ndarray
+            The vertices of the lasso.
+            
+        Returns
+        -------
+        np.ndarray
+            The indices of the selected points."""
         self.selected_indices = super().on_select(vertices)
         self.apply_selection()
