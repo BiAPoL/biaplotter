@@ -52,5 +52,5 @@ exclude = [
     "*_vendor*",
 ]
 
-target-version = "py38"
+target-version = "py39"
 fix = true
