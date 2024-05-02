@@ -156,12 +156,12 @@ class CanvasWidget(BaseNapariMPLWidget):
         selection_tools_layout = QHBoxLayout()
         # Add selection toolbar
         selection_toolbar = CustomToolbarWidget(self)
-        selection_tools_layout.addWidget(self.selection_toolbar)
+        selection_tools_layout.addWidget(selection_toolbar)
         # Add class spinbox
         selection_tools_layout.addWidget(QLabel(label_text))
         # Add color class spinbox
         class_spinbox = QtColorSpinBox(first_color_transparent=False)
-        selection_tools_layout.addWidget(self.class_spinbox)
+        selection_tools_layout.addWidget(class_spinbox)
         # Add stretch to the right to push buttons to the left
         selection_tools_layout.addStretch(1)
         return selection_tools_layout, selection_toolbar, class_spinbox
