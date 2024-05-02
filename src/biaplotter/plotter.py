@@ -94,7 +94,7 @@ class CanvasWidget(BaseNapariMPLWidget):
         # Add selection tools layout below canvas
         self.selection_tools_layout = self._build_selection_toolbar_layout(
             label_text=label_text)
-
+        print(icon_folder_path)
         # Add button to selection_toolbar
         self.selection_toolbar.add_custom_button(
             name=SelectorType.LASSO.name,
