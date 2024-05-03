@@ -49,9 +49,9 @@
 
    .. rubric:: Methods Documentation
 
-   .. automethod:: CanvasWidget.add_artist
-   .. automethod:: CanvasWidget.add_selector
-   .. automethod:: CanvasWidget.on_enable_selector
+   .. automethod:: add_artist
+   .. automethod:: add_selector
+   .. automethod:: on_enable_selector
 
    .. rubric:: Signals Documentation
 
