@@ -70,6 +70,7 @@
    .. autosummary::
 
       ~Scatter.data_changed_signal
+      ~Scatter.color_indices_changed_signal
 
    .. rubric:: Properties Documentation
 
@@ -89,6 +90,7 @@
    .. rubric:: Signals Documentation
 
    .. autoattribute:: data_changed_signal
+   .. autoattribute:: color_indices_changed_signal
 
 .. autoclass:: Histogram2D
    :show-inheritance:  
@@ -123,6 +125,7 @@
    .. autosummary::
 
       ~Histogram2D.data_changed_signal
+      ~Histogram2D.color_indices_changed_signal
 
    .. rubric:: Properties Documentation
 
@@ -146,4 +149,5 @@
    .. rubric:: Signals Documentation
 
    .. autoattribute:: data_changed_signal
+   .. autoattribute:: color_indices_changed_signal
 ```

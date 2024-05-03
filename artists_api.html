@@ -418,6 +418,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Scatter.categorical_colormap"><code class="docutils literal notranslate"><span class="pre">Scatter.categorical_colormap</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Scatter.draw"><code class="docutils literal notranslate"><span class="pre">Scatter.draw()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Scatter.data_changed_signal"><code class="docutils literal notranslate"><span class="pre">Scatter.data_changed_signal</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Scatter.color_indices_changed_signal"><code class="docutils literal notranslate"><span class="pre">Scatter.color_indices_changed_signal</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D"><code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code></a><ul class="nav section-nav flex-column">
@@ -432,6 +433,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D.indices_in_above_threshold_patches"><code class="docutils literal notranslate"><span class="pre">Histogram2D.indices_in_above_threshold_patches()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D.draw"><code class="docutils literal notranslate"><span class="pre">Histogram2D.draw()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D.data_changed_signal"><code class="docutils literal notranslate"><span class="pre">Histogram2D.data_changed_signal</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D.color_indices_changed_signal"><code class="docutils literal notranslate"><span class="pre">Histogram2D.color_indices_changed_signal</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -558,6 +560,7 @@ For parameter and attribute details, see the abstract Artist class documentation
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>data_changed_signal</strong> emitted when the data is changed.</p></li>
+<li><p><strong>color_indices_changed_signal</strong> emitted when the color indices are changed.</p></li>
 </ul>
 </div></blockquote>
 <p class="rubric">Examples</p>
@@ -612,6 +615,9 @@ For parameter and attribute details, see the abstract Artist class documentation
 <tr class="row-odd"><td><p><a class="reference internal" href="#biaplotter.artists.Scatter.data_changed_signal" title="biaplotter.artists.Scatter.data_changed_signal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">data_changed_signal</span></code></a></p></td>
 <td><p>Signal emitted when the <cite>data</cite> is changed.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#biaplotter.artists.Scatter.color_indices_changed_signal" title="biaplotter.artists.Scatter.color_indices_changed_signal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">color_indices_changed_signal</span></code></a></p></td>
+<td><p>Signal emitted when the <cite>color_indices</cite> are changed.</p></td>
+</tr>
 </tbody>
 </table>
 <p class="rubric">Properties Documentation</p>
@@ -663,6 +669,11 @@ For parameter and attribute details, see the abstract Artist class documentation
 <dd class="field-even"><p>(N,) np.ndarray[int] or int</p>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<dl class="simple">
+<dt>color_indices_changed_signal<span class="classifier">Signal</span></dt><dd><p>Signal emitted when the color indices are changed.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <p class="rubric">Attributes Documentation</p>
@@ -692,6 +703,12 @@ For parameter and attribute details, see the abstract Artist class documentation
 <dd><p>Signal emitted when the <cite>data</cite> is changed.</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biaplotter.artists.Scatter.color_indices_changed_signal">
+<span class="sig-name descname"><span class="pre">color_indices_changed_signal</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Signal</span></em><a class="headerlink" href="#biaplotter.artists.Scatter.color_indices_changed_signal" title="Link to this definition">#</a></dt>
+<dd><p>Signal emitted when the <cite>color_indices</cite> are changed.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -718,6 +735,7 @@ For parameter and attribute details, see the abstract Artist class documentation
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>data_changed_signal</strong> emitted when the data is changed.</p></li>
+<li><p><strong>color_indices_changed_signal</strong> emitted when the color indices are changed.</p></li>
 </ul>
 </div></blockquote>
 <p class="rubric">Properties Summary</p>
@@ -771,6 +789,9 @@ For parameter and attribute details, see the abstract Artist class documentation
 <tr class="row-odd"><td><p><a class="reference internal" href="#biaplotter.artists.Histogram2D.data_changed_signal" title="biaplotter.artists.Histogram2D.data_changed_signal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">data_changed_signal</span></code></a></p></td>
 <td><p>Signal emitted when the <cite>data</cite> is changed.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#biaplotter.artists.Histogram2D.color_indices_changed_signal" title="biaplotter.artists.Histogram2D.color_indices_changed_signal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">color_indices_changed_signal</span></code></a></p></td>
+<td><p>Signal emitted when the <cite>color_indices</cite> are changed.</p></td>
+</tr>
 </tbody>
 </table>
 <p class="rubric">Properties Documentation</p>
@@ -820,6 +841,11 @@ For parameter and attribute details, see the abstract Artist class documentation
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>(N,) np.ndarray[int] or int</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<dl class="simple">
+<dt>color_indices_changed_signal<span class="classifier">Signal</span></dt><dd><p>Signal emitted when the color indices are changed.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -911,6 +937,12 @@ of the 2D histogram exceeding a specified threshold.</p>
 <dd><p>Signal emitted when the <cite>data</cite> is changed.</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biaplotter.artists.Histogram2D.color_indices_changed_signal">
+<span class="sig-name descname"><span class="pre">color_indices_changed_signal</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Signal</span></em><a class="headerlink" href="#biaplotter.artists.Histogram2D.color_indices_changed_signal" title="Link to this definition">#</a></dt>
+<dd><p>Signal emitted when the <cite>color_indices</cite> are changed.</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -996,6 +1028,7 @@ of the 2D histogram exceeding a specified threshold.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Scatter.categorical_colormap"><code class="docutils literal notranslate"><span class="pre">Scatter.categorical_colormap</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Scatter.draw"><code class="docutils literal notranslate"><span class="pre">Scatter.draw()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Scatter.data_changed_signal"><code class="docutils literal notranslate"><span class="pre">Scatter.data_changed_signal</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Scatter.color_indices_changed_signal"><code class="docutils literal notranslate"><span class="pre">Scatter.color_indices_changed_signal</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D"><code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code></a><ul class="nav section-nav flex-column">
@@ -1010,6 +1043,7 @@ of the 2D histogram exceeding a specified threshold.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D.indices_in_above_threshold_patches"><code class="docutils literal notranslate"><span class="pre">Histogram2D.indices_in_above_threshold_patches()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D.draw"><code class="docutils literal notranslate"><span class="pre">Histogram2D.draw()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D.data_changed_signal"><code class="docutils literal notranslate"><span class="pre">Histogram2D.data_changed_signal</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D.color_indices_changed_signal"><code class="docutils literal notranslate"><span class="pre">Histogram2D.color_indices_changed_signal</span></code></a></li>
 </ul>
 </li>
 </ul>
