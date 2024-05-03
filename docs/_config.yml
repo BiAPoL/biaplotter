@@ -36,7 +36,6 @@ html:
 
 sphinx:
   config:
-    # html_theme: renku
     autosummary_generate: True
     intersphinx_mapping:
       ebp:
