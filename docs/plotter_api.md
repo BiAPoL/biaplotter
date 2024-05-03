@@ -9,31 +9,31 @@
 
    .. autosummary::
 
-      CanvasWidget.active_artist
+      ~CanvasWidget.active_artist
 
    .. rubric:: Attributes Summary
 
    .. autosummary::
 
-      CanvasWidget.selection_tools_layout
-      CanvasWidget.selection_toolbar
-      CanvasWidget.class_spinbox
-      CanvasWidget.artists
-      CanvasWidget.selectors
+      ~CanvasWidget.selection_tools_layout
+      ~CanvasWidget.selection_toolbar
+      ~CanvasWidget.class_spinbox
+      ~CanvasWidget.artists
+      ~CanvasWidget.selectors
 
    .. rubric:: Methods Summary
 
    .. autosummary::
 
-      CanvasWidget.add_artist
-      CanvasWidget.add_selector
-      CanvasWidget.on_enable_selector
+      ~CanvasWidget.add_artist
+      ~CanvasWidget.add_selector
+      ~CanvasWidget.on_enable_selector
 
    .. rubric:: Signals Summary
 
    .. autosummary::
 
-      CanvasWidget.artist_changed_signal
+      ~CanvasWidget.artist_changed_signal
 
    .. rubric:: Properties Documentation
 
