@@ -157,7 +157,7 @@ class Scatter(Artist):
         # emit signal
         self.data_changed_signal.emit(self._data)
         if self._scatter is None:
-            self._scatter = self._ax.scatter(value[:, 0], value[:, 1])
+            self._scatter = self.ax.scatter(value[:, 0], value[:, 1])
             self.color_indices = 0  # Set default color index
         else:
             # If the scatter plot already exists, just update its data
@@ -227,7 +227,7 @@ class Scatter(Artist):
 
     def draw(self):
         """Draws or redraws the scatter plot."""
-        self._ax.figure.canvas.draw_idle()
+        self.ax.figure.canvas.draw_idle()
 
 
 class Histogram2D(Artist):
@@ -305,7 +305,7 @@ class Histogram2D(Artist):
         if self._histogram is not None:
             self._histogram[-1].remove()
         # Draw the new histogram
-        self._histogram = self._ax.hist2d(
+        self._histogram = self.ax.hist2d(
             value[:, 0], value[:, 1], bins=self._bins, cmap=self._histogram_colormap, zorder=1)
         if self._color_indices is None:
             self.color_indices = 0  # Set default color index
@@ -384,7 +384,7 @@ class Histogram2D(Artist):
         if self._overlay is not None:
             self._overlay.remove()
         # Draw the overlay
-        self._overlay = self._ax.imshow(overlay_rgba.swapaxes(0, 1), origin='lower', extent=[
+        self._overlay = self.ax.imshow(overlay_rgba.swapaxes(0, 1), origin='lower', extent=[
             xedges[0], xedges[-1], yedges[0], yedges[-1]], aspect='auto', alpha=1, zorder=2)
         self.draw()
 
@@ -471,4 +471,4 @@ class Histogram2D(Artist):
 
     def draw(self):
         """Draws or redraws the 2D histogram."""
-        self._ax.figure.canvas.draw_idle()
+        self.ax.figure.canvas.draw_idle()
