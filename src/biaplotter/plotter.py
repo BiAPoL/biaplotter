@@ -62,8 +62,8 @@ class CanvasWidget(BaseNapariMPLWidget):
         * **data_changed_signal** from each artist to the **update_data** slot in each selector. This allows artists to notify selectors when the data changes. Selectors can then synchronize their data with the artist's data.  
     """
 
-    #: Signal emitted when the current artist changes
-    _artist_changed_signal: Signal = Signal(ArtistType)
+    #: Signal emitted when the current `active_artist` changes
+    artist_changed_signal: Signal = Signal(ArtistType)
 
     def __init__(self, napari_viewer: "napari.viewer.Viewer", parent: Optional[QWidget] = None, label_text: str = "Class:"):
         super().__init__(napari_viewer, parent=parent)
@@ -196,17 +196,6 @@ class CanvasWidget(BaseNapariMPLWidget):
                 if selector_type.name == sender_name:
                     selector.selected_indices = None
                     selector.remove()
-
-    @property
-    def artist_changed_signal(self):
-        """Signal emitted when the current artist changes.
-
-        Returns
-        -------
-        Signal
-            The artist changed signal.
-        """
-        return self._artist_changed_signal
 
     @property
     def active_artist(self):
