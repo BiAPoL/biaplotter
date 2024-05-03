@@ -102,6 +102,7 @@ class Scatter(Artist):
     **Signals:**
 
         * **data_changed_signal** emitted when the data is changed.
+        * **color_indices_changed_signal** emitted when the color indices are changed.
 
     Examples
     --------
@@ -118,6 +119,8 @@ class Scatter(Artist):
     """
     #: Signal emitted when the `data` is changed.
     data_changed_signal: Signal = Signal(np.ndarray)
+    #: Signal emitted when the `color_indices` are changed.
+    color_indices_changed_signal: Signal = Signal(np.ndarray)
 
     def __init__(self, ax: plt.Axes = None, data: np.ndarray = None, categorical_colormap: Colormap = cat10_mod_cmap, color_indices: np.ndarray = None):
         """Initializes the scatter plot artist.
@@ -206,6 +209,12 @@ class Scatter(Artist):
         -------
         color_indices : (N,) np.ndarray[int] or int
             indices to map to the categorical_colormap. Accepts a scalar or an array of integers.
+        
+        Notes
+        -----
+        color_indices_changed_signal : Signal
+            Signal emitted when the color indices are changed.
+
         """
         return self._color_indices
 
@@ -223,6 +232,8 @@ class Scatter(Artist):
             new_colors = self.categorical_colormap(indices)
             self._scatter.set_facecolor(new_colors)
             self._scatter.set_edgecolor(None)
+        # emit signal
+        self.color_indices_changed_signal.emit(self._color_indices)
         self.draw()
 
     def draw(self):
@@ -256,10 +267,13 @@ class Histogram2D(Artist):
     **Signals:**
 
         * **data_changed_signal** emitted when the data is changed.
+        * **color_indices_changed_signal** emitted when the color indices are changed.
 
     """
     #: Signal emitted when the `data` is changed.
     data_changed_signal: Signal = Signal(np.ndarray)
+    #: Signal emitted when the `color_indices` are changed.
+    color_indices_changed_signal: Signal = Signal(np.ndarray)
 
     def __init__(self, ax: plt.Axes = None, data: np.ndarray = None, categorical_colormap: Colormap = cat10_mod_cmap_first_transparent, color_indices: np.ndarray = None, bins=20, histogram_colormap: Colormap = plt.cm.magma):
         super().__init__(ax, data, categorical_colormap, color_indices)
@@ -353,6 +367,11 @@ class Histogram2D(Artist):
         -------
         color_indices : (N,) np.ndarray[int] or int
             indices to map to the overlay colormap. Accepts a scalar or an array.
+        
+        Notes
+        -----
+        color_indices_changed_signal : Signal
+            Signal emitted when the color indices are changed.
 
         """
         return self._color_indices
@@ -386,6 +405,8 @@ class Histogram2D(Artist):
         # Draw the overlay
         self._overlay = self.ax.imshow(overlay_rgba.swapaxes(0, 1), origin='lower', extent=[
             xedges[0], xedges[-1], yedges[0], yedges[-1]], aspect='auto', alpha=1, zorder=2)
+        # emit signal
+        self.color_indices_changed_signal.emit(self._color_indices)
         self.draw()
 
     @property
