@@ -36,7 +36,7 @@ html:
 
 sphinx:
   config:
-    # html_theme: renku
+    autosummary_generate: True
     intersphinx_mapping:
       ebp:
         - "https://executablebooks.org/en/latest/"
@@ -71,6 +71,7 @@ sphinx:
     
         
   extra_extensions:
+    - sphinx.ext.autosummary
     - sphinx.ext.autodoc
     - sphinx.ext.napoleon # Enable support for NumPy and Google style docstrings
     - sphinx.ext.intersphinx
