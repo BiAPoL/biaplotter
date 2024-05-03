@@ -250,17 +250,6 @@ class Histogram2D(Artist):
     histogram_colormap : Colormap, optional
         colormap for the histogram, by default plt.cm.magma
 
-    Other Parameters
-    ----------------
-    _bins : int
-        stores the number of bins for the histogram
-    _histogram : Tuple[np.ndarray, np.ndarray, np.ndarray, QuadMesh]
-        stores the 2D histogram matplotlib object
-    _histogram_colormap : Colormap
-        stores the colormap for the histogram
-    _overlay : AxesImage
-        stores the overlay RGBA image
-
     Notes
     -----
     **Signals:**
