@@ -21,17 +21,45 @@ and review the napari docs for plugin developers:
 https://napari.org/stable/plugins/index.html
 -->
 
+## Documentation
+
+The full documentation with API and examples can be found [here](https://biapol.github.io/biaplotter/).
+
 ## Installation
 
-You can install `biaplotter` via [pip]:
+* Make sure you have Python in your computer, e.g. download [miniforge](https://github.com/conda-forge/miniforge?tab=readme-ov-file#download).
 
-    pip install biaplotter
+* Create a new environment, for example, like this:
 
+```
+mamba create --name biaplotter-env python=3.9
+```
 
+If you never used mamba/conda environments before, take a look at [this blog post](https://biapol.github.io/blog/mara_lampert/getting_started_with_mambaforge_and_python/readme.html).
+
+* **Activate** the new environment with `mamba`:
+
+```
+mamba activate biaplotter-env
+```
+
+* Install [napari](https://napari.org/stable/), e.g. via `mamba`:
+
+```
+mamba install -c conda-forge napari pyqt
+```
+
+Afterwards, install `biaplotter` via `pip`:
+
+```
+pip install biaplotter
+```
 
 To install latest development version :
 
-    pip install git+https://github.com/BiAPoL/biaplotter.git
+```
+pip install git+https://github.com/BiAPoL/biaplotter.git
+```
 
 
 ## Contributing
