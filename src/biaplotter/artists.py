@@ -123,6 +123,7 @@ class Scatter(Artist):
         """Initializes the scatter plot artist.
         """
         super().__init__(ax, data, categorical_colormap, color_indices)
+        #: Stores the scatter plot matplotlib object
         self._scatter = None
         self.data = data
         self.draw()  # Initial draw of the scatter plot
@@ -264,6 +265,7 @@ class Histogram2D(Artist):
         super().__init__(ax, data, categorical_colormap, color_indices)
         """Initializes the 2D histogram artist.
         """
+        #: Stores the matplotlib histogram2D object
         self._histogram = None
         self._bins = bins
         self._histogram_colormap = histogram_colormap
