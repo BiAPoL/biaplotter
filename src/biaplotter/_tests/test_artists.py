@@ -25,8 +25,8 @@ def test_scatter():
 
     # Test scatter colors
     colors = scatter._scatter.get_facecolors()
-    assert np.all(colors[0] == scatter._colormap(0))
-    assert np.all(colors[50] == scatter._colormap(2))
+    assert np.all(colors[0] == scatter.categorical_colormap(0))
+    assert np.all(colors[50] == scatter.categorical_colormap(2))
 
 
 def test_histogram2d():
