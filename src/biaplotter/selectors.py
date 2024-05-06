@@ -76,7 +76,7 @@ class BaseRectangleSelector(Selector):
         axes to which the selector will be applied.
     data : (N, 2) np.ndarray
         data to be selected.
-  
+
     """
 
     def __init__(self, ax: plt.Axes, data: np.ndarray = None):
@@ -89,7 +89,7 @@ class BaseRectangleSelector(Selector):
 
     def on_select(self, eclick, erelease) -> np.ndarray:
         """Selects points within the rectangle and returns their indices.
-        
+
         Parameters
         ----------
         eclick : MouseEvent
@@ -132,7 +132,8 @@ class BaseRectangleSelector(Selector):
         Drag from anywhere is set to True to allow for drawing from any point.
         """
         self._selector = RectangleSelector(self.ax, self.on_select, useblit=True, button=[
-                                           1], minspanx=5, minspany=5, spancoords='pixels', interactive=True, drag_from_anywhere=True)
+                                           1], minspanx=5, minspany=5, spancoords='pixels', interactive=True, drag_from_anywhere=True,
+                                           props=dict(facecolor='#00c18c', edgecolor='#00c18c', alpha=0.3, fill=True, linewidth=2.5, linestyle='--'))
 
 
 class BaseEllipseSelector(Selector):
@@ -160,14 +161,14 @@ class BaseEllipseSelector(Selector):
 
     def on_select(self, eclick, erelease):
         """Selects points within the ellipse and returns their indices.
-        
+
         Parameters
         ----------
         eclick : MouseEvent
             The press event.
         erelease : MouseEvent
             The release event.
-            
+
         Returns
         -------
         np.ndarray
@@ -204,7 +205,8 @@ class BaseEllipseSelector(Selector):
         Drag from anywhere is set to True to allow for drawing from any point.
         """
         self._selector = EllipseSelector(self.ax, self.on_select, useblit=True, button=[
-            1], minspanx=5, minspany=5, spancoords='pixels', interactive=True, drag_from_anywhere=True)
+            1], minspanx=5, minspany=5, spancoords='pixels', interactive=True, drag_from_anywhere=True,
+            props=dict(facecolor='#00c18c', edgecolor='#00c18c', alpha=0.3, fill=True, linewidth=2.5, linestyle='--'))
 
 
 class BaseLassoSelector(Selector):
@@ -221,6 +223,7 @@ class BaseLassoSelector(Selector):
         data to be selected.
 
     """
+
     def __init__(self, ax: plt.Axes, data: np.ndarray = None):
         super().__init__(ax, data)
         #: The name of the selector, set to 'Lasso Selector' by default.
@@ -264,7 +267,7 @@ class BaseLassoSelector(Selector):
         Left mouse button is used to draw the lasso.
         """
         self._selector = LassoSelector(self.ax, self.on_select, useblit=True, button=[
-            1], props={'color': 'r', 'linestyle': '--'})
+            1], props=dict(color='#05ffe2', linestyle='--', linewidth=2.5, alpha=0.6))
 
 
 class Interactive(Selector):
@@ -334,7 +337,7 @@ class Interactive(Selector):
     def active_artist(self):
         """Gets or sets the active artist."""
         return self._active_artist
-    
+
     @active_artist.setter
     def active_artist(self, value):
         """Sets the active artist."""
@@ -361,7 +364,7 @@ class Interactive(Selector):
         super().remove()
         self.canvas_widget.canvas.mpl_disconnect(self.canvas_widget.canvas.mpl_connect(
             'button_press_event', self.on_button_press))
-        
+
     def apply_selection(self):
         """Applies the selection to the data, updating the colors."""
         if self._selected_indices is not None:
@@ -373,10 +376,10 @@ class Interactive(Selector):
         # Remove selector and create a new one
         self.remove()
         self.create_selector()
-        
+
     def on_button_press(self, event):
         """Handles the button press event. Right-click applies the selection.
-        
+
         Parameters
         ----------
         event : MouseEvent
@@ -386,7 +389,7 @@ class Interactive(Selector):
 
     def update_class_value(self, value: int):
         """Update the class value.
-        
+
         Notes
         -----
         This slot is connected to the **color_spinbox_value_changed_signal** emitted by the canvas widget."""
@@ -394,7 +397,7 @@ class Interactive(Selector):
 
     def update_data(self, value: np.ndarray):
         """Update the selector data.
-        
+
         Notes
         -----
         This slot is connected to the **data_changed_signal** emitted by the active artist."""
@@ -402,7 +405,7 @@ class Interactive(Selector):
 
     def update_active_artist(self):
         """Update the active artist.
-        
+
         Notes
         -----
         This slot is connected to the **artist_changed_signal** emitted by the canvas widget."""
@@ -434,14 +437,14 @@ class InteractiveRectangleSelector(Interactive, BaseRectangleSelector):
 
     def on_select(self, eclick, erelease):
         """Selects points within the rectangle and assigns them to selected indices.
-        
+
         Parameters
         ----------
         eclick : MouseEvent
             The press event.
         erelease : MouseEvent
             The release event.
-            
+
         Returns
         -------
         np.ndarray
@@ -474,14 +477,14 @@ class InteractiveEllipseSelector(Interactive, BaseEllipseSelector):
 
     def on_select(self, eclick, erelease):
         """Selects points within the ellipse and assigns them to selected indices.
-        
+
         Parameters
         ----------
         eclick : MouseEvent
             The press event.
         erelease : MouseEvent
             The release event.
-            
+
         Returns
         -------
         np.ndarray
@@ -518,12 +521,12 @@ class InteractiveLassoSelector(Interactive, BaseLassoSelector):
 
     def on_select(self, vertices: np.ndarray):
         """Selects points within the lasso and assigns them the current class value, updating colors.
-        
+
         Parameters
         ----------
         vertices : np.ndarray
             The vertices of the lasso.
-            
+
         Returns
         -------
         np.ndarray
