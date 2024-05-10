@@ -1,12 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from matplotlib.colors import Colormap
+from matplotlib.colors import Colormap, Normalize
 from matplotlib.collections import QuadMesh
 from abc import ABC, abstractmethod
 from nap_plot_tools.cmap import cat10_mod_cmap, cat10_mod_cmap_first_transparent
 from psygnal import Signal
 from typing import Tuple, List
+from collections import defaultdict
 
 
 class Artist(ABC):
@@ -229,7 +230,12 @@ class Scatter(Artist):
             indices = indices.astype(int)
         self._color_indices = indices
         if indices is not None and self._scatter is not None:
-            new_colors = self.categorical_colormap(indices)
+            # Normalize indices differently based on data type
+            if indices.dtype == int:
+                norm = Normalize(vmin=0, vmax=self.categorical_colormap.N)
+            elif indices.dtype == float:
+                norm = Normalize(vmin=np.nanmin(indices), vmax=np.nanmax(indices))
+            new_colors = self.categorical_colormap(norm(indices))
             self._scatter.set_facecolor(new_colors)
             self._scatter.set_edgecolor(None)
         # emit signal
@@ -280,7 +286,7 @@ class Histogram2D(Artist):
         """Initializes the 2D histogram artist.
         """
         #: Stores the matplotlib histogram2D object
-        self._histogram = None
+        self._histogram_image = None
         self._bins = bins
         self._histogram_colormap = histogram_colormap
         self._overlay = None
@@ -316,11 +322,16 @@ class Histogram2D(Artist):
         # emit signal
         self.data_changed_signal.emit(self._data)
         # Remove the existing histogram to redraw
-        if self._histogram is not None:
-            self._histogram[-1].remove()
-        # Draw the new histogram
-        self._histogram = self.ax.hist2d(
-            value[:, 0], value[:, 1], bins=self._bins, cmap=self._histogram_colormap, zorder=1)
+        if self._histogram_image is not None:
+            self._histogram_image.remove()
+        # Calculate and draw the new histogram
+        self._histogram = np.histogram2d(value[:, 0], value[:, 1], bins=self._bins)
+        print(value.dtype)
+        counts, x_edges, y_edges = self._histogram
+        print(counts)
+        self._histogram_rgba = self.array_to_rgba(array=counts, colormap=self._histogram_colormap, data_type=self._data.dtype) # colormap normalizarion follows data type
+        self._histogram_image = self.ax.imshow(self._histogram_rgba, origin='lower', extent=[
+            x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]], aspect='auto', alpha=1, zorder=1)
         if self._color_indices is None:
             self.color_indices = 0  # Set default color index
         else:
@@ -350,8 +361,8 @@ class Histogram2D(Artist):
     def visible(self, value: bool):
         """Sets the visibility of the 2D histogram."""
         self._visible = value
-        if self._histogram is not None:
-            artist = self._histogram[-1]
+        if self._histogram_image is not None:
+            artist = self._histogram_image
             artist.set_visible(value)
             if self._overlay is not None:
                 self._overlay.set_visible(value)
@@ -386,25 +397,40 @@ class Histogram2D(Artist):
         if indices.dtype == float:
             indices = indices.astype(int)
         self._color_indices = indices
-        h, xedges, yedges, _ = self._histogram
-        # Create empty overlay
-        overlay_rgba = np.zeros((*h.shape, 4), dtype=float)
-        output_max = np.zeros(h.shape, dtype=float)
-        for i in np.unique(self._color_indices):
-            # Filter data by class
-            data_filtered_by_class = self._data[self._color_indices == i]
-            # Calculate histogram of filtered data while fixing the bins
-            histogram_filtered_by_class, _, _ = np.histogram2d(
-                data_filtered_by_class[:, 0], data_filtered_by_class[:, 1], bins=[xedges, yedges])
-            class_mask = histogram_filtered_by_class > output_max
-            output_max = np.maximum(histogram_filtered_by_class, output_max)
-            overlay_rgba[class_mask] = self.categorical_colormap(i)
+
+        counts, x_edges, y_edges = self._histogram
+        x_bin_indices = (np.digitize(self._data[:,0], x_edges, right=False) - 1).clip(0, len(x_edges)-2) # Get the bin index for each x value ( -1 to start from index 0 and clip to handle edge cases)
+        y_bin_indices = (np.digitize(self._data[:,1], y_edges, right=False) - 1).clip(0, len(y_edges)-2) # Get the bin index for each y value ( -1 to start from index 0 and clip to handle edge cases)
+
+        statistic_histogram = self._calculate_statistic_histogram(x_bin_indices, y_bin_indices, indices, statistic='median')
+        statistic_histogram_rgba = self.array_to_rgba(array=statistic_histogram, colormap=self.categorical_colormap, data_type=indices.dtype) # colormap normalization follows data type
         # Remove the existing overlay to redraw
         if self._overlay is not None:
             self._overlay.remove()
         # Draw the overlay
-        self._overlay = self.ax.imshow(overlay_rgba.swapaxes(0, 1), origin='lower', extent=[
-            xedges[0], xedges[-1], yedges[0], yedges[-1]], aspect='auto', alpha=1, zorder=2)
+        self._overlay = self.ax.imshow(statistic_histogram_rgba, origin='lower', extent=[
+            x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]], aspect='auto', alpha=1, zorder=2)
+
+
+        # h, xedges, yedges, _ = self._histogram
+        # # Create empty overlay
+        # overlay_rgba = np.zeros((*h.shape, 4), dtype=float)
+        # output_max = np.zeros(h.shape, dtype=float)
+        # for i in np.unique(self._color_indices):
+        #     # Filter data by class
+        #     data_filtered_by_class = self._data[self._color_indices == i]
+        #     # Calculate histogram of filtered data while fixing the bins
+        #     histogram_filtered_by_class, _, _ = np.histogram2d(
+        #         data_filtered_by_class[:, 0], data_filtered_by_class[:, 1], bins=[xedges, yedges])
+        #     class_mask = histogram_filtered_by_class > output_max
+        #     output_max = np.maximum(histogram_filtered_by_class, output_max)
+        #     overlay_rgba[class_mask] = self.categorical_colormap(i)
+        # # Remove the existing overlay to redraw
+        # if self._overlay is not None:
+        #     self._overlay.remove()
+        # # Draw the overlay
+        # self._overlay = self.ax.imshow(overlay_rgba.swapaxes(0, 1), origin='lower', extent=[
+        #     xedges[0], xedges[-1], yedges[0], yedges[-1]], aspect='auto', alpha=1, zorder=2)
         # emit signal
         self.color_indices_changed_signal.emit(self._color_indices)
         self.draw()
@@ -445,12 +471,12 @@ class Histogram2D(Artist):
 
     @property
     def histogram(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray, QuadMesh]:
-        """Returns the 2D histogram matplotlib object.
+        """Returns the 2D histogram array and edges.
 
         Returns
         -------
-        histogram : Tuple[np.ndarray, np.ndarray, np.ndarray, QuadMesh]
-            2D histogram matplotlib object.
+        histogram : Tuple[np.ndarray, np.ndarray, np.ndarray]
+            2D histogram, x edges, and y edges.
         """
         return self._histogram
 
@@ -469,10 +495,10 @@ class Histogram2D(Artist):
         indices : List[int]
             list of indices of points falling into the exceeding bins.
         """
-        counts, xedges, yedges, _ = self._histogram
+        histogram, x_edges, y_edges = self._histogram
 
         # Identify bins that exceed the threshold
-        exceeding_bins = np.argwhere(counts > threshold)
+        exceeding_bins = np.argwhere(histogram > threshold)
 
         # Prepare to collect indices
         indices = []
@@ -480,8 +506,8 @@ class Histogram2D(Artist):
         # For each bin exceeding the threshold...
         for bin_x, bin_y in exceeding_bins:
             # Identify the edges of the current bin
-            x_min, x_max = xedges[bin_x], xedges[bin_x + 1]
-            y_min, y_max = yedges[bin_y], yedges[bin_y + 1]
+            x_min, x_max = x_edges[bin_x], x_edges[bin_x + 1]
+            y_min, y_max = y_edges[bin_y], y_edges[bin_y + 1]
 
             # Find indices of points within these edges
             bin_indices = np.where((self._data[:, 0] >= x_min) & (self._data[:, 0] < x_max) & (
@@ -489,6 +515,73 @@ class Histogram2D(Artist):
             indices.extend(bin_indices)
 
         return indices
+    
+    def _calculate_statistic_histogram(x_indices, y_indices, features, statistic='median'):
+        """
+        Calculate either the mean or median "histogram" for provided indices and features.
+        
+        Parameters:
+        - x_indices: numpy array of x indices
+        - y_indices: numpy array of y indices
+        - features: numpy array of feature values
+        - statistic: 'mean', 'median', or 'sum', the type of statistic to compute
+        
+        Returns:
+        - 2D numpy array with the calculated statistic
+        """
+        height = max(x_indices) + 1
+        width = max(y_indices) + 1
+        statistic_histogram = np.full((height, width), np.nan)  # Initialize with NaNs
+
+        if statistic == 'mean':
+            sums = np.zeros((height, width))
+            counts = np.zeros((height, width))
+            for x, y, feature in zip(x_indices, y_indices, features):
+                sums[x, y] += feature
+                counts[x, y] += 1
+            np.divide(sums, counts, out=statistic_histogram, where=counts != 0)
+        elif statistic == 'median':
+            feature_lists = defaultdict(list)
+            for x, y, feature in zip(x_indices, y_indices, features):
+                feature_lists[(x, y)].append(feature)
+            for (x, y), feats in feature_lists.items():
+                if feats:
+                    statistic_histogram[x, y] = np.median(feats)
+        elif statistic == 'sum':
+            sums = np.zeros((height, width))
+            for x, y, feature in zip(x_indices, y_indices, features):
+                if np.isnan(sums[x, y]):
+                    sums[x, y] = 0  # Initialize sum as 0 when first feature is added
+                sums[x, y] += feature
+            statistic_histogram = sums
+
+        return statistic_histogram
+
+    def array_to_rgba(array, colormap=plt.cm.viridis, data_type=np.float64):
+        """
+        Convert a 2D data array to an RGBA image using a matplotlib colormap.
+        
+        Parameters
+        ----------
+        array : 2D numpy array
+            the data to convert to an image
+        colormap : matplotlib colormap
+            the colormap to use
+        data_type : type
+            the data type of the features. It is used to normalize the data.
+
+        Returns
+        -------
+        colored_image : 2D numpy array
+            the RGBA image
+        """
+        if data_type == int:
+            norm = Normalize(vmin=0, vmax=colormap.N)
+        elif data_type == float:
+            norm = Normalize(vmin=np.nanmin(array), vmax=np.nanmax(array))
+        colored_image = colormap(norm(array))
+        colored_image[np.isnan(array)] = [0, 0, 0, 0]  # Set NaN values to transparent
+        return colored_image.swapaxes(0, 1)
 
     def draw(self):
         """Draws or redraws the 2D histogram."""
