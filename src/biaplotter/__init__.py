@@ -1,4 +1,4 @@
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 from .plotter import CanvasWidget
 from .artists import Scatter, Histogram2D
 from .selectors import InteractiveRectangleSelector, InteractiveEllipseSelector, InteractiveLassoSelector
