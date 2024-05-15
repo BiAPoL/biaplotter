@@ -419,6 +419,8 @@ document.write(`
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="kn">import</span> <span class="n">Normalize</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">MaxNLocator</span>
+
 
 <span class="kn">from</span> <span class="nn">nap_plot_tools.cmap</span> <span class="kn">import</span> <span class="n">cat10_mod_cmap</span><span class="p">,</span> <span class="n">cat10_mod_cmap_first_transparent</span>
 
@@ -512,12 +514,31 @@ document.write(`
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x_edges</span><span class="p">,</span> <span class="n">y_edges</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mpl_hist</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <img alt="../_images/95968bee22d8d151a07b79e8a74e40bf9f087673a26b5e82b268b59fbce23119.png" src="../_images/95968bee22d8d151a07b79e8a74e40bf9f087673a26b5e82b268b59fbce23119.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_edges</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(11,)
+</pre></div>
+</div>
 </div>
 </div>
 <div class="cell docutils container">
@@ -536,14 +557,123 @@ document.write(`
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">x_edges</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>11
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(10, 10)
 </pre></div>
 </div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5.993082039407199
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">_annotate</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">):</span>
+    <span class="c1"># this all gets repeated below:</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">flat</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">flat</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">6.5</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">6.5</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">151</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;imshow: square bins&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">histogram</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span>
+        <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="n">x_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x_edges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">y_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y_edges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+<span class="n">_annotate</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">x_edges</span><span class="p">,</span> <span class="n">y_edges</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="c1"># ax.set_xlim([-0.7, 5.2])</span>
+
+<span class="c1"># ax = fig.add_subplot(152, title=&#39;pcolormesh: actual edges (optionally wioth interpolation/shading)&#39;,</span>
+<span class="c1">#         aspect=&#39;equal&#39;)</span>
+<span class="c1"># X, Y = np.meshgrid(x_edges, y_edges)</span>
+<span class="n">xcenters</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="n">ycenters</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mi">2</span> 
+<span class="c1"># print(X.shape, Y.shape, histogram.T.shape, xcenters.shape)</span>
+<span class="c1"># ax.pcolormesh(xcenters, ycenters, histogram.T, shading=&#39;nearest&#39;, alpha=0.5)</span>
+<span class="n">_annotate</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">xcenters</span><span class="p">,</span> <span class="n">ycenters</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="c1"># ax.plot(x, y, &#39;o&#39;, color=&#39;gray&#39;)</span>
+<span class="c1"># ax.set_xlim(x_edges[[0, -1]])</span>
+<span class="c1"># ax.set_ylim(y_edges[[0, -1]])</span>
+
+
+<span class="c1"># fig = plt.figure(figsize=(30, 15))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;imshow: square bins&#39;</span><span class="p">)</span>
+<span class="c1"># plt.imshow(histogram.T, interpolation=&#39;nearest&#39;, origin=&#39;lower&#39;,</span>
+<span class="c1">#         extent=[x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]])</span>
+<span class="c1"># _annotate(ax, x_edges, y_edges)</span>
+<span class="c1"># ax.plot(x, y, &#39;o&#39;, color=&#39;gray&#39;)</span>
+
+<span class="n">xcenters</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="n">ycenters</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="n">qm1</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">xcenters</span><span class="p">,</span> <span class="n">ycenters</span><span class="p">,</span> <span class="n">histogram</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">shading</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">)</span>
+
+<span class="c1"># Retrieve face colors</span>
+<span class="n">facecolors</span> <span class="o">=</span> <span class="n">qm1</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">()(</span><span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">histogram</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">facecolors</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="c1"># Set face colors to be fully transparent</span>
+<span class="n">qm1</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>  <span class="c1"># Fully transparent white</span>
+
+<span class="c1"># # Set edge colors to the original face colors</span>
+<span class="n">qm1</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="n">facecolors</span><span class="p">)</span>
+<span class="n">qm1</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">qm1</span><span class="o">.</span><span class="n">get_edgecolor</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="c1">#retrieve rgba values of the quadmesh object</span>
+<span class="n">rgbas</span> <span class="o">=</span> <span class="n">qm1</span><span class="o">.</span><span class="n">to_rgba</span><span class="p">(</span><span class="n">qm1</span><span class="o">.</span><span class="n">get_array</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">histogram</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+<span class="c1"># ax.imshow(rgbas, alpha=0.5, extent=[x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]],interpolation=&#39;nearest&#39;, origin=&#39;lower&#39;,)</span>
+<span class="n">_annotate</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">xcenters</span><span class="p">,</span> <span class="n">ycenters</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+
+
+<span class="kn">from</span> <span class="nn">matplotlib.image</span> <span class="kn">import</span> <span class="n">NonUniformImage</span><span class="p">,</span> <span class="n">PcolorImage</span>
+<span class="c1"># ax = fig.add_subplot(153, title=&#39;NonUniformImage: interpolated&#39;,</span>
+<span class="c1">#         aspect=&#39;equal&#39;)</span>
+<span class="c1"># im = NonUniformImage(ax, interpolation=&#39;bilinear&#39;, extent=(x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]))</span>
+<span class="c1"># xcenters = (x_edges[:-1] + x_edges[1:]) / 2</span>
+<span class="c1"># ycenters = (y_edges[:-1] + y_edges[1:]) / 2</span>
+<span class="c1"># im.set_data(xcenters, ycenters, histogram.T)</span>
+<span class="c1"># ax.add_image(im)</span>
+<span class="c1"># ax.set_xlim(x_edges[[0, -1]])</span>
+<span class="c1"># ax.set_ylim(y_edges[[0, -1]])</span>
+
+<span class="c1"># ax = fig.add_subplot(154, title=&#39;PcolorImage: interpolated, interpolation not working&#39;,</span>
+<span class="c1">#         aspect=&#39;equal&#39;)</span>
+<span class="c1"># im2 = PcolorImage(ax, interpolation=&#39;bilinear&#39;, interpolation_stage=&#39;data&#39;, cmap=plt.cm.jet)</span>
+<span class="c1"># # xcenters = (x_edges[:-1] + x_edges[1:]) / 2</span>
+<span class="c1"># # ycenters = (y_edges[:-1] + y_edges[1:]) / 2</span>
+<span class="c1"># im2.set_data(x_edges, y_edges, histogram.T)</span>
+<span class="c1"># ax.set_xlim(x_edges[[0, -1]])</span>
+<span class="c1"># ax.set_ylim(y_edges[[0, -1]])</span>
+<span class="c1"># # im.set_cmap(plt.cm.magma)</span>
+<span class="c1"># ax.add_image(im2)</span>
+
+<span class="c1"># ax = fig.add_subplot(155, title=&#39;pcolorfast&#39;, aspect=&#39;equal&#39;)</span>
+<span class="c1"># c = ax.pcolorfast(X, Y, histogram.T, cmap=plt.cm.jet)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(100, 4)
+(100, 4)
+</pre></div>
+</div>
+<img alt="../_images/cf50ed43133df7209f2875bbb716c0336ad4e0cde3d6041909c0f4a7c9682c0d.png" src="../_images/cf50ed43133df7209f2875bbb716c0336ad4e0cde3d6041909c0f4a7c9682c0d.png" />
 </div>
 </div>
 <p>Get the bin index of each element in the 2D histogram accross x and y axis</p>
@@ -678,6 +808,39 @@ document.write(`
     <span class="n">colored_image</span> <span class="o">=</span> <span class="n">colormap</span><span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
     <span class="n">colored_image</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">)]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># Set NaN values to transparent</span>
     <span class="k">return</span> <span class="n">colored_image</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">array_to_nonuniformimage</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">histogram_data</span><span class="p">,</span> <span class="n">x_edges</span><span class="p">,</span> <span class="n">y_edges</span><span class="p">,</span> <span class="n">colormap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a 2D data array to a NonUniformImage object using a matplotlib colormap.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">colormap</span><span class="o">.</span><span class="n">N</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">histogram_data</span><span class="p">),</span> <span class="n">vmax</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">histogram_data</span><span class="p">))</span>
+    <span class="n">xcenters</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">ycenters</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">NonUniformImage</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">colormap</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="n">x_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x_edges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">y_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y_edges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="n">zorder</span><span class="p">)</span>
+    <span class="c1"># image.set_zorder(zorder)</span>
+    <span class="c1"># image.set_alpha(alpha)</span>
+    <span class="n">image</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">xcenters</span><span class="p">,</span> <span class="n">ycenters</span><span class="p">,</span> <span class="n">histogram_data</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">image</span>
+
+<span class="k">def</span> <span class="nf">array_to_pcolormesh_rgba</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">histogram_data</span><span class="p">,</span> <span class="n">x_edges</span><span class="p">,</span> <span class="n">y_edges</span><span class="p">,</span> <span class="n">colormap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a 2D data array to a PcolormeshImage object using a matplotlib colormap.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">colormap</span><span class="o">.</span><span class="n">N</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">histogram_data</span><span class="p">),</span> <span class="n">vmax</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">histogram_data</span><span class="p">))</span>
+    <span class="n">xcenters</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">ycenters</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">qm</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">xcenters</span><span class="p">,</span> <span class="n">ycenters</span><span class="p">,</span> <span class="n">histogram_data</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">shading</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">colormap</span><span class="p">)</span>
+    <span class="c1">#retrieve rgba values of the quadmesh object</span>
+    <span class="n">rgba_array</span> <span class="o">=</span> <span class="n">qm</span><span class="o">.</span><span class="n">to_rgba</span><span class="p">(</span><span class="n">qm</span><span class="o">.</span><span class="n">get_array</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">histogram_data</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+    <span class="n">qm</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+    <span class="n">rgba_array</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">histogram_data</span><span class="p">)]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># Set NaN values to transparent</span>
+    <span class="k">return</span> <span class="n">rgba_array</span><span class="c1">#.swapaxes(0, 1)</span>
 </pre></div>
 </div>
 </div>
@@ -690,17 +853,48 @@ document.write(`
 <span class="n">result</span> <span class="o">=</span> <span class="n">calculate_statistic_histogram</span><span class="p">(</span><span class="n">x_bin_index</span><span class="p">,</span> <span class="n">y_bin_index</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_bin_index</span><span class="p">)),</span> <span class="n">statistic</span><span class="o">=</span><span class="n">statistic_type</span><span class="p">)</span>
 
 <span class="c1"># Convert array to RGBA image</span>
-<span class="n">image</span><span class="o">=</span> <span class="n">array_to_rgba</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="n">image2</span><span class="o">=</span> <span class="n">array_to_rgba</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+
 
 <span class="c1"># To display the image and colorbar</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+
+<span class="n">image4</span> <span class="o">=</span> <span class="n">array_to_pcolormesh_rgba</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">x_edges</span><span class="p">,</span> <span class="n">y_edges</span><span class="p">,</span> <span class="n">colormap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+<span class="n">image</span> <span class="o">=</span> <span class="n">array_to_nonuniformimage</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">x_edges</span><span class="p">,</span> <span class="n">y_edges</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># ax.add_image(image)</span>
+<span class="c1"># ax.set_xlim(x_edges[[0, -1]])</span>
+<span class="c1"># ax.set_ylim(y_edges[[0, -1]])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">statistic_type</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s2"> Values Colored by Colormap&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image2</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="n">x_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x_edges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">y_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y_edges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image4</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="n">x_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x_edges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">y_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y_edges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image4</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="n">x_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x_edges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">y_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y_edges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;bilinear&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/7ede86d55abaa4dfc091c4c7592739a418a6373b9dad807b9270f7c6a8f30e8b.png" src="../_images/7ede86d55abaa4dfc091c4c7592739a418a6373b9dad807b9270f7c6a8f30e8b.png" />
+<img alt="../_images/66ce2050182813268e897705ef827efd64d607640974e52f361ff86080ad7896.png" src="../_images/66ce2050182813268e897705ef827efd64d607640974e52f361ff86080ad7896.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">image</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/fb0126d2bb876f0264fa1f0c9a041ed4613c92a66eba6e6fdaadb137d5ca4ca3.png" src="../_images/fb0126d2bb876f0264fa1f0c9a041ed4613c92a66eba6e6fdaadb137d5ca4ca3.png" />
 </div>
 </div>
 <div class="cell docutils container">
