@@ -404,6 +404,8 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-scatter-plot">Creating a Scatter Plot</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-data-to-the-scatter-artist">Adding Data to the Scatter Artist</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assigning-classes-to-data-points">Assigning Classes to Data Points</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assigning-a-feature-as-an-overlay">Assigning a Feature as an Overlay</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#change-color-scale">Change Color Scale</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scatter-visibility">Scatter Visibility</a></li>
 </ul>
             </nav>
@@ -458,17 +460,17 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/c709cfca50f6b181f7d9d744a19d23384b28dd751a73dd0932c006b3ee5d2ac6.png" src="../_images/c709cfca50f6b181f7d9d744a19d23384b28dd751a73dd0932c006b3ee5d2ac6.png" />
+<img alt="../_images/b62228ef8b5d863ca2c747890d66c7958a5c2c88838d3c38c73903d2393913bb.png" src="../_images/b62228ef8b5d863ca2c747890d66c7958a5c2c88838d3c38c73903d2393913bb.png" />
 </div>
 </div>
 </section>
 <section id="assigning-classes-to-data-points">
 <h2>Assigning Classes to Data Points<a class="headerlink" href="#assigning-classes-to-data-points" title="Link to this heading">#</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">Scatter</span></code> artist comes with a custom categorical colormap, which can be used to assign different classes to points.</p>
-<p>You can access the scatter current categorical colormap via its private <code class="docutils literal notranslate"><span class="pre">_colormap</span></code> attribute.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Scatter</span></code> artist comes with a custom categorical overlay colormap, which can be used to assign different classes to points.</p>
+<p>You can access the scatter current categorical colormap via its <code class="docutils literal notranslate"><span class="pre">overlay_colormap</span></code> attribute.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scatter</span><span class="o">.</span><span class="n">categorical_colormap</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scatter</span><span class="o">.</span><span class="n">overlay_colormap</span>
 </pre></div>
 </div>
 </div>
@@ -486,7 +488,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/3dfa902e7aa46e59cd2fd3b233fb0914a625f3c0226c04d505ab735982ee1a4b.png" src="../_images/3dfa902e7aa46e59cd2fd3b233fb0914a625f3c0226c04d505ab735982ee1a4b.png" />
+<img alt="../_images/762b7160753debda1f28812327a19ac9d1b965bc5d6a33fe01b4397d3361c87b.png" src="../_images/762b7160753debda1f28812327a19ac9d1b965bc5d6a33fe01b4397d3361c87b.png" />
 </div>
 </div>
 <p>Colors are kept if new data is added.</p>
@@ -501,7 +503,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/99ac6f12a7667c6c40bf7bc3d2d2bd8503843c213d4f2f7036b7a4ad622ba3ad.png" src="../_images/99ac6f12a7667c6c40bf7bc3d2d2bd8503843c213d4f2f7036b7a4ad622ba3ad.png" />
+<img alt="../_images/4b05541e54291fde27aea128f7e0a297d95578fbd271ae44c825a541395ed70f.png" src="../_images/4b05541e54291fde27aea128f7e0a297d95578fbd271ae44c825a541395ed70f.png" />
 </div>
 </div>
 <p>Set <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> to <code class="docutils literal notranslate"><span class="pre">0</span></code> to reset the colors.</p>
@@ -513,7 +515,49 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/087a588ac71a24fb6e9d932240e246001fdaa4dfad8b41843b0cfda8c48ec6a5.png" src="../_images/087a588ac71a24fb6e9d932240e246001fdaa4dfad8b41843b0cfda8c48ec6a5.png" />
+<img alt="../_images/be9006a988d0114550e1b74ab2561eb347a9e1f025da6efbe2ad35cc1db1b16f.png" src="../_images/be9006a988d0114550e1b74ab2561eb347a9e1f025da6efbe2ad35cc1db1b16f.png" />
+</div>
+</div>
+</section>
+<section id="assigning-a-feature-as-an-overlay">
+<h2>Assigning a Feature as an Overlay<a class="headerlink" href="#assigning-a-feature-as-an-overlay" title="Link to this heading">#</a></h2>
+<p>You can assign a feature to be displayed as an overlay on the scatter. This feature can be a continuous or categorical feature.
+Let’s assign the x coordinate as an overlay and use a different colormap (‘jet’) to display it.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">jet</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div style="vertical-align: middle;"><strong>jet</strong> </div><div class="cmap"><img alt="jet colormap" title="jet" style="border: 1px solid #555;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAABACAYAAABsv8+/AAAAEnRFWHRUaXRsZQBqZXQgY29sb3JtYXBCuQ5RAAAAGHRFWHREZXNjcmlwdGlvbgBqZXQgY29sb3JtYXBOkXwLAAAAMHRFWHRBdXRob3IATWF0cGxvdGxpYiB2My44LjQsIGh0dHBzOi8vbWF0cGxvdGxpYi5vcmdkzrK0AAAAMnRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHYzLjguNCwgaHR0cHM6Ly9tYXRwbG90bGliLm9yZ0poLZMAAAGcSURBVHic7dbLTgJBEEDR4uF3++GCuqDHREx04RPvOZtKTUNnEljc3cz908zMzN1lzHG+dv8r9+7mXUfztub62x5Pa55nZma/5uFlXs6Pb56veVhz1udm26/nZ8//6z23+b7b/uE957Wftvm45qzzy9ytfbZ5vto/ev7T3/vr9/3yezytuX72edj209W+nc/refri/bvu3Q8AkCMAACBIAABAkAAAgCABAABBAgAAggQAAAQJAAAIEgAAECQAACBIAABAkAAAgCABAABBAgAAggQAAAQJAAAIEgAAECQAACBIAABAkAAAgCABAABBAgAAggQAAAQJAAAIEgAAECQAACBIAABAkAAAgCABAABBAgAAggQAAAQJAAAIEgAAECQAACBIAABAkAAAgCABAABBAgAAggQAAAQJAAAIEgAAECQAACBIAABAkAAAgCABAABBAgAAggQAAAQJAAAIEgAAECQAACBIAABAkAAAgCABAABBAgAAggQAAAQJAAAIEgAAECQAACBIAABAkAAAgCABAABBAgAAggQAAAQ9AzXZs/6J5AA/AAAAAElFTkSuQmCC"></div><div style="vertical-align: middle; max-width: 514px; display: flex; justify-content: space-between;"><div style="float: left;"><div title="#000080ff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #000080ff;"></div> under</div><div style="margin: 0 auto; display: inline-block;">bad <div title="#00000000" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #00000000;"></div></div><div style="float: right;">over <div title="#800000ff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #800000ff;"></div></div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">feature</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="c1"># x coordinates</span>
+<span class="n">scatter</span><span class="o">.</span><span class="n">overlay_colormap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">jet</span>
+<span class="n">scatter</span><span class="o">.</span><span class="n">color_indices</span> <span class="o">=</span> <span class="n">feature</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/ef11761977722bf90445604d2b74de262e9eb66c63f11e49e44ecdc8592b5a1b.png" src="../_images/ef11761977722bf90445604d2b74de262e9eb66c63f11e49e44ecdc8592b5a1b.png" />
+</div>
+</div>
+</section>
+<section id="change-color-scale">
+<h2>Change Color Scale<a class="headerlink" href="#change-color-scale" title="Link to this heading">#</a></h2>
+<p>You can change the color scale of the scatter plot by changing the <code class="docutils literal notranslate"><span class="pre">color_normalization_method</span></code> property. The default is ‘linear’, but you can change it to ‘log’, ‘centered’ or ‘symlog’.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scatter</span><span class="o">.</span><span class="n">color_normalization_method</span> <span class="o">=</span> <span class="s1">&#39;log&#39;</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/09bd683285b8f869377c3d83ddc34a1aa83923f6129f849a5c07d9692a028f4c.png" src="../_images/09bd683285b8f869377c3d83ddc34a1aa83923f6129f849a5c07d9692a028f4c.png" />
 </div>
 </div>
 </section>
@@ -528,7 +572,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/d89ca42e9e35a70e6f3ff1e5113b892901b1060fca68850266602b277a463342.png" src="../_images/d89ca42e9e35a70e6f3ff1e5113b892901b1060fca68850266602b277a463342.png" />
+<img alt="../_images/9ff22b638303a3799ae2260e6882c0dbbed93ce37d89f4f02911721b592e8366.png" src="../_images/9ff22b638303a3799ae2260e6882c0dbbed93ce37d89f4f02911721b592e8366.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -539,7 +583,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/087a588ac71a24fb6e9d932240e246001fdaa4dfad8b41843b0cfda8c48ec6a5.png" src="../_images/087a588ac71a24fb6e9d932240e246001fdaa4dfad8b41843b0cfda8c48ec6a5.png" />
+<img alt="../_images/09bd683285b8f869377c3d83ddc34a1aa83923f6129f849a5c07d9692a028f4c.png" src="../_images/09bd683285b8f869377c3d83ddc34a1aa83923f6129f849a5c07d9692a028f4c.png" />
 </div>
 </div>
 </section>
@@ -612,6 +656,8 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-scatter-plot">Creating a Scatter Plot</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-data-to-the-scatter-artist">Adding Data to the Scatter Artist</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assigning-classes-to-data-points">Assigning Classes to Data Points</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assigning-a-feature-as-an-overlay">Assigning a Feature as an Overlay</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#change-color-scale">Change Color Scale</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scatter-visibility">Scatter Visibility</a></li>
 </ul>
   </nav></div>

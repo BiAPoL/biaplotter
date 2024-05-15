@@ -406,7 +406,6 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.visible"><code class="docutils literal notranslate"><span class="pre">Artist.visible</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.color_indices"><code class="docutils literal notranslate"><span class="pre">Artist.color_indices</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.ax"><code class="docutils literal notranslate"><span class="pre">Artist.ax</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.categorical_colormap"><code class="docutils literal notranslate"><span class="pre">Artist.categorical_colormap</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.draw"><code class="docutils literal notranslate"><span class="pre">Artist.draw()</span></code></a></li>
 </ul>
 </li>
@@ -415,7 +414,6 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Scatter.visible"><code class="docutils literal notranslate"><span class="pre">Scatter.visible</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Scatter.color_indices"><code class="docutils literal notranslate"><span class="pre">Scatter.color_indices</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Scatter.ax"><code class="docutils literal notranslate"><span class="pre">Scatter.ax</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Scatter.categorical_colormap"><code class="docutils literal notranslate"><span class="pre">Scatter.categorical_colormap</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Scatter.draw"><code class="docutils literal notranslate"><span class="pre">Scatter.draw()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Scatter.data_changed_signal"><code class="docutils literal notranslate"><span class="pre">Scatter.data_changed_signal</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Scatter.color_indices_changed_signal"><code class="docutils literal notranslate"><span class="pre">Scatter.color_indices_changed_signal</span></code></a></li>
@@ -429,7 +427,6 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D.histogram_colormap"><code class="docutils literal notranslate"><span class="pre">Histogram2D.histogram_colormap</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D.histogram"><code class="docutils literal notranslate"><span class="pre">Histogram2D.histogram</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D.ax"><code class="docutils literal notranslate"><span class="pre">Histogram2D.ax</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D.categorical_colormap"><code class="docutils literal notranslate"><span class="pre">Histogram2D.categorical_colormap</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D.indices_in_above_threshold_patches"><code class="docutils literal notranslate"><span class="pre">Histogram2D.indices_in_above_threshold_patches()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D.draw"><code class="docutils literal notranslate"><span class="pre">Histogram2D.draw()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D.data_changed_signal"><code class="docutils literal notranslate"><span class="pre">Histogram2D.data_changed_signal</span></code></a></li>
@@ -451,7 +448,7 @@ document.write(`
 <h1>Artists<a class="headerlink" href="#artists" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="biaplotter.artists.Artist">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biaplotter.artists.</span></span><span class="sig-name descname"><span class="pre">Artist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax:</span> <span class="pre">~matplotlib.axes._axes.Axes</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~numpy.ndarray</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">categorical_colormap:</span> <span class="pre">~matplotlib.colors.Colormap</span> <span class="pre">=</span> <span class="pre">&lt;matplotlib.colors.LinearSegmentedColormap</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_indices:</span> <span class="pre">~numpy.ndarray</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#biaplotter.artists.Artist" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biaplotter.artists.</span></span><span class="sig-name descname"><span class="pre">Artist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax:</span> <span class="pre">~matplotlib.axes._axes.Axes</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~numpy.ndarray</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlay_colormap:</span> <span class="pre">~matplotlib.colors.Colormap</span> <span class="pre">=</span> <span class="pre">&lt;matplotlib.colors.LinearSegmentedColormap</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_indices:</span> <span class="pre">~numpy.ndarray</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#biaplotter.artists.Artist" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <p>Abstract base class for artists in the BiAPlotter.</p>
 <dl class="field-list simple">
@@ -459,7 +456,7 @@ document.write(`
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ax</strong> (<em>plt.Axes</em><em>, </em><em>optional</em>) – axes to plot on, by default None</p></li>
 <li><p><strong>data</strong> (<em>(</em><em>N</em><em>, </em><em>2</em><em>) </em><em>np.ndarray</em>) – data to be plotted</p></li>
-<li><p><strong>categorical_colormap</strong> (<em>Colormap</em><em>, </em><em>optional</em>) – a colormap to use for the artist, by default cat10_mod_cmap from nap-plot-tools</p></li>
+<li><p><strong>overlay_colormap</strong> (<em>Colormap</em><em>, </em><em>optional</em>) – a colormap to use for the artist, by default cat10_mod_cmap from nap-plot-tools</p></li>
 <li><p><strong>color_indices</strong> (<em>(</em><em>N</em><em>,</em><em>) </em><em>np.ndarray</em><em>, </em><em>optional</em>) – array of indices to map to the colormap, by default None</p></li>
 </ul>
 </dd>
@@ -483,9 +480,6 @@ document.write(`
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#biaplotter.artists.Artist.ax" title="biaplotter.artists.Artist.ax"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ax</span></code></a></p></td>
 <td><p>Stores axes to plot on</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#biaplotter.artists.Artist.categorical_colormap" title="biaplotter.artists.Artist.categorical_colormap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">categorical_colormap</span></code></a></p></td>
-<td><p>Stores the colormap to use for the artist</p></td>
 </tr>
 </tbody>
 </table>
@@ -523,12 +517,6 @@ document.write(`
 <dd><p>Stores axes to plot on</p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="biaplotter.artists.Artist.categorical_colormap">
-<span class="sig-name descname"><span class="pre">categorical_colormap</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Colormap</span></em><a class="headerlink" href="#biaplotter.artists.Artist.categorical_colormap" title="Link to this definition">#</a></dt>
-<dd><p>Stores the colormap to use for the artist</p>
-</dd></dl>
-
 <p class="rubric">Methods Documentation</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="biaplotter.artists.Artist.draw">
@@ -540,7 +528,7 @@ document.write(`
 
 <dl class="py class">
 <dt class="sig sig-object py" id="biaplotter.artists.Scatter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biaplotter.artists.</span></span><span class="sig-name descname"><span class="pre">Scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax:</span> <span class="pre">~matplotlib.axes._axes.Axes</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~numpy.ndarray</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">categorical_colormap:</span> <span class="pre">~matplotlib.colors.Colormap</span> <span class="pre">=</span> <span class="pre">&lt;matplotlib.colors.LinearSegmentedColormap</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_indices:</span> <span class="pre">~numpy.ndarray</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#biaplotter.artists.Scatter" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biaplotter.artists.</span></span><span class="sig-name descname"><span class="pre">Scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax:</span> <span class="pre">~matplotlib.axes._axes.Axes</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~numpy.ndarray</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlay_colormap:</span> <span class="pre">~matplotlib.colors.Colormap</span> <span class="pre">=</span> <span class="pre">&lt;matplotlib.colors.LinearSegmentedColormap</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_indices:</span> <span class="pre">~numpy.ndarray</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#biaplotter.artists.Scatter" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#biaplotter.artists.Artist" title="biaplotter.artists.Artist"><code class="xref py py-class docutils literal notranslate"><span class="pre">Artist</span></code></a></p>
 <p>Scatter plot artist for the BiAPlotter.</p>
 <p>Inherits all parameters and attributes from abstract Artist.
@@ -550,7 +538,7 @@ For parameter and attribute details, see the abstract Artist class documentation
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ax</strong> (<em>plt.Axes</em><em>, </em><em>optional</em>) – axes to plot on, by default None</p></li>
 <li><p><strong>data</strong> (<em>(</em><em>N</em><em>, </em><em>2</em><em>) </em><em>np.ndarray</em>) – data to be plotted</p></li>
-<li><p><strong>categorical_colormap</strong> (<em>Colormap</em><em>, </em><em>optional</em>) – a colormap to use for the artist, by default cat10_mod_cmap from nap-plot-tools</p></li>
+<li><p><strong>overlay_colormap</strong> (<em>Colormap</em><em>, </em><em>optional</em>) – a colormap to use for the artist, by default cat10_mod_cmap from nap-plot-tools</p></li>
 <li><p><strong>color_indices</strong> (<em>(</em><em>N</em><em>,</em><em>) </em><em>np.ndarray</em><em>[</em><em>int</em><em>] or </em><em>int</em><em>, </em><em>optional</em>) – array of indices to map to the colormap, by default None</p></li>
 </ul>
 </dd>
@@ -595,9 +583,6 @@ For parameter and attribute details, see the abstract Artist class documentation
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#biaplotter.artists.Artist.ax" title="biaplotter.artists.Artist.ax"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ax</span></code></a></p></td>
 <td><p>Stores axes to plot on</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#biaplotter.artists.Artist.categorical_colormap" title="biaplotter.artists.Artist.categorical_colormap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">categorical_colormap</span></code></a></p></td>
-<td><p>Stores the colormap to use for the artist</p></td>
 </tr>
 </tbody>
 </table>
@@ -663,7 +648,7 @@ For parameter and attribute details, see the abstract Artist class documentation
 <p>Triggers a draw idle command.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>color_indices</strong> – indices to map to the categorical_colormap. Accepts a scalar or an array of integers.</p>
+<dd class="field-odd"><p><strong>color_indices</strong> – indices to map to the overlay_colormap. Accepts a scalar or an array of integers.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>(N,) np.ndarray[int] or int</p>
@@ -681,12 +666,6 @@ For parameter and attribute details, see the abstract Artist class documentation
 <dt class="sig sig-object py" id="biaplotter.artists.Scatter.ax">
 <span class="sig-name descname"><span class="pre">ax</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Axes</span></em><a class="headerlink" href="#biaplotter.artists.Scatter.ax" title="Link to this definition">#</a></dt>
 <dd><p>Stores axes to plot on</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="biaplotter.artists.Scatter.categorical_colormap">
-<span class="sig-name descname"><span class="pre">categorical_colormap</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Colormap</span></em><a class="headerlink" href="#biaplotter.artists.Scatter.categorical_colormap" title="Link to this definition">#</a></dt>
-<dd><p>Stores the colormap to use for the artist</p>
 </dd></dl>
 
 <p class="rubric">Methods Documentation</p>
@@ -713,7 +692,7 @@ For parameter and attribute details, see the abstract Artist class documentation
 
 <dl class="py class">
 <dt class="sig sig-object py" id="biaplotter.artists.Histogram2D">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biaplotter.artists.</span></span><span class="sig-name descname"><span class="pre">Histogram2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax:</span> <span class="pre">~matplotlib.axes._axes.Axes</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~numpy.ndarray</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">categorical_colormap:</span> <span class="pre">~matplotlib.colors.Colormap</span> <span class="pre">=</span> <span class="pre">&lt;matplotlib.colors.LinearSegmentedColormap</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_indices:</span> <span class="pre">~numpy.ndarray</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins=20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histogram_colormap:</span> <span class="pre">~matplotlib.colors.Colormap</span> <span class="pre">=</span> <span class="pre">&lt;matplotlib.colors.ListedColormap</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#biaplotter.artists.Histogram2D" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biaplotter.artists.</span></span><span class="sig-name descname"><span class="pre">Histogram2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax:</span> <span class="pre">~matplotlib.axes._axes.Axes</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~numpy.ndarray</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlay_colormap:</span> <span class="pre">~matplotlib.colors.Colormap</span> <span class="pre">=</span> <span class="pre">&lt;matplotlib.colors.LinearSegmentedColormap</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_indices:</span> <span class="pre">~numpy.ndarray</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins=20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histogram_colormap:</span> <span class="pre">~matplotlib.colors.Colormap</span> <span class="pre">=</span> <span class="pre">&lt;matplotlib.colors.ListedColormap</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#biaplotter.artists.Histogram2D" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#biaplotter.artists.Artist" title="biaplotter.artists.Artist"><code class="xref py py-class docutils literal notranslate"><span class="pre">Artist</span></code></a></p>
 <p>2D histogram artist for the BiAPlotter.</p>
 <p>Inherits all parameters and attributes from abstract Artist.
@@ -723,8 +702,8 @@ For parameter and attribute details, see the abstract Artist class documentation
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ax</strong> (<em>plt.Axes</em><em>, </em><em>optional</em>) – axes to plot on, by default None</p></li>
 <li><p><strong>data</strong> (<em>(</em><em>N</em><em>, </em><em>2</em><em>) </em><em>np.ndarray</em>) – data to be plotted</p></li>
-<li><p><strong>categorical_colormap</strong> (<em>Colormap</em><em>, </em><em>optional</em>) – a colormap to use for the artist overlay, by default cat10_mod_cmap_first_transparent from nap-plot-tools (first color is transparent)</p></li>
-<li><p><strong>color_indices</strong> (<em>(</em><em>N</em><em>,</em><em>) </em><em>np.ndarray</em><em>[</em><em>int</em><em>] or </em><em>int</em><em>, </em><em>optional</em>) – array of indices to map to the categorical_colormap, by default None</p></li>
+<li><p><strong>overlay_colormap</strong> (<em>Colormap</em><em>, </em><em>optional</em>) – a colormap to use for the artist overlay, by default cat10_mod_cmap_first_transparent from nap-plot-tools (first color is transparent)</p></li>
+<li><p><strong>color_indices</strong> (<em>(</em><em>N</em><em>,</em><em>) </em><em>np.ndarray</em><em>[</em><em>int</em><em>] or </em><em>int</em><em>, </em><em>optional</em>) – array of indices to map to the overlay_colormap, by default None</p></li>
 <li><p><strong>bins</strong> (<em>int</em><em>, </em><em>optional</em>) – number of bins for the histogram, by default 20</p></li>
 <li><p><strong>histogram_colormap</strong> (<em>Colormap</em><em>, </em><em>optional</em>) – colormap for the histogram, by default plt.cm.magma</p></li>
 </ul>
@@ -757,7 +736,7 @@ For parameter and attribute details, see the abstract Artist class documentation
 <td><p>Gets or sets the colormap for the histogram.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#biaplotter.artists.Histogram2D.histogram" title="biaplotter.artists.Histogram2D.histogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">histogram</span></code></a></p></td>
-<td><p>Returns the 2D histogram matplotlib object.</p></td>
+<td><p>Returns the 2D histogram array and edges.</p></td>
 </tr>
 </tbody>
 </table>
@@ -766,9 +745,6 @@ For parameter and attribute details, see the abstract Artist class documentation
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#biaplotter.artists.Artist.ax" title="biaplotter.artists.Artist.ax"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ax</span></code></a></p></td>
 <td><p>Stores axes to plot on</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#biaplotter.artists.Artist.categorical_colormap" title="biaplotter.artists.Artist.categorical_colormap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">categorical_colormap</span></code></a></p></td>
-<td><p>Stores the colormap to use for the artist</p></td>
 </tr>
 </tbody>
 </table>
@@ -881,13 +857,13 @@ For parameter and attribute details, see the abstract Artist class documentation
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biaplotter.artists.Histogram2D.histogram">
 <span class="sig-name descname"><span class="pre">histogram</span></span><a class="headerlink" href="#biaplotter.artists.Histogram2D.histogram" title="Link to this definition">#</a></dt>
-<dd><p>Returns the 2D histogram matplotlib object.</p>
+<dd><p>Returns the 2D histogram array and edges.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>histogram</strong> – 2D histogram matplotlib object.</p>
+<dd class="field-odd"><p><strong>histogram</strong> – 2D histogram, x edges, and y edges.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Tuple[np.ndarray, np.ndarray, np.ndarray, QuadMesh]</p>
+<dd class="field-even"><p>Tuple[np.ndarray, np.ndarray, np.ndarray]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -897,12 +873,6 @@ For parameter and attribute details, see the abstract Artist class documentation
 <dt class="sig sig-object py" id="biaplotter.artists.Histogram2D.ax">
 <span class="sig-name descname"><span class="pre">ax</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Axes</span></em><a class="headerlink" href="#biaplotter.artists.Histogram2D.ax" title="Link to this definition">#</a></dt>
 <dd><p>Stores axes to plot on</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="biaplotter.artists.Histogram2D.categorical_colormap">
-<span class="sig-name descname"><span class="pre">categorical_colormap</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Colormap</span></em><a class="headerlink" href="#biaplotter.artists.Histogram2D.categorical_colormap" title="Link to this definition">#</a></dt>
-<dd><p>Stores the colormap to use for the artist</p>
 </dd></dl>
 
 <p class="rubric">Methods Documentation</p>
@@ -1016,7 +986,6 @@ of the 2D histogram exceeding a specified threshold.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.visible"><code class="docutils literal notranslate"><span class="pre">Artist.visible</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.color_indices"><code class="docutils literal notranslate"><span class="pre">Artist.color_indices</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.ax"><code class="docutils literal notranslate"><span class="pre">Artist.ax</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.categorical_colormap"><code class="docutils literal notranslate"><span class="pre">Artist.categorical_colormap</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.draw"><code class="docutils literal notranslate"><span class="pre">Artist.draw()</span></code></a></li>
 </ul>
 </li>
@@ -1025,7 +994,6 @@ of the 2D histogram exceeding a specified threshold.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Scatter.visible"><code class="docutils literal notranslate"><span class="pre">Scatter.visible</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Scatter.color_indices"><code class="docutils literal notranslate"><span class="pre">Scatter.color_indices</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Scatter.ax"><code class="docutils literal notranslate"><span class="pre">Scatter.ax</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Scatter.categorical_colormap"><code class="docutils literal notranslate"><span class="pre">Scatter.categorical_colormap</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Scatter.draw"><code class="docutils literal notranslate"><span class="pre">Scatter.draw()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Scatter.data_changed_signal"><code class="docutils literal notranslate"><span class="pre">Scatter.data_changed_signal</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Scatter.color_indices_changed_signal"><code class="docutils literal notranslate"><span class="pre">Scatter.color_indices_changed_signal</span></code></a></li>
@@ -1039,7 +1007,6 @@ of the 2D histogram exceeding a specified threshold.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D.histogram_colormap"><code class="docutils literal notranslate"><span class="pre">Histogram2D.histogram_colormap</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D.histogram"><code class="docutils literal notranslate"><span class="pre">Histogram2D.histogram</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D.ax"><code class="docutils literal notranslate"><span class="pre">Histogram2D.ax</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D.categorical_colormap"><code class="docutils literal notranslate"><span class="pre">Histogram2D.categorical_colormap</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D.indices_in_above_threshold_patches"><code class="docutils literal notranslate"><span class="pre">Histogram2D.indices_in_above_threshold_patches()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D.draw"><code class="docutils literal notranslate"><span class="pre">Histogram2D.draw()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Histogram2D.data_changed_signal"><code class="docutils literal notranslate"><span class="pre">Histogram2D.data_changed_signal</span></code></a></li>
