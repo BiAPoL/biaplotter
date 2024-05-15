@@ -41,8 +41,8 @@ def test_scatter():
 
     # Test scatter colors
     colors = scatter._scatter.get_facecolors()
-    assert np.all(colors[0] == scatter.categorical_colormap(0))
-    assert np.all(colors[50] == scatter.categorical_colormap(2))
+    assert np.all(colors[0] == scatter.overlay_colormap(0))
+    assert np.all(colors[50] == scatter.overlay_colormap(2))
 
 
 def test_histogram2d():
@@ -96,7 +96,7 @@ def test_histogram2d():
     assert histogram.bins == bins
 
     # Test overlay colors
-    overlay_array = histogram._overlay.get_array()
+    overlay_array = histogram._overlay_histogram_image.get_array()
     assert overlay_array.shape == (bins, bins, 4)
     # indices where overlay_array is not zero
     indices = np.where(overlay_array[..., -1] != 0)
