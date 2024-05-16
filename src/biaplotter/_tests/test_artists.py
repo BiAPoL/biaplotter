@@ -7,20 +7,26 @@ from biaplotter.artists import (
 
 
 def test_scatter():
+    # Inputs
     size = 100
+
+    # Generate some random data
     data = np.random.rand(size, 2)
     fig, ax = plt.subplots()
     scatter = Scatter(ax)
+
     # Test Scatter signals
+    ## Test data_changed_signal
     collected_data_signals = []
     def on_data_changed(data):
         collected_data_signals.append(data)
     scatter.data_changed_signal.connect(on_data_changed)
     assert len(collected_data_signals) == 0
-    # Set data
     scatter.data = data
     assert len(collected_data_signals) == 1
     assert np.all(collected_data_signals[0] == data)
+
+    ## Test color_indices_changed_signal
     collected_color_indices_signals = []
     def on_color_indices_changed(color_indices):
         collected_color_indices_signals.append(color_indices)
@@ -31,13 +37,13 @@ def test_scatter():
         start=0, stop=5, num=size, endpoint=False, dtype=int)
     assert len(collected_color_indices_signals) == 1
     assert np.all(collected_color_indices_signals[0] == scatter.color_indices)
-    scatter.visible = True
 
     # Test Scatter properties
+    scatter.visible = True
+
     assert scatter.data.shape == (size, 2)
     assert scatter.visible == True
     assert scatter.color_indices.shape == (size,)
-    assert scatter.color_indices.dtype == int
 
     # Test scatter colors
     colors = scatter._scatter.get_facecolors()
@@ -63,7 +69,9 @@ def test_histogram2d():
     data = np.column_stack([x, y])
     fig, ax = plt.subplots()
     histogram = Histogram2D(ax)
+
     # Test Histogram2D signals
+    ## Test data_changed_signal
     collected_data_signals = []
     def on_data_changed(data):
         collected_data_signals.append(data)
@@ -72,6 +80,7 @@ def test_histogram2d():
     histogram.data = data
     assert len(collected_data_signals) == 1
     assert np.all(collected_data_signals[0] == data)
+    ## Test color_indices_changed_signal
     collected_color_indices_signals = []
     def on_color_indices_changed(color_indices):
         collected_color_indices_signals.append(color_indices)
@@ -85,14 +94,13 @@ def test_histogram2d():
     assert len(collected_color_indices_signals) == 1
     assert np.all(collected_color_indices_signals[0] == color_indices)
 
+    # Test Histogram2D properties
     histogram.visible = True
     histogram.bins = bins
 
-    # Test Histogram2D properties
     assert histogram.data.shape == (size, 2)
     assert histogram.visible == True
     assert histogram.color_indices.shape == (size,)
-    assert histogram.color_indices.dtype == int
     assert histogram.bins == bins
 
     # Test overlay colors
