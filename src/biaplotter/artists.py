@@ -176,6 +176,8 @@ class Scatter(Artist):
                 # fill with zeros where new data is larger
                 color_indices[color_indices_size:] = 0
             self.color_indices = color_indices
+        self.ax.set_xlim(np.min(value[:, 0]), np.max(value[:, 0]))
+        self.ax.set_ylim(np.min(value[:, 1]), np.max(value[:, 1]))
         self.draw()
 
     @property
@@ -331,6 +333,8 @@ class Histogram2D(Artist):
                 # fill with zeros where new data is larger
                 color_indices[color_indices_size:] = 0
             self.color_indices = color_indices
+        self.ax.set_xlim(np.min(value[:, 0]), np.max(value[:, 0]))
+        self.ax.set_ylim(np.min(value[:, 1]), np.max(value[:, 1]))
         self.draw()
 
     @property

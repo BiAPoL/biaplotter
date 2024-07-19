@@ -44,6 +44,10 @@ def test_scatter():
     assert np.all(colors[0] == scatter.categorical_colormap(0))
     assert np.all(colors[50] == scatter.categorical_colormap(2))
 
+    # Test axis limits
+    assert np.isclose(ax.get_xlim(), (np.min(data[:, 0]), np.max(data[:, 0]))).all()
+    assert np.isclose(ax.get_ylim(), (np.min(data[:, 1]), np.max(data[:, 1]))).all()
+
 
 def test_histogram2d():
     # Inputs
@@ -101,3 +105,7 @@ def test_histogram2d():
     # indices where overlay_array is not zero
     indices = np.where(overlay_array[..., -1] != 0)
     assert np.all(indices[0] == indices_non_zero_overlay[0])
+
+    # Test axis limits
+    assert np.isclose(ax.get_xlim(), (np.min(data[:, 0]), np.max(data[:, 0]))).all()
+    assert np.isclose(ax.get_ylim(), (np.min(data[:, 1]), np.max(data[:, 1]))).all()
