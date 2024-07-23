@@ -44,6 +44,24 @@ def test_scatter():
     assert np.all(colors[0] == scatter.categorical_colormap(0))
     assert np.all(colors[50] == scatter.categorical_colormap(2))
 
+    # Test size property
+    scatter.size = 5.0
+    assert scatter.size == 5.0
+    sizes = scatter._scatter.get_sizes()
+    assert np.all(sizes == 5.0)
+
+    scatter.size = np.linspace(1, 10, size)
+    assert np.all(scatter.size == np.linspace(1, 10, size))
+    sizes = scatter._scatter.get_sizes()
+    assert np.all(sizes == np.linspace(1, 10, size))
+
+    # Test size reset when new data is set
+    new_data = np.random.rand(size, 2)
+    scatter.data = new_data
+    assert scatter.size == 1.0
+    sizes = scatter._scatter.get_sizes()
+    assert np.all(sizes == 1.0)
+
 
 def test_histogram2d():
     # Inputs
