@@ -407,7 +407,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-scatter-plot">Creating a Scatter Plot</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-data-to-the-scatter-artist">Adding Data to the Scatter Artist</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assigning-classes-to-data-points">Assigning Classes to Data Points</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-point-properties">Setting point properties</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#properties">Properties</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scatter-visibility">Scatter Visibility</a></li>
 </ul>
             </nav>
@@ -462,7 +462,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/33e1ba530e8ae8b83277bded07b3a0051eb8fa8078ed5039a1cee25d33881936.png" src="../_images/33e1ba530e8ae8b83277bded07b3a0051eb8fa8078ed5039a1cee25d33881936.png" />
+<img alt="../_images/38fae1a6fe8bda174f307dc3fa49916e038a8672d17110589fc3f0c2b84e61c9.png" src="../_images/38fae1a6fe8bda174f307dc3fa49916e038a8672d17110589fc3f0c2b84e61c9.png" />
 </div>
 </div>
 </section>
@@ -490,7 +490,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/d4e2c677a83da753e11ff9ec93ee1dd0641db1fe34c6534323a9d2ce0adeaf1f.png" src="../_images/d4e2c677a83da753e11ff9ec93ee1dd0641db1fe34c6534323a9d2ce0adeaf1f.png" />
+<img alt="../_images/982097d1d11d6b5455bbe1f9e254b289b09a8c09a05af4beb473ec970d6239ab.png" src="../_images/982097d1d11d6b5455bbe1f9e254b289b09a8c09a05af4beb473ec970d6239ab.png" />
 </div>
 </div>
 <p>Colors are kept if new data is added.</p>
@@ -505,7 +505,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/bd1824a6e62a0b7050342dfe333c7e031a61591921018bb1e8d743c0ef9a1430.png" src="../_images/bd1824a6e62a0b7050342dfe333c7e031a61591921018bb1e8d743c0ef9a1430.png" />
+<img alt="../_images/3ed6455eb91329601c6d6316a19dabd148d48f6f2ebcd3f70910dcab4967eee1.png" src="../_images/3ed6455eb91329601c6d6316a19dabd148d48f6f2ebcd3f70910dcab4967eee1.png" />
 </div>
 </div>
 <p>Set <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> to <code class="docutils literal notranslate"><span class="pre">0</span></code> to reset the colors.</p>
@@ -517,24 +517,23 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/d9dd2aea7c0a3e0611b9f25fe61bebb1f4299f9b86ce391eb99c381e4d3e8d33.png" src="../_images/d9dd2aea7c0a3e0611b9f25fe61bebb1f4299f9b86ce391eb99c381e4d3e8d33.png" />
+<img alt="../_images/284fe86801931c0b6ed28355896c48fea8617cf878f338f3b22f80ad094e8e56.png" src="../_images/284fe86801931c0b6ed28355896c48fea8617cf878f338f3b22f80ad094e8e56.png" />
 </div>
 </div>
 </section>
-<section id="setting-point-properties">
-<h2>Setting point properties<a class="headerlink" href="#setting-point-properties" title="Link to this heading">#</a></h2>
-<p>You can also set other properties of the points, like their transparency. This is mediated through the <code class="docutils literal notranslate"><span class="pre">alpha</span></code> property. In this case, we set the transparency of the points according to the respective point’s x coordinate, so we should observe a transparency gradient from left to right.</p>
+<section id="properties">
+<h2>Properties<a class="headerlink" href="#properties" title="Link to this heading">#</a></h2>
+<p>It is possible to further control properties of the scatter points, such as their size or transparency.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">alpha</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
-<span class="n">alpha</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">-</span> <span class="n">alpha</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">/</span> <span class="p">(</span><span class="n">alpha</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">alpha</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
-<span class="n">scatter</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">size</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span>
+<span class="n">scatter</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
 <span class="n">fig</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/1acca794419f3313cd639929e576e6e5941abf8374272d871db02b527f2e26a3.png" src="../_images/1acca794419f3313cd639929e576e6e5941abf8374272d871db02b527f2e26a3.png" />
+<img alt="../_images/3a4223108d84bcc3b80af24d29027c0c4e8b1f8fdbae61db96e0ac2cdbc391bd.png" src="../_images/3a4223108d84bcc3b80af24d29027c0c4e8b1f8fdbae61db96e0ac2cdbc391bd.png" />
 </div>
 </div>
 </section>
@@ -549,7 +548,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/fbdc634bd0d74813642d2060001cfc87f4deac7022a12193ba15d476e42200d1.png" src="../_images/fbdc634bd0d74813642d2060001cfc87f4deac7022a12193ba15d476e42200d1.png" />
+<img alt="../_images/d269896e2bab5e4d56ce25b9390db5982f6f0a855f0aa51e9c13de13681dc307.png" src="../_images/d269896e2bab5e4d56ce25b9390db5982f6f0a855f0aa51e9c13de13681dc307.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -560,7 +559,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/1acca794419f3313cd639929e576e6e5941abf8374272d871db02b527f2e26a3.png" src="../_images/1acca794419f3313cd639929e576e6e5941abf8374272d871db02b527f2e26a3.png" />
+<img alt="../_images/3a4223108d84bcc3b80af24d29027c0c4e8b1f8fdbae61db96e0ac2cdbc391bd.png" src="../_images/3a4223108d84bcc3b80af24d29027c0c4e8b1f8fdbae61db96e0ac2cdbc391bd.png" />
 </div>
 </div>
 </section>
@@ -633,7 +632,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-scatter-plot">Creating a Scatter Plot</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-data-to-the-scatter-artist">Adding Data to the Scatter Artist</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assigning-classes-to-data-points">Assigning Classes to Data Points</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-point-properties">Setting point properties</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#properties">Properties</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scatter-visibility">Scatter Visibility</a></li>
 </ul>
   </nav></div>
