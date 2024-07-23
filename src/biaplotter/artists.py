@@ -6,7 +6,7 @@ from matplotlib.collections import QuadMesh
 from abc import ABC, abstractmethod
 from nap_plot_tools.cmap import cat10_mod_cmap, cat10_mod_cmap_first_transparent
 from psygnal import Signal
-from typing import Tuple, List
+from typing import Tuple, List, Union
 
 
 class Artist(ABC):
@@ -239,7 +239,7 @@ class Scatter(Artist):
         self.draw()
 
     @property
-    def size(self) -> float | np.ndarray:
+    def size(self) -> Union[float, np.ndarray]:
         """Gets or sets the size of the points in the scatter plot.
 
         Triggers a draw idle command.
@@ -252,7 +252,7 @@ class Scatter(Artist):
         return self._size
 
     @size.setter
-    def size(self, value: float | np.ndarray):
+    def size(self, value: Union[float, np.ndarray]):
         """Sets the size of the points in the scatter plot."""
         self._size = value
         if self._scatter is not None:
