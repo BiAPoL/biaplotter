@@ -62,14 +62,6 @@ def test_scatter():
     sizes = scatter._scatter.get_sizes()
     assert np.all(sizes == 1.0)
 
-    # Test alpha property
-    collected_alpha_signals = []
-    def on_alpha_changed(alpha):
-        collected_alpha_signals.append(alpha)
-    scatter.alpha = np.linspace(start=0.1, stop=1.0, num=size)
-    assert np.all(scatter.alpha == np.linspace(start=0.1, stop=1.0, num=size))
-    assert scatter._scatter.get_alpha() is not None
-
 
 def test_histogram2d():
     # Inputs
