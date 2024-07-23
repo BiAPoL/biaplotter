@@ -51,7 +51,6 @@
       ~Scatter.data
       ~Scatter.visible
       ~Scatter.color_indices
-      ~Scatter.size
 
    .. rubric:: Attributes Summary
 
@@ -78,7 +77,6 @@
    .. autoattribute:: data
    .. autoattribute:: visible
    .. autoattribute:: color_indices
-   .. autoattribute:: size
 
    .. rubric:: Attributes Documentation
 
