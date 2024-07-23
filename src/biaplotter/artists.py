@@ -6,7 +6,7 @@ from matplotlib.collections import QuadMesh
 from abc import ABC, abstractmethod
 from nap_plot_tools.cmap import cat10_mod_cmap, cat10_mod_cmap_first_transparent
 from psygnal import Signal
-from typing import Tuple, List
+from typing import Tuple, List, Union
 
 
 class Artist(ABC):
@@ -125,13 +125,19 @@ class Scatter(Artist):
     #: Signal emitted when the `color_indices` are changed.
     color_indices_changed_signal: Signal = Signal(np.ndarray)
 
-    def __init__(self, ax: plt.Axes = None, data: np.ndarray = None, categorical_colormap: Colormap = cat10_mod_cmap, color_indices: np.ndarray = None, alpha: np.ndarray = 1.0):
+    def __init__(
+            self, ax: plt.Axes = None,
+            data: np.ndarray = None,
+            categorical_colormap: Colormap = cat10_mod_cmap,
+            color_indices: np.ndarray = None,
+            alpha: Union[float, np.ndarray] = 1.0,
+            size: Union[float, np.ndarray] = 50.0):
         """Initializes the scatter plot artist.
         """
         super().__init__(ax, data, categorical_colormap, color_indices)
         #: Stores the scatter plot matplotlib object
         self._scatter = None
-        self._size = 1  # Default size
+        self._size = size  # Default size
         self._alpha = alpha
         self.data = data
         self.draw()  # Initial draw of the scatter plot
@@ -268,7 +274,7 @@ class Scatter(Artist):
         self.draw()
 
     @property
-    def size(self) -> float | np.ndarray:
+    def size(self) -> Union[float, np.ndarray]:
         """Gets or sets the size of the points in the scatter plot.
 
         Triggers a draw idle command.
@@ -281,7 +287,7 @@ class Scatter(Artist):
         return self._size
 
     @size.setter
-    def size(self, value: float | np.ndarray):
+    def size(self, value: Union[float, np.ndarray]):
         """Sets the size of the points in the scatter plot."""
         self._size = value
         if self._scatter is not None:
