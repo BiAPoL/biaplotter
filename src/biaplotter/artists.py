@@ -128,8 +128,8 @@ class Scatter(Artist):
         super().__init__(ax, data, categorical_colormap, color_indices)
         #: Stores the scatter plot matplotlib object
         self._scatter = None
-        self._size = 1  # Default size
         self.data = data
+        self._size = 50  # Default size
         self.draw()  # Initial draw of the scatter plot
 
     @property
@@ -177,7 +177,7 @@ class Scatter(Artist):
                 # fill with zeros where new data is larger
                 color_indices[color_indices_size:] = 0
             self.color_indices = color_indices
-        self.size = 1  # Reset size to default
+        self.size = 50
         self.draw()
 
     @property
