@@ -381,9 +381,7 @@ document.write(`
   </button>
 `);
 </script>
-<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="fa-solid fa-list"></span>
-</button>
+
 </div></div>
       
     </div>
@@ -399,26 +397,6 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
-            <div>
-                <h2> Contents </h2>
-            </div>
-            <nav aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget"><code class="docutils literal notranslate"><span class="pre">CanvasWidget</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.active_artist"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.active_artist</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.selection_tools_layout"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.selection_tools_layout</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.selection_toolbar"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.selection_toolbar</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.class_spinbox"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.class_spinbox</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.artists"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.artists</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.selectors"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.selectors</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.add_artist"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.add_artist()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.add_selector"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.add_selector()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.on_enable_selector"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.on_enable_selector()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.artist_changed_signal"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.artist_changed_signal</span></code></a></li>
-</ul>
-</li>
-</ul>
-            </nav>
         </div>
     </div>
 </div>
@@ -430,193 +408,6 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="plotter">
 <h1>Plotter<a class="headerlink" href="#plotter" title="Link to this heading">#</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="biaplotter.plotter.CanvasWidget">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biaplotter.plotter.</span></span><span class="sig-name descname"><span class="pre">CanvasWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">napari_viewer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">napari.viewer.Viewer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QWidget</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Class:'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#biaplotter.plotter.CanvasWidget" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseNapariMPLWidget</span></code></p>
-<p>A widget that contains a canvas with matplotlib axes and a selection toolbar.</p>
-<p>The widget includes a selection toolbar with buttons to enable/disable selection tools.
-The selection toolbar includes a color class spinbox to select the class to assign to selections.
-The widget includes artists and selectors to plot data and select points.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>napari_viewer</strong> (<em>napari.viewer.Viewer</em>) – The napari viewer.</p></li>
-<li><p><strong>parent</strong> (<em>QWidget</em><em>, </em><em>optional</em>) – The parent widget, by default None.</p></li>
-<li><p><strong>label_text</strong> (<em>str</em><em>, </em><em>optional</em>) – The text to display next to the class spinbox, by default “Class:”.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<p>Signals:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>artist_changed_signal</strong> emitted when the current artist changes.</p></li>
-</ul>
-</div></blockquote>
-<p>Signals and Slots:</p>
-<blockquote>
-<div><p>This class automatically connects the following signals to slots:</p>
-<ul class="simple">
-<li><p><strong>data_changed_signal</strong> from each artist to the <strong>update_data</strong> slot in each selector. This allows artists to notify selectors when the data changes. Selectors can then synchronize their data with the artist’s data.</p></li>
-</ul>
-</div></blockquote>
-<p class="rubric">Properties Summary</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#biaplotter.plotter.CanvasWidget.active_artist" title="biaplotter.plotter.CanvasWidget.active_artist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">active_artist</span></code></a></p></td>
-<td><p>Sets or returns the active artist.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p class="rubric">Attributes Summary</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#biaplotter.plotter.CanvasWidget.selection_tools_layout" title="biaplotter.plotter.CanvasWidget.selection_tools_layout"><code class="xref py py-obj docutils literal notranslate"><span class="pre">selection_tools_layout</span></code></a></p></td>
-<td><p>The selection tools layout.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#biaplotter.plotter.CanvasWidget.selection_toolbar" title="biaplotter.plotter.CanvasWidget.selection_toolbar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">selection_toolbar</span></code></a></p></td>
-<td><p>The selection toolbar.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#biaplotter.plotter.CanvasWidget.class_spinbox" title="biaplotter.plotter.CanvasWidget.class_spinbox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">class_spinbox</span></code></a></p></td>
-<td><p>The color class spinbox.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#biaplotter.plotter.CanvasWidget.artists" title="biaplotter.plotter.CanvasWidget.artists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">artists</span></code></a></p></td>
-<td><p>Dictionary of artists.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#biaplotter.plotter.CanvasWidget.selectors" title="biaplotter.plotter.CanvasWidget.selectors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">selectors</span></code></a></p></td>
-<td><p>Dictionary of selectors.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p class="rubric">Methods Summary</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#biaplotter.plotter.CanvasWidget.add_artist" title="biaplotter.plotter.CanvasWidget.add_artist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_artist</span></code></a>(artist_type, artist_instance[, ...])</p></td>
-<td><p>Adds a new artist instance to the artists dictionary.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#biaplotter.plotter.CanvasWidget.add_selector" title="biaplotter.plotter.CanvasWidget.add_selector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_selector</span></code></a>(selector_type, selector_instance)</p></td>
-<td><p>Adds a new selector instance to the selectors dictionary.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#biaplotter.plotter.CanvasWidget.on_enable_selector" title="biaplotter.plotter.CanvasWidget.on_enable_selector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_enable_selector</span></code></a>(checked)</p></td>
-<td><p>Enables or disables the selected selector.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p class="rubric">Signals Summary</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#biaplotter.plotter.CanvasWidget.artist_changed_signal" title="biaplotter.plotter.CanvasWidget.artist_changed_signal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">artist_changed_signal</span></code></a></p></td>
-<td><p>Signal emitted when the current <cite>active_artist</cite> changes</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p class="rubric">Properties Documentation</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="biaplotter.plotter.CanvasWidget.active_artist">
-<span class="sig-name descname"><span class="pre">active_artist</span></span><a class="headerlink" href="#biaplotter.plotter.CanvasWidget.active_artist" title="Link to this definition">#</a></dt>
-<dd><p>Sets or returns the active artist.</p>
-<p>If set, makes the selected artist visible and all other artists invisible.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The active artist.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="artists_api.html#biaplotter.artists.Scatter" title="biaplotter.artists.Scatter">Scatter</a> or <a class="reference internal" href="artists_api.html#biaplotter.artists.Histogram2D" title="biaplotter.artists.Histogram2D">Histogram2D</a></p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<dl class="simple">
-<dt>artist_changed_signal<span class="classifier">Signal</span></dt><dd><p>Signal emitted when the current artist changes.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<p class="rubric">Attributes Documentation</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="biaplotter.plotter.CanvasWidget.selection_tools_layout">
-<span class="sig-name descname"><span class="pre">selection_tools_layout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QHBoxLayout</span></em><a class="headerlink" href="#biaplotter.plotter.CanvasWidget.selection_tools_layout" title="Link to this definition">#</a></dt>
-<dd><p>The selection tools layout.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="biaplotter.plotter.CanvasWidget.selection_toolbar">
-<span class="sig-name descname"><span class="pre">selection_toolbar</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">CustomToolbarWidget</span></em><a class="headerlink" href="#biaplotter.plotter.CanvasWidget.selection_toolbar" title="Link to this definition">#</a></dt>
-<dd><p>The selection toolbar.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="biaplotter.plotter.CanvasWidget.class_spinbox">
-<span class="sig-name descname"><span class="pre">class_spinbox</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QtColorSpinBox</span></em><a class="headerlink" href="#biaplotter.plotter.CanvasWidget.class_spinbox" title="Link to this definition">#</a></dt>
-<dd><p>The color class spinbox.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="biaplotter.plotter.CanvasWidget.artists">
-<span class="sig-name descname"><span class="pre">artists</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#biaplotter.plotter.CanvasWidget.artists" title="Link to this definition">#</a></dt>
-<dd><p>Dictionary of artists.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="biaplotter.plotter.CanvasWidget.selectors">
-<span class="sig-name descname"><span class="pre">selectors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#biaplotter.plotter.CanvasWidget.selectors" title="Link to this definition">#</a></dt>
-<dd><p>Dictionary of selectors.</p>
-</dd></dl>
-
-<p class="rubric">Methods Documentation</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="biaplotter.plotter.CanvasWidget.add_artist">
-<span class="sig-name descname"><span class="pre">add_artist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ArtistType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist_instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="artists_api.html#biaplotter.artists.Scatter" title="biaplotter.artists.Scatter"><span class="pre">Scatter</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="artists_api.html#biaplotter.artists.Histogram2D" title="biaplotter.artists.Histogram2D"><span class="pre">Histogram2D</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#biaplotter.plotter.CanvasWidget.add_artist" title="Link to this definition">#</a></dt>
-<dd><p>Adds a new artist instance to the artists dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>artist_type</strong> (<em>ArtistType</em>) – The type of the artist, defined by the ArtistType enum.</p></li>
-<li><p><strong>artist_instance</strong> (<a class="reference internal" href="artists_api.html#biaplotter.artists.Scatter" title="biaplotter.artists.Scatter"><em>Scatter</em></a><em> or </em><a class="reference internal" href="artists_api.html#biaplotter.artists.Histogram2D" title="biaplotter.artists.Histogram2D"><em>Histogram2D</em></a>) – An instance of the artist class.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="biaplotter.plotter.CanvasWidget.add_selector">
-<span class="sig-name descname"><span class="pre">add_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selector_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SelectorType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selector_instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="selectors_api.html#biaplotter.selectors.InteractiveRectangleSelector" title="biaplotter.selectors.InteractiveRectangleSelector"><span class="pre">InteractiveRectangleSelector</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="selectors_api.html#biaplotter.selectors.InteractiveEllipseSelector" title="biaplotter.selectors.InteractiveEllipseSelector"><span class="pre">InteractiveEllipseSelector</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="selectors_api.html#biaplotter.selectors.InteractiveLassoSelector" title="biaplotter.selectors.InteractiveLassoSelector"><span class="pre">InteractiveLassoSelector</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#biaplotter.plotter.CanvasWidget.add_selector" title="Link to this definition">#</a></dt>
-<dd><p>Adds a new selector instance to the selectors dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>selector_type</strong> (<em>SelectorType</em>) – The type of the selector, defined by the SelectorType enum.</p></li>
-<li><p><strong>selector_instance</strong> (<a class="reference internal" href="selectors_api.html#biaplotter.selectors.InteractiveRectangleSelector" title="biaplotter.selectors.InteractiveRectangleSelector"><em>InteractiveRectangleSelector</em></a><em> or </em><a class="reference internal" href="selectors_api.html#biaplotter.selectors.InteractiveEllipseSelector" title="biaplotter.selectors.InteractiveEllipseSelector"><em>InteractiveEllipseSelector</em></a><em> or </em><a class="reference internal" href="selectors_api.html#biaplotter.selectors.InteractiveLassoSelector" title="biaplotter.selectors.InteractiveLassoSelector"><em>InteractiveLassoSelector</em></a>) – An instance of the selector class.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="biaplotter.plotter.CanvasWidget.on_enable_selector">
-<span class="sig-name descname"><span class="pre">on_enable_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">checked</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#biaplotter.plotter.CanvasWidget.on_enable_selector" title="Link to this definition">#</a></dt>
-<dd><p>Enables or disables the selected selector.</p>
-<p>Enabling a selector disables all other selectors.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>checked</strong> (<em>bool</em>) – Whether the button is checked or not.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<p class="rubric">Signals Documentation</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="biaplotter.plotter.CanvasWidget.artist_changed_signal">
-<span class="sig-name descname"><span class="pre">artist_changed_signal</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Signal</span></em><a class="headerlink" href="#biaplotter.plotter.CanvasWidget.artist_changed_signal" title="Link to this definition">#</a></dt>
-<dd><p>Signal emitted when the current <cite>active_artist</cite> changes</p>
-</dd></dl>
-
-</dd></dl>
-
 </section>
 
     <script type="text/x-thebe-config">
@@ -673,33 +464,6 @@ The widget includes artists and selectors to plot data and select points.</p>
             </div>
             
             
-              
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-
-  <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> Contents
-  </div>
-  <nav class="bd-toc-nav page-toc">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget"><code class="docutils literal notranslate"><span class="pre">CanvasWidget</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.active_artist"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.active_artist</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.selection_tools_layout"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.selection_tools_layout</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.selection_toolbar"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.selection_toolbar</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.class_spinbox"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.class_spinbox</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.artists"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.artists</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.selectors"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.selectors</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.add_artist"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.add_artist()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.add_selector"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.add_selector()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.on_enable_selector"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.on_enable_selector()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.artist_changed_signal"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.artist_changed_signal</span></code></a></li>
-</ul>
-</li>
-</ul>
-  </nav></div>
-
-</div></div>
               
             
           </div>
