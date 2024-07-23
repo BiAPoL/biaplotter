@@ -263,28 +263,3 @@ class CanvasWidget(BaseNapariMPLWidget):
             raise ValueError(
                 f"Selector '{selector_type.name}' already exists.")
         self.selectors[selector_type] = selector_instance
-
-    @property
-    def alpha(self) -> float:
-        """Gets or sets the alpha value for the scatter artist.
-
-        Returns
-        -------
-        alpha : float
-            The alpha value for the scatter artist.
-        """
-        if isinstance(self._active_artist, Scatter):
-            return self._active_artist.alpha
-        return 1.0
-
-    @alpha.setter
-    def alpha(self, value: float):
-        """Sets the alpha value for the scatter artist.
-
-        Parameters
-        ----------
-        value : float
-            The alpha value to set for the scatter artist.
-        """
-        if isinstance(self._active_artist, Scatter):
-            self._active_artist.alpha = value
