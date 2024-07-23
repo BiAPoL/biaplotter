@@ -96,6 +96,8 @@ class Scatter(Artist):
         a colormap to use for the artist, by default cat10_mod_cmap from nap-plot-tools
     color_indices : (N,) np.ndarray[int] or int, optional
         array of indices to map to the colormap, by default None
+    alpha : (N,) np.ndarray[float] or float, optional
+        array of alpha values for the scatter points, by default 1.0
 
     Notes
     -----
@@ -115,6 +117,7 @@ class Scatter(Artist):
     >>> scatter.data = data
     >>> scatter.visible = True
     >>> scatter.color_indices = np.linspace(start=0, stop=5, num=100, endpoint=False, dtype=int)
+    >>> scatter.alpha = np.linspace(start=0.1, stop=1.0, num=100)
     >>> plt.show()
     """
     #: Signal emitted when the `data` is changed.
@@ -122,13 +125,14 @@ class Scatter(Artist):
     #: Signal emitted when the `color_indices` are changed.
     color_indices_changed_signal: Signal = Signal(np.ndarray)
 
-    def __init__(self, ax: plt.Axes = None, data: np.ndarray = None, categorical_colormap: Colormap = cat10_mod_cmap, color_indices: np.ndarray = None):
+    def __init__(self, ax: plt.Axes = None, data: np.ndarray = None, categorical_colormap: Colormap = cat10_mod_cmap, color_indices: np.ndarray = None, alpha: np.ndarray = 1.0):
         """Initializes the scatter plot artist.
         """
         super().__init__(ax, data, categorical_colormap, color_indices)
         #: Stores the scatter plot matplotlib object
         self._scatter = None
         self._size = 1  # Default size
+        self._alpha = alpha
         self.data = data
         self.draw()  # Initial draw of the scatter plot
 
@@ -166,7 +170,8 @@ class Scatter(Artist):
         else:
             # If the scatter plot already exists, just update its data
             self._scatter.set_offsets(value)
-        
+            self._scatter.set_alpha(1)
+
         if self._color_indices is None:
             self.color_indices = 0  # Set default color index
         else:
@@ -236,6 +241,30 @@ class Scatter(Artist):
             self._scatter.set_edgecolor(None)
         # emit signal
         self.color_indices_changed_signal.emit(self._color_indices)
+        self.draw()
+
+    @property
+    def alpha(self) -> np.ndarray:
+        """Gets or sets the alpha values for the scatter plot.
+
+        Triggers a draw idle command.
+
+        Returns
+        -------
+        alpha : (N,) np.ndarray[float] or float
+            alpha values for the scatter plot. Accepts a scalar or an array of floats.
+        """
+        return self._alpha
+
+    @alpha.setter
+    def alpha(self, value: np.ndarray):
+        """Sets the alpha values for the scatter plot and updates the display accordingly."""
+        # Check if value is a scalar
+        if np.isscalar(value):
+            value = np.full(len(self._data), value)
+        self._alpha = value
+        if self._scatter is not None:
+            self._scatter.set_alpha(value)
         self.draw()
 
     @property
