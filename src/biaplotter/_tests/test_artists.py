@@ -58,9 +58,9 @@ def test_scatter():
     # Test size reset when new data is set
     new_data = np.random.rand(size, 2)
     scatter.data = new_data
-    assert scatter.size == 1.0
+    assert scatter.size == 50.0  # that's the default
     sizes = scatter._scatter.get_sizes()
-    assert np.all(sizes == 1.0)
+    assert np.all(sizes == 50.0)
 
 
 def test_histogram2d():
