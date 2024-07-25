@@ -447,6 +447,7 @@ class Histogram2D(Artist):
         # Remove the existing overlay to redraw
         if self._overlay_histogram_image is not None:
             self._overlay_histogram_image.remove()
+            self._overlay_histogram_image = None
         counts, x_edges, y_edges = self._histogram
         # Get the bin index for each x value ( -1 to start from index 0 and clip to handle edge cases)
         x_bin_indices = (np.digitize(
@@ -457,11 +458,18 @@ class Histogram2D(Artist):
         # Assign median values to the bins (fill with NaNs if no data in the bin)
         statistic_histogram = self._calculate_statistic_histogram(
             x_bin_indices, y_bin_indices, indices, statistic='median')
-        # Draw the overlay
-        self.overlay_histogram_rgba = self.array_to_pcolormesh_rgba(
-            self.ax, statistic_histogram, x_edges, y_edges, colormap=self.overlay_colormap, dtype=indices.dtype, normalization_method=self._color_normalization_method)
-        self._overlay_histogram_image = self.ax.imshow(self.overlay_histogram_rgba,  extent=[
-                                                       x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]], origin='lower', zorder=2, interpolation=self._overlay_interpolation, alpha=self._overlay_opacity)
+        # Only draw the overlay if there are non-NaN values
+        if not np.all(np.isnan(statistic_histogram)):
+            if self.overlay_colormap is cat10_mod_cmap_first_transparent:
+                # Normalization method must be linear for categorical colormap
+                normalization_method = 'linear'
+            else:
+                normalization_method = self._color_normalization_method
+            # Draw the overlay
+            self.overlay_histogram_rgba = self.array_to_pcolormesh_rgba(
+                self.ax, statistic_histogram, x_edges, y_edges, colormap=self.overlay_colormap, dtype=indices.dtype, normalization_method=normalization_method)
+            self._overlay_histogram_image = self.ax.imshow(self.overlay_histogram_rgba,  extent=[
+                                                        x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]], origin='lower', zorder=2, interpolation=self._overlay_interpolation, alpha=self._overlay_opacity)
         # emit signal
         self.color_indices_changed_signal.emit(self._color_indices)
         self.draw()
@@ -698,13 +706,14 @@ class Histogram2D(Artist):
 
         """
         norm_class = self._normalization_methods[normalization_method]
+        # Normalize data differently based on data type
         if dtype == int:
             if normalization_method == 'symlog':
                 norm = norm_class(vmin=0, vmax=colormap.N, linthresh=1)
             elif normalization_method == 'centered':
                 norm = norm_class(vcenter=colormap.N // 2)
             elif normalization_method == 'log':
-                norm = norm_class(vmin=1e-1, vmax=colormap.N) # Avoid log(0)
+                norm = norm_class(vmin=1, vmax=colormap.N) # Avoid log(0)
             else:
                 norm = norm_class(vmin=0, vmax=colormap.N)
         elif dtype == float:
@@ -716,8 +725,12 @@ class Histogram2D(Artist):
                 elif normalization_method == 'centered':
                     norm = norm_class(vcenter=np.nanmean(histogram_data))
                 elif normalization_method == 'log':
+                    min_value = 0.03
                     norm = norm_class(vmin=max(np.nanmin(
-                        histogram_data), 1e-1), vmax=np.nanmax(histogram_data)) # Avoid log(0)
+                        histogram_data), min_value), vmax=np.nanmax(histogram_data)) # Avoid log(0)
+                    warnings.warn(
+                        f'Log normalization applied to histogram data with min value {np.nanmin(histogram_data)}. Values below {min_value} were set to {min_value}.')
+                    histogram_data[histogram_data == 0] = min_value
                 else:
                     norm = norm_class(vmin=np.nanmin(
                         histogram_data), vmax=np.nanmax(histogram_data))
