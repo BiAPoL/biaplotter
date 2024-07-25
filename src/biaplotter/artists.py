@@ -481,7 +481,9 @@ class Histogram2D(Artist):
     def color_normalization_method(self, value: str):
         """Sets the normalization method for the color indices."""
         self._color_normalization_method = value
-        self.color_indices = self._color_indices
+        # Update histogram image and overlay ifnew color normalization method is set
+        self.data = self._data
+        # self.color_indices = self._color_indices
 
     @property
     def bins(self) -> int:
@@ -637,7 +639,9 @@ class Histogram2D(Artist):
 
     def _calculate_statistic_histogram(self, x_indices, y_indices, features, statistic='median'):
         """
-        Calculate either the mean or median "histogram" for provided indices and features.
+        Calculate either a mean or median "histogram" for provided indices and features.
+
+        This means that in each patch, instead of protraying the count of points, we portray the mean, median or sum of the feature values.
 
         Parameters
         ----------
@@ -699,6 +703,8 @@ class Histogram2D(Artist):
                 norm = norm_class(vmin=0, vmax=colormap.N, linthresh=1)
             elif normalization_method == 'centered':
                 norm = norm_class(vcenter=colormap.N // 2)
+            elif normalization_method == 'log':
+                norm = norm_class(vmin=1e-1, vmax=colormap.N) # Avoid log(0)
             else:
                 norm = norm_class(vmin=0, vmax=colormap.N)
         elif dtype == float:
@@ -709,6 +715,9 @@ class Histogram2D(Artist):
                         histogram_data), linthresh=0.03)
                 elif normalization_method == 'centered':
                     norm = norm_class(vcenter=np.nanmean(histogram_data))
+                elif normalization_method == 'log':
+                    norm = norm_class(vmin=max(np.nanmin(
+                        histogram_data), 1e-1), vmax=np.nanmax(histogram_data)) # Avoid log(0)
                 else:
                     norm = norm_class(vmin=np.nanmin(
                         histogram_data), vmax=np.nanmax(histogram_data))
@@ -720,11 +729,11 @@ class Histogram2D(Artist):
                            alpha=1, visible=True, norm=norm, cmap=colormap)
         # retrieve rgba values of the quadmesh object
         # TODO: normalization not working properly for histogram data
-        if normalization_method == 'log':
-            rgba_array = qm.to_rgba(qm.get_array().reshape(
-                histogram_data.shape), norm=False)
-        else:
-            rgba_array = qm.to_rgba(qm.get_array().reshape(
+        # if normalization_method == 'log':
+        #     rgba_array = qm.to_rgba(qm.get_array().reshape(
+        #         histogram_data.shape), norm=False)
+        # else:
+        rgba_array = qm.to_rgba(qm.get_array().reshape(
                 histogram_data.shape), norm=True)
         qm.remove()
         # Set NaN values to transparent
