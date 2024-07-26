@@ -8,7 +8,7 @@ from matplotlib import patches
 from abc import ABC, abstractmethod
 from nap_plot_tools.cmap import cat10_mod_cmap, cat10_mod_cmap_first_transparent
 from psygnal import Signal
-from typing import Tuple, List
+from typing import Tuple, List, Union
 from collections import defaultdict
 import warnings
 
@@ -138,6 +138,7 @@ class Scatter(Artist):
             'linear': Normalize, 'log': LogNorm, 'symlog': SymLogNorm, 'centered': CenteredNorm}
         self._color_normalization_method = 'linear'
         self.data = data
+        self._size = 50  # Default size
         self.draw()  # Initial draw of the scatter plot
 
     @property
@@ -169,7 +170,7 @@ class Scatter(Artist):
         # emit signal
         self.data_changed_signal.emit(self._data)
         if self._scatter is None:
-            self._scatter = self.ax.scatter(value[:, 0], value[:, 1])
+            self._scatter = self.ax.scatter(value[:, 0], value[:, 1], s=self._size)
             self.color_indices = 0  # Set default color index
         else:
             # If the scatter plot already exists, just update its data
@@ -185,6 +186,7 @@ class Scatter(Artist):
                 # fill with zeros where new data is larger
                 color_indices[color_indices_size:] = 0
             self.color_indices = color_indices
+        self.size = 50
         self.draw()
 
     @property
@@ -311,6 +313,25 @@ class Scatter(Artist):
         """Sets the normalization method for the color indices."""
         self._color_normalization_method = value
         self.color_indices = self._color_indices
+    def size(self) -> Union[float, np.ndarray]:
+        """Gets or sets the size of the points in the scatter plot.
+
+        Triggers a draw idle command.
+
+        Returns
+        -------
+        size : float or (N,) np.ndarray[float]
+            size of the points in the scatter plot. Accepts a scalar or an array of floats.
+        """
+        return self._size
+
+    @size.setter
+    def size(self, value: Union[float, np.ndarray]):
+        """Sets the size of the points in the scatter plot."""
+        self._size = value
+        if self._scatter is not None:
+            self._scatter.set_sizes(np.full(len(self._data), value) if np.isscalar(value) else value)
+        self.draw()
 
     def draw(self):
         """Draws or redraws the scatter plot."""
