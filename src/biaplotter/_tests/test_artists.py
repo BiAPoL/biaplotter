@@ -125,9 +125,3 @@ def test_histogram2d():
     # indices where overlay_array is not zero
     indices = np.where(overlay_array[..., -1] != 0)
     assert np.all(indices[0] == indices_non_zero_overlay[0])
-
-    # Test axis limits
-    x_margin = 0.05 * (np.max(data[:, 0]) - np.min(data[:, 0]))
-    y_margin = 0.05 * (np.max(data[:, 1]) - np.min(data[:, 1]))
-    assert np.isclose(ax.get_xlim(), (np.min(data[:, 0]) - x_margin, np.max(data[:, 0]) + x_margin)).all()
-    assert np.isclose(ax.get_ylim(), (np.min(data[:, 1]) - y_margin, np.max(data[:, 1]) + y_margin)).all()

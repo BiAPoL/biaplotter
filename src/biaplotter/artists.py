@@ -360,10 +360,6 @@ class Histogram2D(Artist):
                 # fill with zeros where new data is larger
                 color_indices[color_indices_size:] = 0
             self.color_indices = color_indices
-        x_margin = 0.05 * (np.max(value[:, 0]) - np.min(value[:, 0]))
-        y_margin = 0.05 * (np.max(value[:, 1]) - np.min(value[:, 1]))
-        self.ax.set_xlim(np.min(value[:, 0]) - x_margin, np.max(value[:, 0]) + x_margin)
-        self.ax.set_ylim(np.min(value[:, 1]) - y_margin, np.max(value[:, 1]) + y_margin)
         self.draw()
 
     @property
