@@ -105,7 +105,7 @@ def test_histogram2d():
     histogram.color_indices_changed_signal.connect(on_color_indices_changed)
     assert len(collected_color_indices_signals) == 0
     # Set color indices of data in patches exceeding threshold to 1 (orange color)
-    indices = histogram.indices_in_above_threshold_patches(threshold=threshold)
+    indices = histogram.indices_in_patches_above_threshold(threshold=threshold)
     color_indices = np.zeros(size)
     color_indices[indices] = 1
     histogram.color_indices = color_indices
