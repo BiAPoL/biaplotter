@@ -68,6 +68,20 @@ def test_scatter():
     sizes = scatter._scatter.get_sizes()
     assert np.all(sizes == 50.0)
 
+    # Test changing overlay_colormap
+    assert scatter.overlay_colormap.name == "cat10_modified"
+    scatter.overlay_colormap = plt.cm.viridis
+    assert scatter.overlay_colormap.name == "viridis"
+
+    # Test scatter color indices after continuous overlay_colormap
+    scatter.color_indices = np.linspace(0, 1, size)
+    colors = scatter._scatter.get_facecolors()
+    assert np.all(colors[0] == plt.cm.viridis(0))
+
+    # Test scatter color_normalization_method
+    scatter.color_normalization_method = "log"
+    assert scatter.color_normalization_method == "log"
+
 
 def test_histogram2d():
     # Inputs
@@ -120,6 +134,14 @@ def test_histogram2d():
     assert histogram.visible == True
     assert histogram.color_indices.shape == (size,)
     assert histogram.bins == bins
+    assert histogram.histogram_colormap.name == "magma"
+    assert histogram.overlay_colormap.name == "cat10_modified_first_transparent"
+    assert histogram.color_normalization_method == "linear"
+    assert histogram.histogram_interpolation == "nearest"
+    assert histogram.overlay_interpolation == "nearest"
+    assert histogram.overlay_opacity == 1
+    assert histogram.overlay_visible == True
+
 
     # Test overlay colors
     overlay_array = histogram._overlay_histogram_image.get_array()
@@ -127,3 +149,35 @@ def test_histogram2d():
     # indices where overlay_array is not zero
     indices = np.where(overlay_array[..., -1] != 0)
     assert np.all(indices[0] == indices_non_zero_overlay[0])
+
+    # Test changing histogram_colormap options
+    histogram.histogram_colormap = plt.cm.viridis
+    assert histogram.histogram_colormap.name == "viridis"
+
+    # Test changing color_normalization_method to "log" while histogram_colormap is categorical
+    histogram.color_normalization_method = "log"
+    assert histogram.color_normalization_method == "linear" # it should be linear since histogram_colormap is categorical
+
+    # Test changing overlay_colormap to a continuous colormap and color_normalization_method to "log"
+    histogram.overlay_colormap = plt.cm.viridis
+    histogram.color_normalization_method = "log"
+    assert histogram.overlay_colormap.name == "viridis"
+    assert histogram.color_normalization_method == "log"
+
+    # Test other hstogram display options
+    histogram.histogram_interpolation = "bilinear"
+    histogram.overlay_interpolation = "bilinear"
+    histogram.overlay_opacity = 0.5
+    histogram.overlay_visible = False
+    assert histogram.histogram_interpolation == "bilinear"
+    assert histogram.overlay_interpolation == "bilinear"
+    assert histogram.overlay_opacity == 0.5
+    assert histogram.overlay_visible == False
+    histogram.color_normalization_method = "symlog"
+    assert histogram.color_normalization_method == "symlog"
+    histogram.color_normalization_method = "centered"
+    assert histogram.color_normalization_method == "centered"
+
+    # Don't draw overlay histogram if color_indices are nan
+    histogram.color_indices = np.nan
+    assert histogram._overlay_histogram_image is None
