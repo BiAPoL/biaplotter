@@ -244,7 +244,7 @@ class Scatter(Artist):
             if self.overlay_colormap.categorical:
                 if self._color_indices.dtype != int:
                     warnings.warn(
-                        'Color indices must be integers for categorical colormap. Change `overlay_colormap` or set `color_indices` to integers.')
+                        'Color indices must be integers for categorical colormap. Change `overlay_colormap` to a continuous colormap or set `color_indices` to integers.')
                 if self._color_normalization_method != 'linear':
                     warnings.warn(
                         'Categorical colormap detected. Setting color normalization method to linear.')
@@ -313,6 +313,8 @@ class Scatter(Artist):
         """Sets the normalization method for the color indices."""
         self._color_normalization_method = value
         self.color_indices = self._color_indices
+
+    @property
     def size(self) -> Union[float, np.ndarray]:
         """Gets or sets the size of the points in the scatter plot.
 
@@ -383,6 +385,7 @@ class Histogram2D(Artist):
         self._histogram_interpolation = 'nearest'
         self._overlay_interpolation = 'nearest'
         self._overlay_opacity = 1
+        self._overlay_visible = True
         self._overlay_histogram_image = None
         self._normalization_methods = {
             'linear': Normalize, 'log': LogNorm, 'symlog': SymLogNorm, 'centered': CenteredNorm}
@@ -426,7 +429,7 @@ class Histogram2D(Artist):
             value[:, 0], value[:, 1], bins=self._bins)
         counts, x_edges, y_edges = self._histogram
         self._histogram_rgba = self.array_to_pcolormesh_rgba(
-            self.ax, counts, x_edges, y_edges, colormap=self._histogram_colormap, dtype=float, normalization_method=self._color_normalization_method)
+            self.ax, counts, x_edges, y_edges, colormap=self._histogram_colormap, dtype=float)
         self._histogram_image = self.ax.imshow(self._histogram_rgba, extent=[
                                                x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]], origin='lower', zorder=1, interpolation=self._histogram_interpolation, alpha=1)
 
@@ -439,7 +442,7 @@ class Histogram2D(Artist):
             if len(color_indices) > color_indices_size:
                 # Fill with zeros where new data is larger
                 color_indices[color_indices_size:] = 0
-            self.color_indices = color_indices
+            self.color_indices = color_indices            
         self.draw()
 
     @property
@@ -506,11 +509,13 @@ class Histogram2D(Artist):
         # Assign median values to the bins (fill with NaNs if no data in the bin)
         statistic_histogram = self._calculate_statistic_histogram(
             x_bin_indices, y_bin_indices, indices, statistic='median')
-        # Draw the overlay
-        self.overlay_histogram_rgba = self.array_to_pcolormesh_rgba(
-            self.ax, statistic_histogram, x_edges, y_edges, colormap=self.overlay_colormap, dtype=indices.dtype, normalization_method=self._color_normalization_method)
-        self._overlay_histogram_image = self.ax.imshow(self.overlay_histogram_rgba,  extent=[
-                                                    x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]], origin='lower', zorder=2, interpolation=self._overlay_interpolation, alpha=self._overlay_opacity)
+        if not np.all(np.isnan(statistic_histogram)):
+            # Draw the overlay
+            self.overlay_histogram_rgba = self.array_to_pcolormesh_rgba(
+                self.ax, statistic_histogram, x_edges, y_edges, colormap=self.overlay_colormap, dtype=indices.dtype)
+            self._overlay_histogram_image = self.ax.imshow(self.overlay_histogram_rgba,  extent=[
+                                                        x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]], origin='lower', zorder=2, interpolation=self._overlay_interpolation, alpha=self._overlay_opacity)
+
         # emit signal
         self.color_indices_changed_signal.emit(self._color_indices)
         self.draw()
@@ -666,7 +671,7 @@ class Histogram2D(Artist):
         """
         return self._histogram
 
-    def indices_in_above_threshold_patches(self, threshold: int) -> List[int]:
+    def indices_in_patches_above_threshold(self, threshold: int) -> List[int]:
         """
         Returns the indices of the points in that fall into the bins
         of the 2D histogram exceeding a specified threshold.
@@ -754,7 +759,7 @@ class Histogram2D(Artist):
 
         return statistic_histogram
 
-    def array_to_pcolormesh_rgba(self, ax, histogram_data, x_edges, y_edges, colormap, dtype=float, normalization_method='linear'):
+    def array_to_pcolormesh_rgba(self, ax, histogram_data, x_edges, y_edges, colormap, dtype=float):
         """
         Convert a 2D data array to a RGBA image object via pcolormesh using a matplotlib colormap.
 
@@ -771,15 +776,14 @@ class Histogram2D(Artist):
         colormap : BiaColormap
             colormap to use for the image with `categorical` attribute
         dtype : type, optional
-            data type of the histogram data, by default float. Can be int or float. It is used to 
-
+            data type of the histogram data, by default float. Can be int or float. It is used to determine the normalization method.
         """
         norm_class = self._normalization_methods[self._color_normalization_method]
         # If overlay_colormap is categorical, normalize to colormap range
         if colormap.categorical:
             if dtype != int:
                 warnings.warn(
-                    'Color indices must be integers for categorical colormap. Change `overlay_colormap` or set `color_indices` to integers.')
+                    'Color indices must be integers for categorical colormap. Change `overlay_colormap` to a continuous colormap or set `color_indices` to integers.')
             if self._color_normalization_method != 'linear':
                 warnings.warn(
                     'Categorical colormap detected. Setting color normalization method to linear.')
