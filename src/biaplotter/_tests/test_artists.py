@@ -44,6 +44,12 @@ def test_scatter():
     assert np.all(colors[0] == scatter.categorical_colormap(0))
     assert np.all(colors[50] == scatter.categorical_colormap(2))
 
+    # Test axis limits
+    x_margin = 0.05 * (np.max(data[:, 0]) - np.min(data[:, 0]))
+    y_margin = 0.05 * (np.max(data[:, 1]) - np.min(data[:, 1]))
+    assert np.isclose(ax.get_xlim(), (np.min(data[:, 0]) - x_margin, np.max(data[:, 0]) + x_margin)).all()
+    assert np.isclose(ax.get_ylim(), (np.min(data[:, 1]) - y_margin, np.max(data[:, 1]) + y_margin)).all()
+
     # Test size property
     scatter.size = 5.0
     assert scatter.size == 5.0
