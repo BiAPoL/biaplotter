@@ -12,6 +12,8 @@ from typing import Tuple, List
 from collections import defaultdict
 import warnings
 
+from biaplotter.colormap import BiaColormap
+
 
 class Artist(ABC):
     """Abstract base class for artists in the BiAPlotter.
@@ -38,7 +40,7 @@ class Artist(ABC):
         #: Stores visibility of the artist
         self._visible: bool = True
         #: Stores the colormap to use for the artist
-        self.overlay_colormap: Colormap = overlay_colormap
+        self._overlay_colormap: Colormap = BiaColormap(overlay_colormap)
         #: Stores the array of indices to map to the colormap
         self._color_indices: np.array = color_indices
 
@@ -225,6 +227,74 @@ class Scatter(Artist):
         """
         return self._color_indices
 
+    
+
+    @color_indices.setter
+    def color_indices(self, indices: np.ndarray):
+        """Sets color indices for the scatter plot and updates colors accordingly."""
+        # Check if indices are a scalar
+        if np.isscalar(indices):
+            indices = np.full(len(self._data), indices)
+        self._color_indices = indices
+        if indices is not None and self._scatter is not None:
+            norm_class = self._normalization_methods[self._color_normalization_method]
+            # If overlay_colormap is categorical, normalize to colormap range
+            if self.overlay_colormap.categorical:
+                if self._color_indices.dtype != int:
+                    warnings.warn(
+                        'Color indices must be integers for categorical colormap. Change `overlay_colormap` or set `color_indices` to integers.')
+                if self._color_normalization_method != 'linear':
+                    warnings.warn(
+                        'Categorical colormap detected. Setting color normalization method to linear.')
+                    self._color_normalization_method = 'linear'
+                norm = Normalize(vmin=0, vmax=self.overlay_colormap.N)
+            else:
+                with warnings.catch_warnings():
+                    # If array is all NaN, ignore warning since it will be displayed transparent
+                    warnings.filterwarnings(
+                        'ignore', r'All-NaN slice encountered')
+                    if self._color_normalization_method == 'log':
+                        min_value = np.nanmin(self._color_indices)
+                        if min_value <= 0:
+                            min_value = 0.01
+                        norm = norm_class(vmin=min_value, vmax=np.nanmax(self._color_indices))
+                        warnings.warn(
+                            f'Log normalization applied to color indices with min value {min_value}. Values below 0.01 were set to 0.01.')
+                        indices[indices <= 0] = min_value
+                    elif self._color_normalization_method == 'centered':
+                        norm = norm_class(vcenter=np.nanmean(self._color_indices))
+                    elif self._color_normalization_method == 'symlog':
+                        norm = norm_class(vmin=np.nanmin(self._color_indices), vmax=np.nanmax(self._color_indices), linthresh=0.03)
+                    else:
+                        norm = norm_class(vmin=np.nanmin(self._color_indices), vmax=np.nanmax(self._color_indices))
+
+            # Create a ScalarMappable instance using chosen colormap and normalization
+            sm = ScalarMappable(norm=norm, cmap=self.overlay_colormap.cmap)
+            # Convert normalized data to RGBA
+            rgba_colors = sm.to_rgba(indices)
+            self._scatter.set_facecolor(rgba_colors)
+            self._scatter.set_edgecolor(None)
+        # emit signal
+        self.color_indices_changed_signal.emit(self._color_indices)
+        self.draw()
+
+    @property
+    def overlay_colormap(self) -> BiaColormap:
+        """Gets or sets the overlay colormap for the scatter plot.
+
+        Returns
+        -------
+        overlay_colormap : BiaColormap
+            colormap for the scatter plot with a `categorical` attribute.
+        """
+        return self._overlay_colormap
+    
+    @overlay_colormap.setter
+    def overlay_colormap(self, value: Colormap):
+        """Sets the overlay colormap for the scatter plot."""
+        self._overlay_colormap = BiaColormap(value)
+        self.color_indices = self._color_indices
+
     @property
     def color_normalization_method(self) -> str:
         """Gets or sets the normalization method for the color indices.
@@ -241,49 +311,6 @@ class Scatter(Artist):
         """Sets the normalization method for the color indices."""
         self._color_normalization_method = value
         self.color_indices = self._color_indices
-
-    @color_indices.setter
-    def color_indices(self, indices: np.ndarray):
-        """Sets color indices for the scatter plot and updates colors accordingly."""
-        # Check if indices are a scalar
-        if np.isscalar(indices):
-            indices = np.full(len(self._data), indices)
-        self._color_indices = indices
-        if indices is not None and self._scatter is not None:
-            norm_class = self._normalization_methods[self._color_normalization_method]
-            # Normalize indices differently based on data type, similar to https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Colormap.html#matplotlib.colors.Colormap
-            if indices.dtype == int:
-                if self._color_normalization_method == 'symlog':
-                    norm = norm_class(
-                        vmin=0, vmax=self.overlay_colormap.N, linthresh=1)
-                elif self._color_normalization_method == 'centered':
-                    norm = norm_class(vcenter=self.overlay_colormap.N // 2)
-                else:
-                    norm = norm_class(vmin=0, vmax=self.overlay_colormap.N)
-                norm = norm_class(vmin=0, vmax=self.overlay_colormap.N)
-            elif indices.dtype == float:
-                with warnings.catch_warnings():
-                    warnings.filterwarnings(
-                        'ignore', r'All-NaN slice encountered')
-                    if self._color_normalization_method == 'symlog':
-                        norm = norm_class(vmin=np.nanmin(
-                            indices), vmax=np.nanmax(indices), linthresh=0.03)
-                    elif self._color_normalization_method == 'centered':
-                        norm = norm_class(vcenter=np.nanmean(indices))
-                    else:
-                        norm = norm_class(vmin=np.nanmin(
-                            indices), vmax=np.nanmax(indices))
-
-            # Create a ScalarMappable instance using chosen colormap and normalization
-            sm = ScalarMappable(norm=norm, cmap=self.overlay_colormap)
-            # Convert normalized data to RGBA
-            rgba_colors = sm.to_rgba(indices)
-            # new_colors = self.overlay_colormap(norm(indices))
-            self._scatter.set_facecolor(rgba_colors)
-            self._scatter.set_edgecolor(None)
-        # emit signal
-        self.color_indices_changed_signal.emit(self._color_indices)
-        self.draw()
 
     def draw(self):
         """Draws or redraws the scatter plot."""
@@ -331,7 +358,7 @@ class Histogram2D(Artist):
         #: Stores the matplotlib histogram2D object
         self._histogram_image = None
         self._bins = bins
-        self._histogram_colormap = histogram_colormap
+        self._histogram_colormap = BiaColormap(histogram_colormap)
         self._histogram_interpolation = 'nearest'
         self._overlay_interpolation = 'nearest'
         self._overlay_opacity = 1
@@ -389,7 +416,7 @@ class Histogram2D(Artist):
             color_indices_size = len(self._color_indices)
             color_indices = np.resize(self._color_indices, self._data.shape[0])
             if len(color_indices) > color_indices_size:
-                # fill with zeros where new data is larger
+                # Fill with zeros where new data is larger
                 color_indices[color_indices_size:] = 0
             self.color_indices = color_indices
         self.draw()
@@ -458,21 +485,31 @@ class Histogram2D(Artist):
         # Assign median values to the bins (fill with NaNs if no data in the bin)
         statistic_histogram = self._calculate_statistic_histogram(
             x_bin_indices, y_bin_indices, indices, statistic='median')
-        # Only draw the overlay if there are non-NaN values
-        if not np.all(np.isnan(statistic_histogram)):
-            if self.overlay_colormap is cat10_mod_cmap_first_transparent:
-                # Normalization method must be linear for categorical colormap
-                normalization_method = 'linear'
-            else:
-                normalization_method = self._color_normalization_method
-            # Draw the overlay
-            self.overlay_histogram_rgba = self.array_to_pcolormesh_rgba(
-                self.ax, statistic_histogram, x_edges, y_edges, colormap=self.overlay_colormap, dtype=indices.dtype, normalization_method=normalization_method)
-            self._overlay_histogram_image = self.ax.imshow(self.overlay_histogram_rgba,  extent=[
-                                                        x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]], origin='lower', zorder=2, interpolation=self._overlay_interpolation, alpha=self._overlay_opacity)
+        # Draw the overlay
+        self.overlay_histogram_rgba = self.array_to_pcolormesh_rgba(
+            self.ax, statistic_histogram, x_edges, y_edges, colormap=self.overlay_colormap, dtype=indices.dtype, normalization_method=self._color_normalization_method)
+        self._overlay_histogram_image = self.ax.imshow(self.overlay_histogram_rgba,  extent=[
+                                                    x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]], origin='lower', zorder=2, interpolation=self._overlay_interpolation, alpha=self._overlay_opacity)
         # emit signal
         self.color_indices_changed_signal.emit(self._color_indices)
         self.draw()
+
+    @property
+    def overlay_colormap(self) -> BiaColormap:
+        """Gets or sets the overlay colormap for the 2D histogram.
+
+        Returns
+        -------
+        overlay_colormap : BiaColormap
+            colormap for the overlay histogram with a `categorical` attribute.
+        """
+        return self._overlay_colormap
+    
+    @overlay_colormap.setter
+    def overlay_colormap(self, value: Colormap):
+        """Sets the overlay colormap for the 2D histogram."""
+        self._overlay_colormap = BiaColormap(value)
+        self.color_indices = self._color_indices
 
     @property
     def color_normalization_method(self) -> str:
@@ -491,7 +528,6 @@ class Histogram2D(Artist):
         self._color_normalization_method = value
         # Update histogram image and overlay ifnew color normalization method is set
         self.data = self._data
-        # self.color_indices = self._color_indices
 
     @property
     def bins(self) -> int:
@@ -524,7 +560,7 @@ class Histogram2D(Artist):
     @histogram_colormap.setter
     def histogram_colormap(self, value: Colormap):
         """Sets the colormap for the histogram."""
-        self._histogram_colormap = value
+        self._histogram_colormap = BiaColormap(value)
         self.data = self._data
 
     @property
@@ -697,55 +733,62 @@ class Histogram2D(Artist):
 
         return statistic_histogram
 
-    def array_to_pcolormesh_rgba(self, ax, histogram_data, x_edges, y_edges, colormap=plt.cm.viridis, dtype=float, normalization_method='linear'):
+    def array_to_pcolormesh_rgba(self, ax, histogram_data, x_edges, y_edges, colormap, dtype=float, normalization_method='linear'):
         """
         Convert a 2D data array to a RGBA image object via pcolormesh using a matplotlib colormap.
 
         Parameters
         ----------
+        ax : plt.Axes
+            axes to plot on
+        histogram_data : np.ndarray
+            2D data array to be converted to RGBA image
+        x_edges : np.ndarray
+            x bin edges
+        y_edges : np.ndarray
+            y bin edges
+        colormap : BiaColormap
+            colormap to use for the image with `categorical` attribute
+        dtype : type, optional
+            data type of the histogram data, by default float. Can be int or float. It is used to 
 
         """
-        norm_class = self._normalization_methods[normalization_method]
-        # Normalize data differently based on data type
-        if dtype == int:
-            if normalization_method == 'symlog':
-                norm = norm_class(vmin=0, vmax=colormap.N, linthresh=1)
-            elif normalization_method == 'centered':
-                norm = norm_class(vcenter=colormap.N // 2)
-            elif normalization_method == 'log':
-                norm = norm_class(vmin=1, vmax=colormap.N) # Avoid log(0)
-            else:
-                norm = norm_class(vmin=0, vmax=colormap.N)
-        elif dtype == float:
+        norm_class = self._normalization_methods[self._color_normalization_method]
+        # If overlay_colormap is categorical, normalize to colormap range
+        if colormap.categorical:
+            if dtype != int:
+                warnings.warn(
+                    'Color indices must be integers for categorical colormap. Change `overlay_colormap` or set `color_indices` to integers.')
+            if self._color_normalization_method != 'linear':
+                warnings.warn(
+                    'Categorical colormap detected. Setting color normalization method to linear.')
+                self._color_normalization_method = 'linear'
+            norm = Normalize(vmin=0, vmax=colormap.N)
+        else:
             with warnings.catch_warnings():
-                warnings.filterwarnings('ignore', r'All-NaN slice encountered')
-                if normalization_method == 'symlog':
-                    norm = norm_class(vmin=np.nanmin(histogram_data), vmax=np.nanmax(
-                        histogram_data), linthresh=0.03)
-                elif normalization_method == 'centered':
-                    norm = norm_class(vcenter=np.nanmean(histogram_data))
-                elif normalization_method == 'log':
-                    min_value = 0.03
-                    norm = norm_class(vmin=max(np.nanmin(
-                        histogram_data), min_value), vmax=np.nanmax(histogram_data)) # Avoid log(0)
+                # If array is all NaN, ignore warning since it will be displayed transparent
+                warnings.filterwarnings(
+                    'ignore', r'All-NaN slice encountered')
+                if self._color_normalization_method == 'log':
+                    min_value = np.nanmin(histogram_data)
+                    if min_value <= 0:
+                        min_value = 0.01
+                    norm = norm_class(vmin=min_value, vmax=np.nanmax(histogram_data))
                     warnings.warn(
-                        f'Log normalization applied to histogram data with min value {np.nanmin(histogram_data)}. Values below {min_value} were set to {min_value}.')
-                    histogram_data[histogram_data == 0] = min_value
+                        f'Log normalization applied to color indices with min value {min_value}. Values below 0.01 were set to 0.01.')
+                    histogram_data[histogram_data <= 0] = min_value
+                elif self._color_normalization_method == 'centered':
+                    norm = norm_class(vcenter=np.nanmean(histogram_data))
+                elif self._color_normalization_method == 'symlog':
+                    norm = norm_class(vmin=np.nanmin(histogram_data), vmax=np.nanmax(histogram_data), linthresh=0.03)
                 else:
-                    norm = norm_class(vmin=np.nanmin(
-                        histogram_data), vmax=np.nanmax(histogram_data))
-        print(norm.vmin, norm.vmax)
+                    norm = norm_class(vmin=np.nanmin(histogram_data), vmax=np.nanmax(histogram_data))
+
         histogram_data = histogram_data.T
         xcenters = (x_edges[:-1] + x_edges[1:]) / 2
         ycenters = (y_edges[:-1] + y_edges[1:]) / 2
         qm = ax.pcolormesh(xcenters, ycenters, histogram_data, shading='nearest',
-                           alpha=1, visible=True, norm=norm, cmap=colormap)
-        # retrieve rgba values of the quadmesh object
-        # TODO: normalization not working properly for histogram data
-        # if normalization_method == 'log':
-        #     rgba_array = qm.to_rgba(qm.get_array().reshape(
-        #         histogram_data.shape), norm=False)
-        # else:
+                           alpha=1, visible=True, norm=norm, cmap=colormap.cmap)
         rgba_array = qm.to_rgba(qm.get_array().reshape(
                 histogram_data.shape), norm=True)
         qm.remove()
