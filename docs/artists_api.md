@@ -52,13 +52,14 @@
       ~Scatter.visible
       ~Scatter.color_indices
       ~Scatter.size
+      ~Scatter.overlay_colormap
+      ~Scatter.color_normalization_method
 
    .. rubric:: Attributes Summary
 
    .. autosummary::
 
       ~Artist.ax
-      ~Artist.categorical_colormap
 
    .. rubric:: Methods Summary
 
@@ -79,11 +80,12 @@
    .. autoattribute:: visible
    .. autoattribute:: color_indices
    .. autoattribute:: size
+   .. autoattribute:: overlay_colormap
+   .. autoattribute:: color_normalization_method
 
    .. rubric:: Attributes Documentation
 
    .. autoattribute:: ax
-   .. autoattribute:: categorical_colormap
 
    .. rubric:: Methods Documentation
 
@@ -105,15 +107,22 @@
       ~Histogram2D.visible
       ~Histogram2D.color_indices
       ~Histogram2D.bins
-      ~Histogram2D.histogram_colormap
       ~Histogram2D.histogram
+      ~Histogram2D.histogram_colormap
+      ~Histogram2D.histogram_interpolation
+      ~Histogram2D.histogram_color_normalization_method
+      ~Histogram2D.overlay_colormap
+      ~Histogram2D.overlay_interpolation
+      ~Histogram2D.overlay_color_normalization_method
+      ~Histogram2D.overlay_opacity
+      ~Histogram2D.overlay_visible
+
 
    .. rubric:: Attributes Summary
 
    .. autosummary::
 
       ~Artist.ax
-      ~Artist.categorical_colormap
 
    .. rubric:: Methods Summary
 
@@ -135,13 +144,20 @@
    .. autoattribute:: visible
    .. autoattribute:: color_indices
    .. autoattribute:: bins
-   .. autoattribute:: histogram_colormap
    .. autoattribute:: histogram
+   .. autoattribute:: histogram_colormap
+   .. autoattribute:: histogram_interpolation
+   .. autoattribute:: histogram_color_normalization_method
+   .. autoattribute:: overlay_colormap
+   .. autoattribute:: overlay_interpolation
+   .. autoattribute:: overlay_color_normalization_method
+   .. autoattribute:: overlay_opacity
+   .. autoattribute:: overlay_visible
+
 
    .. rubric:: Attributes Documentation
 
    .. autoattribute:: ax
-   .. autoattribute:: categorical_colormap
 
    .. rubric:: Methods Documentation
 
