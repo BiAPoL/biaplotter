@@ -773,12 +773,14 @@ class Histogram2D(Artist):
                     statistic_histogram[x, y] = np.median(feats)
         elif statistic == 'sum':
             sums = np.zeros((height, width))
+            sums_flags = np.zeros((height, width)).astype(bool)
             for x, y, feature in zip(x_indices, y_indices, features):
                 if np.isnan(sums[x, y]):
                     # Initialize sum as 0 when first feature is added
                     sums[x, y] = 0
                 sums[x, y] += feature
-            statistic_histogram = sums
+                sums_flags[x, y] = True
+            statistic_histogram[sums_flags] = sums[sums_flags]
 
         return statistic_histogram
     
