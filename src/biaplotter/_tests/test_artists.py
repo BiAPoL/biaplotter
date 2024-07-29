@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import pytest
 
 from biaplotter.artists import (
     Scatter, Histogram2D
@@ -189,3 +190,53 @@ def test_histogram2d():
     # Don't draw overlay histogram if color_indices are nan
     histogram.color_indices = np.nan
     assert histogram._overlay_histogram_image is None
+
+# Test calculate_statistic_histogram_method for different statistics
+statistics = ["sum", "median", "mean"]
+expected_results = [
+    np.array([
+        [    0., np.nan, np.nan],
+        [np.nan,     9., np.nan],
+        [np.nan, np.nan,    15.]
+       ]),
+    np.array([
+        [0.    , np.nan, np.nan],
+        [np.nan, 2.    , np.nan],
+        [np.nan, np.nan,    7.5]
+        ]),
+    np.array([
+        [0.    , np.nan, np.nan],
+        [np.nan, 3.    , np.nan],
+        [np.nan, np.nan,    7.5]
+        ]),
+
+]
+@pytest.mark.parametrize("statistic,expected_array", zip(statistics, expected_results), ids=statistics)
+def test_calculate_statistic_histogram_method(statistic,expected_array):
+    input_xy_data = np.array([
+            [1, 2],
+            [3, 4],
+            [3, 5],
+            [4, 5],
+            [5, 6],
+            [6, 7],
+        ])
+    bins = 3
+    input_features = np.array([0, 1, 2, 6, 7, 8])
+
+    expected_histogram_array = np.array([
+        [1., 0., 0.],
+       [0., 3., 0.],
+       [0., 0., 2.]])
+    
+    histogram = Histogram2D(data=input_xy_data, bins=bins)
+    histogram_array, x_edges, y_edges = histogram.histogram
+    assert np.all(histogram_array == expected_histogram_array)
+    # Get the bin index for each x value ( -1 to start from index 0 and clip to handle edge cases)
+    x_bin_indices = (np.digitize(
+        input_xy_data[:, 0], x_edges, right=False) - 1).clip(0, len(x_edges)-2)
+    # Get the bin index for each y value ( -1 to start from index 0 and clip to handle edge cases)
+    y_bin_indices = (np.digitize(
+        input_xy_data[:, 1], y_edges, right=False) - 1).clip(0, len(y_edges)-2)
+    result = histogram._calculate_statistic_histogram(x_bin_indices, y_bin_indices, input_features, statistic=statistic)
+    assert np.array_equal(result, expected_array, equal_nan=True)
