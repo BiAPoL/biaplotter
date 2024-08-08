@@ -184,6 +184,7 @@ class Scatter(Artist):
         self.ax.set_xlim(np.min(value[:, 0]) - x_margin, np.max(value[:, 0]) + x_margin)
         self.ax.set_ylim(np.min(value[:, 1]) - y_margin, np.max(value[:, 1]) + y_margin)
 
+        self.reset()  # Call reset method when new data is set
         self.draw()
 
     @property
@@ -263,6 +264,15 @@ class Scatter(Artist):
         self._size = value
         if self._scatter is not None:
             self._scatter.set_sizes(np.full(len(self._data), value) if np.isscalar(value) else value)
+        self.draw()
+
+    def reset(self):
+        """Resets the color indices, alpha, and size of the scatter plot."""
+        self._color_indices = np.zeros(len(self._data), dtype=int)
+        self._scatter.set_facecolor(self.categorical_colormap(self._color_indices))
+        self._scatter.set_edgecolor(None)
+        self._size = 50.0
+        self._scatter.set_sizes(np.full(len(self._data), self._size))
         self.draw()
 
     def draw(self):
