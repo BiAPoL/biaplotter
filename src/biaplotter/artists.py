@@ -6,7 +6,7 @@ from matplotlib.collections import QuadMesh
 from abc import ABC, abstractmethod
 from nap_plot_tools.cmap import cat10_mod_cmap, cat10_mod_cmap_first_transparent
 from psygnal import Signal
-from typing import Tuple, List
+from typing import Tuple, List, Union
 
 
 class Artist(ABC):
@@ -96,8 +96,6 @@ class Scatter(Artist):
         a colormap to use for the artist, by default cat10_mod_cmap from nap-plot-tools
     color_indices : (N,) np.ndarray[int] or int, optional
         array of indices to map to the colormap, by default None
-    alpha : (N,) np.ndarray[float] or float, optional
-        array of alpha values for the scatter points, by default 1.0
 
     Notes
     -----
@@ -117,7 +115,6 @@ class Scatter(Artist):
     >>> scatter.data = data
     >>> scatter.visible = True
     >>> scatter.color_indices = np.linspace(start=0, stop=5, num=100, endpoint=False, dtype=int)
-    >>> scatter.alpha = np.linspace(start=0.1, stop=1.0, num=100)
     >>> plt.show()
     """
     #: Signal emitted when the `data` is changed.
@@ -125,14 +122,14 @@ class Scatter(Artist):
     #: Signal emitted when the `color_indices` are changed.
     color_indices_changed_signal: Signal = Signal(np.ndarray)
 
-    def __init__(self, ax: plt.Axes = None, data: np.ndarray = None, categorical_colormap: Colormap = cat10_mod_cmap, color_indices: np.ndarray = None, alpha: np.ndarray = 1.0):
+    def __init__(self, ax: plt.Axes = None, data: np.ndarray = None, categorical_colormap: Colormap = cat10_mod_cmap, color_indices: np.ndarray = None):
         """Initializes the scatter plot artist.
         """
         super().__init__(ax, data, categorical_colormap, color_indices)
         #: Stores the scatter plot matplotlib object
         self._scatter = None
-        self._alpha = alpha
         self.data = data
+        self._size = 50  # Default size
         self.draw()  # Initial draw of the scatter plot
 
     @property
@@ -164,7 +161,7 @@ class Scatter(Artist):
         # emit signal
         self.data_changed_signal.emit(self._data)
         if self._scatter is None:
-            self._scatter = self.ax.scatter(value[:, 0], value[:, 1])
+            self._scatter = self.ax.scatter(value[:, 0], value[:, 1], s=self._size)
             self.color_indices = 0  # Set default color index
         else:
             # If the scatter plot already exists, just update its data
@@ -181,6 +178,13 @@ class Scatter(Artist):
                 # fill with zeros where new data is larger
                 color_indices[color_indices_size:] = 0
             self.color_indices = color_indices
+        self.size = 50
+
+        x_margin = 0.05 * (np.max(value[:, 0]) - np.min(value[:, 0]))
+        y_margin = 0.05 * (np.max(value[:, 1]) - np.min(value[:, 1]))
+        self.ax.set_xlim(np.min(value[:, 0]) - x_margin, np.max(value[:, 0]) + x_margin)
+        self.ax.set_ylim(np.min(value[:, 1]) - y_margin, np.max(value[:, 1]) + y_margin)
+
         self.draw()
 
     @property
@@ -242,27 +246,24 @@ class Scatter(Artist):
         self.draw()
 
     @property
-    def alpha(self) -> np.ndarray:
-        """Gets or sets the alpha values for the scatter plot.
+    def size(self) -> Union[float, np.ndarray]:
+        """Gets or sets the size of the points in the scatter plot.
 
         Triggers a draw idle command.
 
         Returns
         -------
-        alpha : (N,) np.ndarray[float] or float
-            alpha values for the scatter plot. Accepts a scalar or an array of floats.
+        size : float or (N,) np.ndarray[float]
+            size of the points in the scatter plot. Accepts a scalar or an array of floats.
         """
-        return self._alpha
+        return self._size
 
-    @alpha.setter
-    def alpha(self, value: np.ndarray):
-        """Sets the alpha values for the scatter plot and updates the display accordingly."""
-        # Check if value is a scalar
-        if np.isscalar(value):
-            value = np.full(len(self._data), value)
-        self._alpha = value
+    @size.setter
+    def size(self, value: Union[float, np.ndarray]):
+        """Sets the size of the points in the scatter plot."""
+        self._size = value
         if self._scatter is not None:
-            self._scatter.set_alpha(value)
+            self._scatter.set_sizes(np.full(len(self._data), value) if np.isscalar(value) else value)
         self.draw()
 
     def draw(self):

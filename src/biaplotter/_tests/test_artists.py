@@ -44,13 +44,29 @@ def test_scatter():
     assert np.all(colors[0] == scatter.categorical_colormap(0))
     assert np.all(colors[50] == scatter.categorical_colormap(2))
 
-    # Test alpha property
-    collected_alpha_signals = []
-    def on_alpha_changed(alpha):
-        collected_alpha_signals.append(alpha)
-    scatter.alpha = np.linspace(start=0.1, stop=1.0, num=size)
-    assert np.all(scatter.alpha == np.linspace(start=0.1, stop=1.0, num=size))
-    assert scatter._scatter.get_alpha() is not None
+    # Test axis limits
+    x_margin = 0.05 * (np.max(data[:, 0]) - np.min(data[:, 0]))
+    y_margin = 0.05 * (np.max(data[:, 1]) - np.min(data[:, 1]))
+    assert np.isclose(ax.get_xlim(), (np.min(data[:, 0]) - x_margin, np.max(data[:, 0]) + x_margin)).all()
+    assert np.isclose(ax.get_ylim(), (np.min(data[:, 1]) - y_margin, np.max(data[:, 1]) + y_margin)).all()
+
+    # Test size property
+    scatter.size = 5.0
+    assert scatter.size == 5.0
+    sizes = scatter._scatter.get_sizes()
+    assert np.all(sizes == 5.0)
+
+    scatter.size = np.linspace(1, 10, size)
+    assert np.all(scatter.size == np.linspace(1, 10, size))
+    sizes = scatter._scatter.get_sizes()
+    assert np.all(sizes == np.linspace(1, 10, size))
+
+    # Test size reset when new data is set
+    new_data = np.random.rand(size, 2)
+    scatter.data = new_data
+    assert scatter.size == 50.0  # that's the default
+    sizes = scatter._scatter.get_sizes()
+    assert np.all(sizes == 50.0)
 
 
 def test_histogram2d():
