@@ -161,7 +161,7 @@ class Scatter(Artist):
         # emit signal
         self.data_changed_signal.emit(self._data)
         if self._scatter is None:
-            self._scatter = self.ax.scatter(value[:, 0], value[:, 1], s=self._size)
+            self._scatter = self.ax.scatter(value[:, 0], value[:, 1], s=self._size, facecolor='gray', linewidth=2)
             self.color_indices = 0  # Set default color index
         else:
             # If the scatter plot already exists, just update its data
@@ -239,8 +239,8 @@ class Scatter(Artist):
         self._color_indices = indices
         if indices is not None and self._scatter is not None:
             new_colors = self.categorical_colormap(indices)
-            self._scatter.set_facecolor(new_colors)
-            self._scatter.set_edgecolor(None)
+            self._scatter.set_edgecolor(new_colors)
+            #self._scatter.set_facecolor(None)
         # emit signal
         self.color_indices_changed_signal.emit(self._color_indices)
         self.draw()
