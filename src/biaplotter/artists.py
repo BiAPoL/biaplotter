@@ -169,7 +169,7 @@ class Scatter(Artist):
         else:
             # If the scatter plot already exists, just update its data
             self._scatter.set_offsets(value)
-            self._scatter.set_alpha(np.ones(len(value)))
+            self._scatter.set_alpha(1.0)
 
         if self._color_indices is None:
             self.color_indices = 0  # Set default color index
