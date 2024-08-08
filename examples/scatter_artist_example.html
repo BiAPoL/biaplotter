@@ -45,7 +45,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/css/tooltipster-sideTip-light.min.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/tooltipster-sideTip-borderless.min.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/micromodal.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -407,7 +407,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-scatter-plot">Creating a Scatter Plot</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-data-to-the-scatter-artist">Adding Data to the Scatter Artist</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assigning-classes-to-data-points">Assigning Classes to Data Points</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#properties">Properties</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-point-properties">Setting point properties</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scatter-visibility">Scatter Visibility</a></li>
 </ul>
             </nav>
@@ -445,7 +445,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/e31401c8857f5c6af71ce3480f5ffd1c513ec207433282f4b54c2825e474a247.png" src="../_images/e31401c8857f5c6af71ce3480f5ffd1c513ec207433282f4b54c2825e474a247.png" />
+<img alt="../_images/55ad6f09974659058ed6ec303b68ef045c7c70849e2cd3bc6219f19b28ba7860.png" src="../_images/55ad6f09974659058ed6ec303b68ef045c7c70849e2cd3bc6219f19b28ba7860.png" />
 </div>
 </div>
 </section>
@@ -462,7 +462,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/38fae1a6fe8bda174f307dc3fa49916e038a8672d17110589fc3f0c2b84e61c9.png" src="../_images/38fae1a6fe8bda174f307dc3fa49916e038a8672d17110589fc3f0c2b84e61c9.png" />
+<img alt="../_images/936e88e5e087f1df53bd7648f9d16073bd4cee588741d58a58a8259ee540bc35.png" src="../_images/936e88e5e087f1df53bd7648f9d16073bd4cee588741d58a58a8259ee540bc35.png" />
 </div>
 </div>
 </section>
@@ -477,7 +477,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div style="vertical-align: middle;"><strong>cat10_modified</strong> </div><div class="cmap"><img alt="cat10_modified colormap" title="cat10_modified" style="border: 1px solid #555;" src="data:image/png;base64,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"></div><div style="vertical-align: middle; max-width: 514px; display: flex; justify-content: space-between;"><div style="float: left;"><div title="#e6e6faff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #e6e6faff;"></div> under</div><div style="margin: 0 auto; display: inline-block;">bad <div title="#00000000" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #00000000;"></div></div><div style="float: right;">over <div title="#bcbcbcff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #bcbcbcff;"></div></div></div></div>
+<div class="output text_html"><div style="vertical-align: middle;"><strong>cat10_modified</strong> </div><div class="cmap"><img alt="cat10_modified colormap" title="cat10_modified" style="border: 1px solid #555;" src="data:image/png;base64,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"></div><div style="vertical-align: middle; max-width: 514px; display: flex; justify-content: space-between;"><div style="float: left;"><div title="#e6e6faff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #e6e6faff;"></div> under</div><div style="margin: 0 auto; display: inline-block;">bad <div title="#00000000" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #00000000;"></div></div><div style="float: right;">over <div title="#bcbcbcff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #bcbcbcff;"></div></div></div></div>
 </div>
 <p>To assign classes to points, just feed the property <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> with a (N,) shaped numpy array containing integers. These integers will be used as indices to the colormap.</p>
 <p>Below, we randomly color the points with the 5 first colors of the scatter default colormap (light gray is the default color with color index 0).</p>
@@ -490,7 +490,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/982097d1d11d6b5455bbe1f9e254b289b09a8c09a05af4beb473ec970d6239ab.png" src="../_images/982097d1d11d6b5455bbe1f9e254b289b09a8c09a05af4beb473ec970d6239ab.png" />
+<img alt="../_images/3abae682cdbce84aba6ad82ab96386c1f3a58960b68af4c15bfb8ff602c13d58.png" src="../_images/3abae682cdbce84aba6ad82ab96386c1f3a58960b68af4c15bfb8ff602c13d58.png" />
 </div>
 </div>
 <p>Colors are kept if new data is added.</p>
@@ -505,7 +505,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/3ed6455eb91329601c6d6316a19dabd148d48f6f2ebcd3f70910dcab4967eee1.png" src="../_images/3ed6455eb91329601c6d6316a19dabd148d48f6f2ebcd3f70910dcab4967eee1.png" />
+<img alt="../_images/2632761a15ac7330b6f2ef9093a1318aed56fa02791788720f03ee821081d5cc.png" src="../_images/2632761a15ac7330b6f2ef9093a1318aed56fa02791788720f03ee821081d5cc.png" />
 </div>
 </div>
 <p>Set <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> to <code class="docutils literal notranslate"><span class="pre">0</span></code> to reset the colors.</p>
@@ -517,23 +517,24 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/284fe86801931c0b6ed28355896c48fea8617cf878f338f3b22f80ad094e8e56.png" src="../_images/284fe86801931c0b6ed28355896c48fea8617cf878f338f3b22f80ad094e8e56.png" />
+<img alt="../_images/c337f7ddf6b7e6d63d37bf1f7e598c2571633fc8c7acae30cb838a90b521daa7.png" src="../_images/c337f7ddf6b7e6d63d37bf1f7e598c2571633fc8c7acae30cb838a90b521daa7.png" />
 </div>
 </div>
 </section>
-<section id="properties">
-<h2>Properties<a class="headerlink" href="#properties" title="Link to this heading">#</a></h2>
-<p>It is possible to further control properties of the scatter points, such as their size or transparency.</p>
+<section id="setting-point-properties">
+<h2>Setting point properties<a class="headerlink" href="#setting-point-properties" title="Link to this heading">#</a></h2>
+<p>You can also set other properties of the points, like their transparency. This is mediated through the <code class="docutils literal notranslate"><span class="pre">alpha</span></code> property. In this case, we set the transparency of the points according to the respective point’s x coordinate, so we should observe a transparency gradient from left to right.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">size</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span>
-<span class="n">scatter</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">alpha</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">-</span> <span class="n">alpha</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">/</span> <span class="p">(</span><span class="n">alpha</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">alpha</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+<span class="n">scatter</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
 <span class="n">fig</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/3a4223108d84bcc3b80af24d29027c0c4e8b1f8fdbae61db96e0ac2cdbc391bd.png" src="../_images/3a4223108d84bcc3b80af24d29027c0c4e8b1f8fdbae61db96e0ac2cdbc391bd.png" />
+<img alt="../_images/7d9c69d30d14dba76b497c19a65b844666e83665444abf6df99213fe602ee164.png" src="../_images/7d9c69d30d14dba76b497c19a65b844666e83665444abf6df99213fe602ee164.png" />
 </div>
 </div>
 </section>
@@ -548,7 +549,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/d269896e2bab5e4d56ce25b9390db5982f6f0a855f0aa51e9c13de13681dc307.png" src="../_images/d269896e2bab5e4d56ce25b9390db5982f6f0a855f0aa51e9c13de13681dc307.png" />
+<img alt="../_images/98df2d4c92227312ecb185f7f279132fad2dad8acd35221646e715a59769269b.png" src="../_images/98df2d4c92227312ecb185f7f279132fad2dad8acd35221646e715a59769269b.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -559,7 +560,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/3a4223108d84bcc3b80af24d29027c0c4e8b1f8fdbae61db96e0ac2cdbc391bd.png" src="../_images/3a4223108d84bcc3b80af24d29027c0c4e8b1f8fdbae61db96e0ac2cdbc391bd.png" />
+<img alt="../_images/7d9c69d30d14dba76b497c19a65b844666e83665444abf6df99213fe602ee164.png" src="../_images/7d9c69d30d14dba76b497c19a65b844666e83665444abf6df99213fe602ee164.png" />
 </div>
 </div>
 </section>
@@ -632,7 +633,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-scatter-plot">Creating a Scatter Plot</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-data-to-the-scatter-artist">Adding Data to the Scatter Artist</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assigning-classes-to-data-points">Assigning Classes to Data Points</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#properties">Properties</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-point-properties">Setting point properties</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scatter-visibility">Scatter Visibility</a></li>
 </ul>
   </nav></div>
