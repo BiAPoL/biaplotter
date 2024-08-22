@@ -62,11 +62,18 @@ def test_scatter():
     assert np.all(sizes == np.linspace(1, 10, size))
 
     # Test size reset when new data is set
-    new_data = np.random.rand(size, 2)
-    scatter.data = new_data
-    assert scatter.size == 50.0  # that's the default
+    scatter.data = np.random.rand(size//2, 2)
+    assert np.all(scatter.size == 50.0)  # that's the default
     sizes = scatter._scatter.get_sizes()
     assert np.all(sizes == 50.0)
+
+    # test alpha
+    scatter.alpha = 0.5
+    assert np.all(scatter._scatter.get_alpha() == 0.5)
+
+    # test alpha reset when new data is set
+    scatter.data = np.random.rand(size, 2)
+    assert np.all(scatter._scatter.get_alpha() == 1.0)
 
 
 def test_histogram2d():
