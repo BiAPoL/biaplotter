@@ -173,6 +173,9 @@ class Scatter(Artist):
 
             # Create a new scatter plot with the updated data
             self._scatter = self.ax.scatter(self._data[:, 0], self._data[:, 1])
+            self.size = 50  # Default size
+            self.alpha = 1  # Default alpha
+            self.color_indices = np.zeros(len(value), dtype=int)  # Default color indices
         else:
             self._scatter.set_offsets(value)  #  somehow resets the size and alpha
             self.color_indices = self._color_indices
