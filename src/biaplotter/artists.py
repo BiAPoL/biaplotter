@@ -153,39 +153,39 @@ class Scatter(Artist):
 
     @data.setter
     def data(self, value: np.ndarray):
-        """Sets the data for the scatter plot, updating the display as needed."""
-        if value is None:
+        """Sets the data for the scatter plot, resetting other properties to defaults."""
+        if value is None or len(value) == 0:
             return
-        if len(value) == 0:
-            return
+
+        if self._data is not None:
+            data_length_changed = len(value) != len(self._data)
+        else:
+            data_length_changed = True
         self._data = value
-        # emit signal
+
+        # Emit the data changed signal
         self.data_changed_signal.emit(self._data)
-        if self._scatter is None:
-            self._scatter = self.ax.scatter(value[:, 0], value[:, 1], s=self._size)
-            self.color_indices = 0  # Set default color index
-        else:
-            # If the scatter plot already exists, just update its data
-            self._scatter.set_offsets(value)
-            self._scatter.set_alpha(1.0)
 
-        if self._color_indices is None:
-            self.color_indices = 0  # Set default color index
-        else:
-            # Update colors if color indices are set, resize if data shape has changed
-            color_indices_size = len(self._color_indices)
-            color_indices = np.resize(self._color_indices, self._data.shape[0])
-            if len(color_indices) > color_indices_size:
-                # fill with zeros where new data is larger
-                color_indices[color_indices_size:] = 0
-            self.color_indices = color_indices
-        self.size = 50
+        if self._scatter is None or data_length_changed:
+            # Create the scatter plot if it doesn't exist yet
+            if self._scatter is not None:
+                self._scatter.remove()
 
+            # Create a new scatter plot with the updated data
+            self._scatter = self.ax.scatter(self._data[:, 0], self._data[:, 1])
+        else:
+            self._scatter.set_offsets(value)  #  somehow resets the size and alpha
+            self.color_indices = self._color_indices
+            self.size = self._size
+            self.alpha = self._alpha
+
+        # Adjust the axes limits based on the new data
         x_margin = 0.05 * (np.max(value[:, 0]) - np.min(value[:, 0]))
         y_margin = 0.05 * (np.max(value[:, 1]) - np.min(value[:, 1]))
         self.ax.set_xlim(np.min(value[:, 0]) - x_margin, np.max(value[:, 0]) + x_margin)
         self.ax.set_ylim(np.min(value[:, 1]) - y_margin, np.max(value[:, 1]) + y_margin)
 
+        # Redraw the plot
         self.draw()
 
     @property
