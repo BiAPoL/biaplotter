@@ -129,6 +129,7 @@ class Scatter(Artist):
         #: Stores the scatter plot matplotlib object
         self._scatter = None
         self.data = data
+        self._alpha = 1  # Default alpha
         self._size = 50  # Default size
         self.draw()  # Initial draw of the scatter plot
 
@@ -243,6 +244,30 @@ class Scatter(Artist):
             self._scatter.set_edgecolor(None)
         # emit signal
         self.color_indices_changed_signal.emit(self._color_indices)
+        self.draw()
+
+    @property
+    def alpha(self) -> Union[float, np.ndarray]:
+        """Gets or sets the alpha value of the scatter plot.
+
+        Triggers a draw idle command.
+
+        Returns
+        -------
+        alpha : float
+            alpha value of the scatter plot.
+        """
+        return self._scatter.get_alpha()
+    
+    @alpha.setter
+    def alpha(self, value: Union[float, np.ndarray]):
+        """Sets the alpha value of the scatter plot."""
+        self._alpha = value
+
+        if np.isscalar(value):
+            value = np.ones(len(self._data)) * value
+        if self._scatter is not None:
+            self._scatter.set_alpha(value)
         self.draw()
 
     @property
