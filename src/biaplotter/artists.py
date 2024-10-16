@@ -166,7 +166,7 @@ class Scatter(Artist):
         else:
             # If the scatter plot already exists, just update its data
             self._scatter.set_offsets(value)
-        
+
         if self._color_indices is None:
             self.color_indices = 0  # Set default color index
         else:
@@ -217,7 +217,7 @@ class Scatter(Artist):
         -------
         color_indices : (N,) np.ndarray[int] or int
             indices to map to the categorical_colormap. Accepts a scalar or an array of integers.
-        
+
         Notes
         -----
         color_indices_changed_signal : Signal
@@ -304,7 +304,7 @@ class Histogram2D(Artist):
     #: Signal emitted when the `color_indices` are changed.
     color_indices_changed_signal: Signal = Signal(np.ndarray)
 
-    def __init__(self, ax: plt.Axes = None, data: np.ndarray = None, categorical_colormap: Colormap = cat10_mod_cmap_first_transparent, color_indices: np.ndarray = None, bins=20, histogram_colormap: Colormap = plt.cm.magma):
+    def __init__(self, ax: plt.Axes = None, data: np.ndarray = None, categorical_colormap: Colormap = cat10_mod_cmap_first_transparent, color_indices: np.ndarray = None, bins=20, histogram_colormap: Colormap = plt.cm.magma, cmin=0):
         super().__init__(ax, data, categorical_colormap, color_indices)
         """Initializes the 2D histogram artist.
         """
@@ -314,6 +314,7 @@ class Histogram2D(Artist):
         self._histogram_colormap = histogram_colormap
         self._overlay = None
         self.data = data
+        self.cmin = cmin
         self.draw()  # Initial draw of the histogram
 
     @property
@@ -349,7 +350,7 @@ class Histogram2D(Artist):
             self._histogram[-1].remove()
         # Draw the new histogram
         self._histogram = self.ax.hist2d(
-            value[:, 0], value[:, 1], bins=self._bins, cmap=self._histogram_colormap, zorder=1)
+            value[:, 0], value[:, 1], bins=self._bins, cmap=self._histogram_colormap, zorder=1, cmin=self.cmin)
         if self._color_indices is None:
             self.color_indices = 0  # Set default color index
         else:
@@ -396,7 +397,7 @@ class Histogram2D(Artist):
         -------
         color_indices : (N,) np.ndarray[int] or int
             indices to map to the overlay colormap. Accepts a scalar or an array.
-        
+
         Notes
         -----
         color_indices_changed_signal : Signal

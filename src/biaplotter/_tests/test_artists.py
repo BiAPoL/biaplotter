@@ -118,6 +118,7 @@ def test_histogram2d():
     assert histogram.color_indices.shape == (size,)
     assert histogram.color_indices.dtype == int
     assert histogram.bins == bins
+    assert histogram.cmin == 0
 
     # Test overlay colors
     overlay_array = histogram._overlay.get_array()
