@@ -68,6 +68,11 @@ def test_scatter():
     sizes = scatter._scatter.get_sizes()
     assert np.all(sizes == 50.0)
 
+    # test handling NaNs
+    data_with_nans = np.copy(new_data)
+    data_with_nans[0, 0] = np.nan
+    scatter.data = data_with_nans
+
 
 def test_histogram2d():
     # Inputs

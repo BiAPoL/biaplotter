@@ -179,10 +179,10 @@ class Scatter(Artist):
             self.color_indices = color_indices
         self.size = 50
 
-        x_margin = 0.05 * (np.max(value[:, 0]) - np.min(value[:, 0]))
-        y_margin = 0.05 * (np.max(value[:, 1]) - np.min(value[:, 1]))
-        self.ax.set_xlim(np.min(value[:, 0]) - x_margin, np.max(value[:, 0]) + x_margin)
-        self.ax.set_ylim(np.min(value[:, 1]) - y_margin, np.max(value[:, 1]) + y_margin)
+        x_margin = 0.05 * (np.nanmax(value[:, 0]) - np.nanmin(value[:, 0]))
+        y_margin = 0.05 * (np.nanmax(value[:, 1]) - np.nanmin(value[:, 1]))
+        self.ax.set_xlim(np.nanmin(value[:, 0]) - x_margin, np.nanmax(value[:, 0]) + x_margin)
+        self.ax.set_ylim(np.nanmin(value[:, 1]) - y_margin, np.nanmax(value[:, 1]) + y_margin)
 
         self.draw()
 
