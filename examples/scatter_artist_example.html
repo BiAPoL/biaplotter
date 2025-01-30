@@ -448,7 +448,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/32da61effc4ca1bdd7b1c2786737c2bc61f7b58aa2abfa4644cc74849b93390a.png" src="../_images/32da61effc4ca1bdd7b1c2786737c2bc61f7b58aa2abfa4644cc74849b93390a.png" />
+<img alt="../_images/14016d533e9022aac0fc446142d025a4587a827f019a02faf1bef0087c879fba.png" src="../_images/14016d533e9022aac0fc446142d025a4587a827f019a02faf1bef0087c879fba.png" />
 </div>
 </div>
 </section>
@@ -476,34 +476,35 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/362c5626d0176a4abd6be8546e6d6b7a3ba6fdabcb0111e6106e7cf64f11e503.png" src="../_images/362c5626d0176a4abd6be8546e6d6b7a3ba6fdabcb0111e6106e7cf64f11e503.png" />
+<img alt="../_images/82b98bbce0aa4c38111fae587e67923e7f2659d02343658166605931964b05f8.png" src="../_images/82b98bbce0aa4c38111fae587e67923e7f2659d02343658166605931964b05f8.png" />
 </div>
 </div>
-<p>Colors are kept if new data is added.</p>
+<p>Changing the data - i.e., adding new data of the <em>same size</em> will keep the point properties (e.g., the <code class="docutils literal notranslate"><span class="pre">color_indices</span></code>) as they are:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Adding 400 more samples</span>
-<span class="n">n_samples</span> <span class="o">=</span> <span class="mi">400</span>
-<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="n">scatter</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
 <span class="n">fig</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/8429516ac6f6e0279fdaa19504bef6e1106c03449969a888c18a8c3c9f81a1df.png" src="../_images/8429516ac6f6e0279fdaa19504bef6e1106c03449969a888c18a8c3c9f81a1df.png" />
+<img alt="../_images/3069274e91b876ab7d7d48b89f498870e76fcff478982c12f4555fdaf0b99680.png" src="../_images/3069274e91b876ab7d7d48b89f498870e76fcff478982c12f4555fdaf0b99680.png" />
 </div>
 </div>
-<p>Set <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> to <code class="docutils literal notranslate"><span class="pre">0</span></code> to reset the colors.</p>
+<p>Adding new data of a different size resets the coloring:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scatter</span><span class="o">.</span><span class="n">color_indices</span> <span class="o">=</span> <span class="mi">0</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Adding 400 more samples</span>
+<span class="n">n_samples</span> <span class="o">=</span> <span class="mi">400</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">scatter</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
 <span class="n">fig</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/aa2ebf1d75bac6fd5551b03888bbeeaa1cc4b0e04cf39387b63070f3977b1615.png" src="../_images/aa2ebf1d75bac6fd5551b03888bbeeaa1cc4b0e04cf39387b63070f3977b1615.png" />
+<img alt="../_images/33e06efc13b40ffd232125793d567623cdb619b3175664a2a383b1a2a2b59a22.png" src="../_images/33e06efc13b40ffd232125793d567623cdb619b3175664a2a383b1a2a2b59a22.png" />
 </div>
 </div>
 </section>
@@ -520,7 +521,32 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/aa2ebf1d75bac6fd5551b03888bbeeaa1cc4b0e04cf39387b63070f3977b1615.png" src="../_images/aa2ebf1d75bac6fd5551b03888bbeeaa1cc4b0e04cf39387b63070f3977b1615.png" />
+<img alt="../_images/ee9301cd808e319185b45942a21d9b2198b4a7a4214b0d36e7b79cd4b1e28238.png" src="../_images/ee9301cd808e319185b45942a21d9b2198b4a7a4214b0d36e7b79cd4b1e28238.png" />
+</div>
+</div>
+<p>Again, changing the data will keep the point properties as they are:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">scatter</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/cd2b783a35587e706c43c4e5cb392e2a446ef704cb86aa94d16964e16dbf6a22.png" src="../_images/cd2b783a35587e706c43c4e5cb392e2a446ef704cb86aa94d16964e16dbf6a22.png" />
+</div>
+</div>
+<p>You can undo this by simply setting all alpha values to 1:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scatter</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/d1982da19775837a2a27c4c276426d6955c03eea29a15f6aab0dcefcad4e576a.png" src="../_images/d1982da19775837a2a27c4c276426d6955c03eea29a15f6aab0dcefcad4e576a.png" />
 </div>
 </div>
 <p>You can also set the sizes of the points (values around ~50 are typically a good starting point):</p>
@@ -533,7 +559,20 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/139924264f870188467808e82d3101e8bb394ac1f93d32a57c3dee1e613580df.png" src="../_images/139924264f870188467808e82d3101e8bb394ac1f93d32a57c3dee1e613580df.png" />
+<img alt="../_images/1b21e8aaec41f8865d60b202c339fcb0f5cbaa603fa7fa1948fc510c81180679.png" src="../_images/1b21e8aaec41f8865d60b202c339fcb0f5cbaa603fa7fa1948fc510c81180679.png" />
+</div>
+</div>
+<p>And again, changing the data but keeping the size of the data (i.e., the number of samples, to be more precise) will keep the point properties as they are:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">scatter</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/91ec21c87abf9d6f1fc03e6c7d9b0f74186fd2d13d94de4dc767a80abfc41097.png" src="../_images/91ec21c87abf9d6f1fc03e6c7d9b0f74186fd2d13d94de4dc767a80abfc41097.png" />
 </div>
 </div>
 </section>
@@ -548,7 +587,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/9fefed56354366ec6649e053e81545bb57bee0ad1b2c478f13044de180242449.png" src="../_images/9fefed56354366ec6649e053e81545bb57bee0ad1b2c478f13044de180242449.png" />
+<img alt="../_images/ad2047ea833089572698e866df9230b71cf80dabc1bee09a408d3f618f098f91.png" src="../_images/ad2047ea833089572698e866df9230b71cf80dabc1bee09a408d3f618f098f91.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -559,7 +598,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/aa2ebf1d75bac6fd5551b03888bbeeaa1cc4b0e04cf39387b63070f3977b1615.png" src="../_images/aa2ebf1d75bac6fd5551b03888bbeeaa1cc4b0e04cf39387b63070f3977b1615.png" />
+<img alt="../_images/91ec21c87abf9d6f1fc03e6c7d9b0f74186fd2d13d94de4dc767a80abfc41097.png" src="../_images/91ec21c87abf9d6f1fc03e6c7d9b0f74186fd2d13d94de4dc767a80abfc41097.png" />
 </div>
 </div>
 </section>
