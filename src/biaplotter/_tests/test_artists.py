@@ -74,6 +74,12 @@ def test_scatter():
     # test alpha reset when new data is set
     scatter.data = np.random.rand(size, 2)
     assert np.all(scatter._scatter.get_alpha() == 1.0)
+    
+    # test handling NaNs
+    data_with_nans = np.copy(new_data)
+    data_with_nans[0, 0] = np.nan
+    scatter.data = data_with_nans
+
 
 
 def test_histogram2d():
@@ -125,6 +131,7 @@ def test_histogram2d():
     assert histogram.color_indices.shape == (size,)
     assert histogram.color_indices.dtype == int
     assert histogram.bins == bins
+    assert histogram.cmin == 0
 
     # Test overlay colors
     overlay_array = histogram._overlay.get_array()
