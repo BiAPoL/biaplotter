@@ -76,7 +76,7 @@ def test_scatter():
     assert np.all(scatter._scatter.get_alpha() == 1.0)
     
     # test handling NaNs
-    data_with_nans = np.copy(new_data)
+    data_with_nans = np.copy(scatter.data)
     data_with_nans[0, 0] = np.nan
     scatter.data = data_with_nans
 
