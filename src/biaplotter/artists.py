@@ -134,6 +134,8 @@ class Scatter(Artist):
         super().__init__(ax, data, overlay_colormap, color_indices)
         #: Stores the scatter plot matplotlib object
         self._scatter = None
+        self._overlay_colormap = BiaColormap(overlay_colormap)
+        self._overlay_visible = True
         self._normalization_methods = {
             'linear': Normalize, 'log': LogNorm, 'symlog': SymLogNorm, 'centered': CenteredNorm}
         self._color_normalization_method = 'linear'
@@ -229,8 +231,6 @@ class Scatter(Artist):
         """
         return self._color_indices
 
-    
-
     @color_indices.setter
     def color_indices(self, indices: np.ndarray):
         """Sets color indices for the scatter plot and updates colors accordingly."""
@@ -274,6 +274,9 @@ class Scatter(Artist):
             sm = ScalarMappable(norm=norm, cmap=self.overlay_colormap.cmap)
             # Convert normalized data to RGBA
             rgba_colors = sm.to_rgba(indices)
+            # Set color light gray if overlay is not visible
+            if not self._overlay_visible:
+                rgba_colors = cat10_mod_cmap(0) # Set colors to light gray
             self._scatter.set_facecolor(rgba_colors)
             self._scatter.set_edgecolor(None)
         # emit signal
@@ -295,6 +298,25 @@ class Scatter(Artist):
     def overlay_colormap(self, value: Colormap):
         """Sets the overlay colormap for the scatter plot."""
         self._overlay_colormap = BiaColormap(value)
+        self.color_indices = self._color_indices
+
+    @property
+    def overlay_visible(self) -> bool:
+        """Gets or sets the visibility of the overlay colormap.
+
+        Triggers a draw idle command.
+
+        Returns
+        -------
+        overlay_visible : bool
+            visibility of the overlay colormap.
+        """
+        return self._overlay_visible
+    
+    @overlay_visible.setter
+    def overlay_visible(self, value: bool):
+        """Sets the visibility of the overlay colormap."""
+        self._overlay_visible = value
         self.color_indices = self._color_indices
 
     @property
