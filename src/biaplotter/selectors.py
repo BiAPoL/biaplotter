@@ -8,6 +8,7 @@ from abc import ABC, abstractmethod
 from matplotlib.path import Path as mplPath
 from matplotlib.widgets import LassoSelector, RectangleSelector, EllipseSelector
 from nap_plot_tools.cmap import cat10_mod_cmap, cat10_mod_cmap_first_transparent
+from psygnal import Signal
 
 
 if TYPE_CHECKING:
@@ -288,6 +289,10 @@ class Interactive(Selector):
 
     Notes
     -----
+    **Signals:**
+
+    * **selection_applied_signal** emitted when the `apply_selection` is called. Let's the canvas widget know that color_indices were updated because of a selection.
+
     **Slots:**
 
         * **update_class_value** method intended to be connected by the **color_spinbox_value_changed_signal** emitted by the canvas_widget to have class_value synchronized.
@@ -302,9 +307,10 @@ class Interactive(Selector):
         * **data_changed_signal** emitted by the active_artist to **update_data** slot.
 
     """
-
+    #: Signal emitted when the `apply_selection` is called. Let's the canvas widget know that color_indices were updated because of a selection.
+    selection_applied_signal: Signal = Signal(bool)
     def __init__(self, ax: plt.Axes, canvas_widget: "CanvasWidget", data: np.ndarray = None):
-        """Initializes the interactive rectangle selector.
+        """Initializes the interactive selectors.
         """
         super().__init__(ax, data)
         #: The canvas widget to which the selector will be applied.
@@ -381,10 +387,12 @@ class Interactive(Selector):
                 color_indices = self._active_artist.color_indices
                 color_indices[self._selected_indices] = self._class_value
                 self._active_artist.color_indices = color_indices
+                self.selection_applied_signal.emit(True)
             self._selected_indices = None
         # Remove selector and create a new one
         self.remove()
         self.create_selector()
+        
 
     def on_button_press(self, event):
         """Handles the button press event. Right-click applies the selection.
