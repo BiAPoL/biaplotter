@@ -74,6 +74,14 @@ def test_scatter():
     sizes = scatter._scatter.get_sizes()
     assert np.all(sizes == 50.0)
 
+    # test alpha
+    scatter.alpha = 0.5
+    assert np.all(scatter._scatter.get_alpha() == 0.5)
+
+    # test alpha reset when new data is set
+    scatter.data = np.random.rand(size, 2)
+    assert np.all(scatter._scatter.get_alpha() == 1.0)
+    
     # Test changing overlay_colormap
     assert scatter.overlay_colormap.name == "cat10_modified"
     scatter.overlay_colormap = plt.cm.viridis
@@ -88,14 +96,6 @@ def test_scatter():
     scatter.color_normalization_method = "log"
     assert scatter.color_normalization_method == "log"
 
-    # test alpha
-    scatter.alpha = 0.5
-    assert np.all(scatter._scatter.get_alpha() == 0.5)
-
-    # test alpha reset when new data is set
-    scatter.data = np.random.rand(size, 2)
-    assert np.all(scatter._scatter.get_alpha() == 1.0)
-    
     # test handling NaNs
     data_with_nans = np.copy(scatter.data)
     data_with_nans[0, 0] = np.nan
