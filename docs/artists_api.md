@@ -53,6 +53,7 @@
       ~Scatter.color_indices
       ~Scatter.size
       ~Scatter.overlay_colormap
+      ~Scatter.overlay_visible
       ~Scatter.color_normalization_method
 
    .. rubric:: Attributes Summary
@@ -81,6 +82,7 @@
    .. autoattribute:: color_indices
    .. autoattribute:: size
    .. autoattribute:: overlay_colormap
+   .. autoattribute:: overlay_visible
    .. autoattribute:: color_normalization_method
 
    .. rubric:: Attributes Documentation
