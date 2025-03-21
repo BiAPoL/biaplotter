@@ -140,6 +140,7 @@ class Scatter(Artist):
             'linear': Normalize, 'log': LogNorm, 'symlog': SymLogNorm, 'centered': CenteredNorm}
         self._color_normalization_method = 'linear'
         self.data = data
+        self._alpha = 1  # Default alpha
         self._size = 50  # Default size
         self.draw()  # Initial draw of the scatter plot
 
@@ -163,32 +164,41 @@ class Scatter(Artist):
 
     @data.setter
     def data(self, value: np.ndarray):
-        """Sets the data for the scatter plot, updating the display as needed."""
-        if value is None:
+        """Sets the data for the scatter plot, resetting other properties to defaults."""
+        if value is None or len(value) == 0:
             return
-        if len(value) == 0:
-            return
-        self._data = value
-        # emit signal
-        self.data_changed_signal.emit(self._data)
-        if self._scatter is None:
-            self._scatter = self.ax.scatter(value[:, 0], value[:, 1], s=self._size)
-            self.color_indices = 0  # Set default color index
-        else:
-            # If the scatter plot already exists, just update its data
-            self._scatter.set_offsets(value)
 
-        if self._color_indices is None:
-            self.color_indices = 0  # Set default color index
+        if self._data is not None:
+            data_length_changed = len(value) != len(self._data)
         else:
-            # Update colors if color indices are set, resize if data shape has changed
-            color_indices_size = len(self._color_indices)
-            color_indices = np.resize(self._color_indices, self._data.shape[0])
-            if len(color_indices) > color_indices_size:
-                # fill with zeros where new data is larger
-                color_indices[color_indices_size:] = 0
-            self.color_indices = color_indices
-        self.size = 50
+            data_length_changed = True
+        self._data = value
+
+        # Emit the data changed signal
+        self.data_changed_signal.emit(self._data)
+
+        if self._scatter is None or data_length_changed:
+            # Create the scatter plot if it doesn't exist yet
+            if self._scatter is not None:
+                self._scatter.remove()
+
+            # Create a new scatter plot with the updated data
+            self._scatter = self.ax.scatter(self._data[:, 0], self._data[:, 1])
+            self.size = 50  # Default size
+            self.alpha = 1  # Default alpha
+            self.color_indices = np.zeros(len(value), dtype=int)  # Default color indices
+        else:
+            self._scatter.set_offsets(value)  #  somehow resets the size and alpha
+            self.color_indices = self._color_indices
+            self.size = self._size
+            self.alpha = self._alpha
+
+        x_margin = 0.05 * (np.nanmax(value[:, 0]) - np.nanmin(value[:, 0]))
+        y_margin = 0.05 * (np.nanmax(value[:, 1]) - np.nanmin(value[:, 1]))
+        self.ax.set_xlim(np.nanmin(value[:, 0]) - x_margin, np.nanmax(value[:, 0]) + x_margin)
+        self.ax.set_ylim(np.nanmin(value[:, 1]) - y_margin, np.nanmax(value[:, 1]) + y_margin)
+
+        # Redraw the plot
         self.draw()
 
     @property
@@ -303,12 +313,7 @@ class Scatter(Artist):
     @property
     def overlay_visible(self) -> bool:
         """Gets or sets the visibility of the overlay colormap.
-
-        Triggers a draw idle command.
-
-        Returns
-        -------
-        overlay_visible : bool
+         overlay_visible : bool
             visibility of the overlay colormap.
         """
         return self._overlay_visible
@@ -335,6 +340,26 @@ class Scatter(Artist):
         """Sets the normalization method for the color indices."""
         self._color_normalization_method = value
         self.color_indices = self._color_indices
+
+    @property
+    def alpha(self) -> Union[float, np.ndarray]:
+        """Gets or sets the alpha value of the scatter plot.
+        
+        alpha : float
+            alpha value of the scatter plot.
+        """
+        return self._scatter.get_alpha()
+    
+    @alpha.setter
+    def alpha(self, value: Union[float, np.ndarray]):
+        """Sets the alpha value of the scatter plot."""
+        self._alpha = value
+
+        if np.isscalar(value):
+            value = np.ones(len(self._data)) * value
+        if self._scatter is not None:
+            self._scatter.set_alpha(value)
+        self.draw()
 
     @property
     def size(self) -> Union[float, np.ndarray]:
@@ -396,7 +421,7 @@ class Histogram2D(Artist):
     #: Signal emitted when the `color_indices` are changed.
     color_indices_changed_signal: Signal = Signal(np.ndarray)
 
-    def __init__(self, ax: plt.Axes = None, data: np.ndarray = None, overlay_colormap: Colormap = cat10_mod_cmap_first_transparent, color_indices: np.ndarray = None, bins=20, histogram_colormap: Colormap = plt.cm.magma):
+    def __init__(self, ax: plt.Axes = None, data: np.ndarray = None, overlay_colormap: Colormap = cat10_mod_cmap_first_transparent, color_indices: np.ndarray = None, bins=20, histogram_colormap: Colormap = plt.cm.magma, cmin=0):
         super().__init__(ax, data, overlay_colormap, color_indices)
         """Initializes the 2D histogram artist.
         """
@@ -415,6 +440,7 @@ class Histogram2D(Artist):
         self._histogram_color_normalization_method = 'linear'
         self._overlay_color_normalization_method = 'linear'
         self.data = data
+        self.cmin = cmin
         self.draw()  # Initial draw of the histogram
 
     @property

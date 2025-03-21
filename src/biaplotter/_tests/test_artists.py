@@ -51,6 +51,12 @@ def test_scatter():
     assert np.all(colors[0] == scatter.overlay_colormap(0))
     assert np.all(colors[50] == scatter.overlay_colormap(2))
 
+    # Test axis limits
+    x_margin = 0.05 * (np.max(data[:, 0]) - np.min(data[:, 0]))
+    y_margin = 0.05 * (np.max(data[:, 1]) - np.min(data[:, 1]))
+    assert np.isclose(ax.get_xlim(), (np.min(data[:, 0]) - x_margin, np.max(data[:, 0]) + x_margin)).all()
+    assert np.isclose(ax.get_ylim(), (np.min(data[:, 1]) - y_margin, np.max(data[:, 1]) + y_margin)).all()
+
     # Test size property
     scatter.size = 5.0
     assert scatter.size == 5.0
@@ -63,9 +69,8 @@ def test_scatter():
     assert np.all(sizes == np.linspace(1, 10, size))
 
     # Test size reset when new data is set
-    new_data = np.random.rand(size, 2)
-    scatter.data = new_data
-    assert scatter.size == 50.0  # that's the default
+    scatter.data = np.random.rand(size//2, 2)
+    assert np.all(scatter.size == 50.0)  # that's the default
     sizes = scatter._scatter.get_sizes()
     assert np.all(sizes == 50.0)
 
@@ -82,6 +87,19 @@ def test_scatter():
     # Test scatter color_normalization_method
     scatter.color_normalization_method = "log"
     assert scatter.color_normalization_method == "log"
+
+    # test alpha
+    scatter.alpha = 0.5
+    assert np.all(scatter._scatter.get_alpha() == 0.5)
+
+    # test alpha reset when new data is set
+    scatter.data = np.random.rand(size, 2)
+    assert np.all(scatter._scatter.get_alpha() == 1.0)
+    
+    # test handling NaNs
+    data_with_nans = np.copy(scatter.data)
+    data_with_nans[0, 0] = np.nan
+    scatter.data = data_with_nans
 
 
 def test_histogram2d():
@@ -143,6 +161,7 @@ def test_histogram2d():
     assert histogram.overlay_opacity == 1
     assert histogram.overlay_visible == True
 
+    assert histogram.cmin == 0
 
     # Test overlay colors
     overlay_array = histogram._overlay_histogram_image.get_array()

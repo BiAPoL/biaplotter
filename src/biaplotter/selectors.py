@@ -9,6 +9,8 @@ from matplotlib.path import Path as mplPath
 from matplotlib.widgets import LassoSelector, RectangleSelector, EllipseSelector
 from nap_plot_tools.cmap import cat10_mod_cmap, cat10_mod_cmap_first_transparent
 from psygnal import Signal
+from qtpy.QtGui import QGuiApplication
+from qtpy.QtCore import Qt
 
 
 if TYPE_CHECKING:
@@ -64,6 +66,23 @@ class Selector(ABC):
             self._selector.clear()
             self._selector.disconnect_events()
             self._selector = None
+
+
+class MplRectangleSelector(RectangleSelector):
+    """Custom rectangle selector class.
+
+    Sub-class of matplotlib RectangleSelector to ensure, via 'qtpy', the option to draw a square when holding the SHIFT key.
+    
+    Note: matplotlib RectangleSelector already has this functionality via the 'state_modifier_keys' argument, but it doesn't work if the canvas is used inside napari.
+    """
+    def _onmove(self, event):
+        modifiers = QGuiApplication.keyboardModifiers()
+        if modifiers == Qt.ShiftModifier:
+           self.add_state('square')
+        else:
+            if 'square' in self._state:
+                self._state.remove('square')
+        super()._onmove(event)
 
 
 class BaseRectangleSelector(Selector):
@@ -133,9 +152,26 @@ class BaseRectangleSelector(Selector):
         Interactive is set to True to allow for interaction.
         Drag from anywhere is set to True to allow for drawing from any point.
         """
-        self._selector = RectangleSelector(self.ax, self.on_select, useblit=True, button=[
+        self._selector = MplRectangleSelector(self.ax, self.on_select, useblit=True, button=[
                                            1], minspanx=5, minspany=5, spancoords='pixels', interactive=True, drag_from_anywhere=True,
                                            props=dict(facecolor='#00c18c', edgecolor='#00c18c', alpha=0.3, fill=True, linewidth=2.5, linestyle='--'))
+
+
+class MplEllipseSelector(EllipseSelector):
+    """Custom ellipse selector class.
+
+    Sub-class of matplotlib EllipseSelector to ensure, via 'qtpy', the option to draw a circle when holding the SHIFT key.
+    
+    Note: matplotlib EllipeseSelector already has this functionality via the 'state_modifier_keys' argument, but it doesn't work if the canvas is used inside napari.
+    """
+    def _onmove(self, event):
+        modifiers = QGuiApplication.keyboardModifiers()
+        if modifiers == Qt.ShiftModifier:
+           self.add_state('square')
+        else:
+            if 'square' in self._state:
+                self._state.remove('square')
+        super()._onmove(event)
 
 
 class BaseEllipseSelector(Selector):
@@ -206,7 +242,7 @@ class BaseEllipseSelector(Selector):
         Interactive is set to True to allow for interaction.
         Drag from anywhere is set to True to allow for drawing from any point.
         """
-        self._selector = EllipseSelector(self.ax, self.on_select, useblit=True, button=[
+        self._selector = MplEllipseSelector(self.ax, self.on_select, useblit=True, button=[
             1], minspanx=5, minspany=5, spancoords='pixels', interactive=True, drag_from_anywhere=True,
             props=dict(facecolor='#00c18c', edgecolor='#00c18c', alpha=0.3, fill=True, linewidth=2.5, linestyle='--'))
 
