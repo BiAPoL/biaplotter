@@ -104,6 +104,15 @@ class CanvasWidget(BaseNapariMPLWidget):
             checked_icon_path=icon_folder_path / "rectangle_checked.png",
             callback=self.on_enable_selector,
         )
+        # Add button to show/hide plot overlay
+        self.selection_toolbar.add_custom_button(
+            name="Hide/Show Plot Overlay",
+            tooltip="Click to hide/show the plot colors overlay",
+            default_icon_path=icon_folder_path / "hide_overlay.png",
+            checkable=True,
+            checked_icon_path=icon_folder_path / "hide_overlay_checked.png",
+            callback=self.hide_color_overlay,
+        )
 
         # Add selection tools layout to main layout below matplotlib toolbar and above canvas
         self.layout().insertLayout(1, self.selection_tools_layout)
@@ -165,6 +174,16 @@ class CanvasWidget(BaseNapariMPLWidget):
         # Add stretch to the right to push buttons to the left
         selection_tools_layout.addStretch(1)
         return selection_tools_layout, selection_toolbar, class_spinbox
+
+    def hide_color_overlay(self, checked: bool):
+        """Show or hide the plot overlay.
+
+        Parameters
+        ----------
+        checked : bool
+            Whether the button is checked or not.
+        """
+        self.active_artist.overlay_visible = not checked
 
     def on_enable_selector(self, checked: bool):
         """Enables or disables the selected selector.
