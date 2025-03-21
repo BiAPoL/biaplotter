@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 from abc import ABC, abstractmethod
 from matplotlib.path import Path as mplPath
 from matplotlib.widgets import LassoSelector, RectangleSelector, EllipseSelector
+from nap_plot_tools.cmap import cat10_mod_cmap, cat10_mod_cmap_first_transparent
 
 
 if TYPE_CHECKING:
@@ -369,6 +370,14 @@ class Interactive(Selector):
         """Applies the selection to the data, updating the colors."""
         if self._selected_indices is not None:
             if len(self._selected_indices) > 0:
+                # if overlay_colormap of the active artist is not cat10_mod_cmap, set it to cat10_mod_cmap
+                if not self._active_artist.overlay_colormap.cmap.name.startswith('cat10_mod_cmap'):
+                    # Clear previous color indices to remove previous feature coloring
+                    self._active_artist.color_indices = 0
+                    if type(self._active_artist).__name__ == 'Scatter':
+                        self._active_artist.overlay_colormap = cat10_mod_cmap
+                    elif type(self._active_artist).__name__ == 'Histogram2D':
+                        self._active_artist.overlay_colormap = cat10_mod_cmap_first_transparent
                 color_indices = self._active_artist.color_indices
                 color_indices[self._selected_indices] = self._class_value
                 self._active_artist.color_indices = color_indices
