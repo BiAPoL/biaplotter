@@ -413,7 +413,7 @@ class Interactive(Selector):
         if self._selected_indices is not None:
             if len(self._selected_indices) > 0:
                 # if overlay_colormap of the active artist is not cat10_mod_cmap, set it to cat10_mod_cmap
-                if not self._active_artist.overlay_colormap.cmap.name.startswith('cat10_mod_cmap'):
+                if not self._active_artist.overlay_colormap.cmap.name.startswith('cat10'):
                     # Clear previous color indices to remove previous feature coloring
                     self._active_artist.color_indices = 0
                     if type(self._active_artist).__name__ == 'Scatter':
