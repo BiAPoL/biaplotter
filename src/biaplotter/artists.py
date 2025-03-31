@@ -290,11 +290,12 @@ class Scatter(Artist):
     
     def _log_normalization(self, indices, norm_class):
         """Apply log normalization to indices."""
-        min_value = np.nanmin(indices)
-        if min_value <= 0:
+        if np.nanmin(indices) <= 0:
             warnings.warn(
                 f'Log normalization applied to values <= 0. Values below 0 were set to np.nan')
-        indices[indices <= 0] = min_value
+            indices[indices <= 0] = np.nan
+        min_value = np.nanmin(indices)
+
         return norm_class(vmin=min_value, vmax=np.nanmax(indices))
     
     def _get_rgba_colors(self, indices, norm):
