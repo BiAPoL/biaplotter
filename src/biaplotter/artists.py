@@ -253,7 +253,7 @@ class Scatter(Artist):
             norm = self._get_normalization(indices)
             rgba_colors = self._get_rgba_colors(indices, norm)
             self._scatter.set_facecolor(rgba_colors)
-            self._scatter.set_edgecolor('None')
+            self._scatter.set_edgecolor('white')
     
         # emit signal
         self.color_indices_changed_signal.emit(self._color_indices)
