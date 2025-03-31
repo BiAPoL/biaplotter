@@ -12,6 +12,8 @@ from psygnal import Signal
 from qtpy.QtGui import QGuiApplication
 from qtpy.QtCore import Qt
 
+from .artists import Scatter, Histogram2D
+
 
 if TYPE_CHECKING:
     from biaplotter.plotter import CanvasWidget
@@ -410,21 +412,27 @@ class Interactive(Selector):
 
     def apply_selection(self):
         """Applies the selection to the data, updating the colors."""
-        if self._selected_indices is not None:
-            if len(self._selected_indices) > 0:
-                # if overlay_colormap of the active artist is not cat10_mod_cmap, set it to cat10_mod_cmap
-                if not self._active_artist.overlay_colormap.cmap.name.startswith('cat10'):
-                    # Clear previous color indices to remove previous feature coloring
-                    self._active_artist.color_indices = 0
-                    if type(self._active_artist).__name__ == 'Scatter':
-                        self._active_artist.overlay_colormap = cat10_mod_cmap
-                    elif type(self._active_artist).__name__ == 'Histogram2D':
-                        self._active_artist.overlay_colormap = cat10_mod_cmap_first_transparent
-                color_indices = self._active_artist.color_indices
-                color_indices[self._selected_indices] = self._class_value
-                self._active_artist.color_indices = color_indices
-                self.selection_applied_signal.emit(True)
+        if self._selected_indices is None or len(self._selected_indices) == 0:
             self._selected_indices = None
+            return
+
+        # Ensure the overlay_colormap of the active artist is set to cat10_mod_cmap if needed
+        if not self._active_artist.overlay_colormap.cmap.name.startswith('cat10'):
+            # Clear previous color indices to remove previous feature coloring
+            self._active_artist.color_indices = 0
+            if isinstance(self._active_artist, Scatter):
+                self._active_artist.overlay_colormap = cat10_mod_cmap
+            elif isinstance(self._active_artist, Histogram2D):
+                self._active_artist.overlay_colormap = cat10_mod_cmap_first_transparent
+
+        # Update color indices for the selected indices
+        color_indices = self._active_artist.color_indices
+        color_indices[self._selected_indices] = self._class_value
+        self._active_artist.color_indices = color_indices
+
+        # Emit signal and reset selected indices
+        self.selection_applied_signal.emit(True)
+        self._selected_indices = None
         # Remove selector and create a new one
         self.remove()
         self.create_selector()
