@@ -346,7 +346,7 @@ class Interactive(Selector):
 
     """
     #: Signal emitted when the `apply_selection` is called. Let's the canvas widget know that color_indices were updated because of a selection.
-    selection_applied_signal: Signal = Signal(bool)
+    selection_applied_signal: Signal = Signal(np.ndarray)
     def __init__(self, ax: plt.Axes, canvas_widget: "CanvasWidget", data: np.ndarray = None):
         """Initializes the interactive selectors.
         """
@@ -431,7 +431,7 @@ class Interactive(Selector):
         self._active_artist.color_indices = color_indices
 
         # Emit signal and reset selected indices
-        self.selection_applied_signal.emit(True)
+        self.selection_applied_signal.emit(color_indices)
         self._selected_indices = None
         # Remove selector and create a new one
         self.remove()
