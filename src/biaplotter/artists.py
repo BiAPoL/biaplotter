@@ -248,50 +248,63 @@ class Scatter(Artist):
         if np.isscalar(indices):
             indices = np.full(len(self._data), indices)
         self._color_indices = indices
+    
         if indices is not None and self._scatter is not None:
-            norm_class = self._normalization_methods[self._color_normalization_method]
-            # If overlay_colormap is categorical, normalize to colormap range
-            if self.overlay_colormap.categorical:
-                if self._color_indices.dtype != int:
-                    warnings.warn(
-                        'Color indices must be integers for categorical colormap. Change `overlay_colormap` to a continuous colormap or set `color_indices` to integers.')
-                if self._color_normalization_method != 'linear':
-                    warnings.warn(
-                        'Categorical colormap detected. Setting color normalization method to linear.')
-                    self._color_normalization_method = 'linear'
-                norm = Normalize(vmin=0, vmax=self.overlay_colormap.N)
-            else:
-                with warnings.catch_warnings():
-                    # If array is all NaN, ignore warning since it will be displayed transparent
-                    warnings.filterwarnings(
-                        'ignore', r'All-NaN slice encountered')
-                    if self._color_normalization_method == 'log':
-                        min_value = np.nanmin(self._color_indices)
-                        if min_value <= 0:
-                            min_value = 0.01
-                        norm = norm_class(vmin=min_value, vmax=np.nanmax(self._color_indices))
-                        warnings.warn(
-                            f'Log normalization applied to color indices with min value {min_value}. Values below 0.01 were set to 0.01.')
-                        indices[indices <= 0] = min_value
-                    elif self._color_normalization_method == 'centered':
-                        norm = norm_class(vcenter=np.nanmean(self._color_indices))
-                    elif self._color_normalization_method == 'symlog':
-                        norm = norm_class(vmin=np.nanmin(self._color_indices), vmax=np.nanmax(self._color_indices), linthresh=0.03)
-                    else:
-                        norm = norm_class(vmin=np.nanmin(self._color_indices), vmax=np.nanmax(self._color_indices))
-
-            # Create a ScalarMappable instance using chosen colormap and normalization
-            sm = ScalarMappable(norm=norm, cmap=self.overlay_colormap.cmap)
-            # Convert normalized data to RGBA
-            rgba_colors = sm.to_rgba(indices)
-            # Set color light gray if overlay is not visible
-            if not self._overlay_visible:
-                rgba_colors = cat10_mod_cmap(0) # Set colors to light gray
+            norm = self._get_normalization(indices)
+            rgba_colors = self._get_rgba_colors(indices, norm)
             self._scatter.set_facecolor(rgba_colors)
-            self._scatter.set_edgecolor(None)
+            self._scatter.set_edgecolor('white')
+    
         # emit signal
         self.color_indices_changed_signal.emit(self._color_indices)
         self.draw()
+    
+    def _get_normalization(self, indices):
+        """Determine the normalization method and return the normalization object."""
+        norm_class = self._normalization_methods[self._color_normalization_method]
+    
+        if self.overlay_colormap.categorical:
+            self._validate_categorical_colormap()
+            return Normalize(vmin=0, vmax=self.overlay_colormap.N)
+    
+        with warnings.catch_warnings():
+            warnings.filterwarnings('ignore', r'All-NaN slice encountered')
+            if self._color_normalization_method == 'log':
+                return self._log_normalization(indices, norm_class)
+            elif self._color_normalization_method == 'centered':
+                return norm_class(vcenter=np.nanmean(self._color_indices))
+            elif self._color_normalization_method == 'symlog':
+                return norm_class(vmin=np.nanmin(self._color_indices), vmax=np.nanmax(self._color_indices), linthresh=0.03)
+            else:
+                return norm_class(vmin=np.nanmin(self._color_indices), vmax=np.nanmax(self._color_indices))
+    
+    def _validate_categorical_colormap(self):
+        """Validate settings for a categorical colormap."""
+        if self._color_indices.dtype != int:
+            warnings.warn(
+                'Color indices must be integers for categorical colormap. Change `overlay_colormap` to a continuous colormap or set `color_indices` to integers.')
+        if self._color_normalization_method != 'linear':
+            warnings.warn(
+                'Categorical colormap detected. Setting color normalization method to linear.')
+            self._color_normalization_method = 'linear'
+    
+    def _log_normalization(self, indices, norm_class):
+        """Apply log normalization to indices."""
+        if np.nanmin(indices) <= 0:
+            warnings.warn(
+                f'Log normalization applied to values <= 0. Values below 0 were set to np.nan')
+            indices[indices <= 0] = np.nan
+        min_value = np.nanmin(indices)
+
+        return norm_class(vmin=min_value, vmax=np.nanmax(indices))
+    
+    def _get_rgba_colors(self, indices, norm):
+        """Convert normalized data to RGBA colors."""
+        sm = ScalarMappable(norm=norm, cmap=self.overlay_colormap.cmap)
+        rgba_colors = sm.to_rgba(indices)
+        if not self._overlay_visible:
+            rgba_colors = cat10_mod_cmap(0)  # Set colors to light gray
+        return rgba_colors
 
     @property
     def overlay_colormap(self) -> BiaColormap:
