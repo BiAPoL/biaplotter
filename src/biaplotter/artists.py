@@ -321,6 +321,7 @@ class Scatter(Artist):
     def overlay_colormap(self, value: Colormap):
         """Sets the overlay colormap for the scatter plot."""
         self._overlay_colormap = BiaColormap(value)
+        self.color_indices = self._color_indices
 
     @property
     def overlay_visible(self) -> bool:
