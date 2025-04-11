@@ -1,4 +1,4 @@
-__version__ = "0.0.5alpha.3"
+__version__ = "0.0.6"
 from .artists import Histogram2D, Scatter
 from .colormap import BiaColormap
 from .plotter import CanvasWidget
