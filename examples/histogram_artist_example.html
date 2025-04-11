@@ -16,22 +16,20 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -49,11 +47,10 @@
     <link rel="stylesheet" type="text/css" href="../_static/css/micromodal.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
-  <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
@@ -86,7 +83,6 @@
     <link rel="prev" title="Scatter Artist" href="scatter_artist_example.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -102,8 +98,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="../search.html"
       method="get">
@@ -111,6 +118,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search this book..."
          aria-label="Search this book..."
          autocomplete="off"
@@ -118,8 +126,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -135,8 +143,7 @@
       
       
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -166,17 +173,21 @@
     
     
     <img src="../_static/logo.png" class="logo__image only-light" alt="BiaPlotter - Home"/>
-    <img src="../_static/logo.png" class="logo__image only-dark pst-js-only" alt="BiaPlotter - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="BiaPlotter - Home"/>`);</script>
   
   
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
@@ -206,14 +217,9 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
   </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -357,16 +363,24 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
+  </button>
+`);
+</script>
 <button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
@@ -393,8 +407,14 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-histogram-2d-plot">Creating a Histogram 2D Plot</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-data-to-the-histogram-2d-artist">Adding Data to the Histogram 2D Artist</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assigning-classes-to-data-points">Assigning Classes to Data Points</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#changing-histogram-colormap">Changing Histogram Colormap</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#changing-histogram-bins">Changing Histogram Bins</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#properties">Properties</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#histogram-colormap">Histogram Colormap</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#histogram-color-normalization">Histogram Color Normalization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#histogram-interpolation">Histogram Interpolation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#histogram-bins">Histogram Bins</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assigning-a-feature-as-an-overlay">Assigning a Feature as an Overlay</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#histogram-visibility">Histogram Visibility</a></li>
 </ul>
             </nav>
@@ -410,7 +430,7 @@
   <section class="tex2jax_ignore mathjax_ignore" id="histogram2d-artist">
 <h1>Histogram2D Artist<a class="headerlink" href="#histogram2d-artist" title="Link to this heading">#</a></h1>
 <p>In this example notebook, we show how to create a histogram 2D plot using the <code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code> class. The <code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code> class is a subclass of the <code class="docutils literal notranslate"><span class="pre">Artist</span></code> class.</p>
-<p>It has a simplified interface for creating histogram 2D plots and updating some of its properties, like assigning different classes to underlying points and displaying bins/patches with different colors based on a categorical colormap.</p>
+<p>It has a simplified interface for creating histogram 2D plots and updating some of its properties, like assigning different classes to underlying points and displaying bins/patches with different colors based on a overlay colormap.</p>
 <p>It can be imported like shown below:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -434,7 +454,11 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ed677fe7b0f5f38d48caa0ab8c4daf4732bb40f161b78a8109858b641c89bf0d.png" src="../_images/ed677fe7b0f5f38d48caa0ab8c4daf4732bb40f161b78a8109858b641c89bf0d.png" />
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\colormap.py:25: UserWarning: Categorical colormap detected. Setting categorical=True. If the colormap is continuous, set categorical=False explicitly.
+  warnings.warn(&#39;Categorical colormap detected. Setting categorical=True. If the colormap is continuous, set categorical=False explicitly.&#39;)
+</pre></div>
+</div>
+<img alt="../_images/0cbf1359a7a70fab4cc16a8c1e9c6fe1bc989234a4665de6aff9e1106c6b267b.png" src="../_images/0cbf1359a7a70fab4cc16a8c1e9c6fe1bc989234a4665de6aff9e1106c6b267b.png" />
 </div>
 </div>
 </section>
@@ -465,33 +489,34 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/f5839e781f537f8c0d0d062eae9ba7679663f51668a3839db350077607c03f8c.png" src="../_images/f5839e781f537f8c0d0d062eae9ba7679663f51668a3839db350077607c03f8c.png" />
+<img alt="../_images/2f1fa2ad4e39a41d4d3b341537f2619a172bd03fd1a2c711a49102fb24a1930d.png" src="../_images/2f1fa2ad4e39a41d4d3b341537f2619a172bd03fd1a2c711a49102fb24a1930d.png" />
 </div>
 </div>
 </section>
 <section id="assigning-classes-to-data-points">
 <h2>Assigning Classes to Data Points<a class="headerlink" href="#assigning-classes-to-data-points" title="Link to this heading">#</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code> artist comes with a custom categorical colormap, which can be used to assign different classes to underlying points and display the bins/patches with the corresponding class color as an overlay.</p>
-<p>You can access the histogram current categorical colormap via its private <code class="docutils literal notranslate"><span class="pre">_colormap</span></code> attribute.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code> artist comes with a custom categorical overlay colormap, which can be used to assign different classes to underlying points and display the bins/patches with the corresponding class color as an overlay.</p>
+<p>You can access the histogram current categorical colormap via <code class="docutils literal notranslate"><span class="pre">overlay_colormap</span></code> attribute.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">categorical_colormap</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">overlay_colormap</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div style="vertical-align: middle;"><strong>cat10_modified_first_transparent</strong> </div><div class="cmap"><img alt="cat10_modified_first_transparent colormap" title="cat10_modified_first_transparent" style="border: 1px solid #555;" src="data:image/png;base64,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"></div><div style="vertical-align: middle; max-width: 514px; display: flex; justify-content: space-between;"><div style="float: left;"><div title="#e6e6fa00" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #e6e6fa00;"></div> under</div><div style="margin: 0 auto; display: inline-block;">bad <div title="#00000000" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #00000000;"></div></div><div style="float: right;">over <div title="#bcbcbcff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #bcbcbcff;"></div></div></div></div>
+<div class="output text_html"><div style="vertical-align: middle;"><strong>cat10_modified_first_transparent</strong> </div><div class="cmap"><img alt="cat10_modified_first_transparent colormap" title="cat10_modified_first_transparent" style="border: 1px solid #555;" src="data:image/png;base64,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"></div><div style="vertical-align: middle; max-width: 514px; display: flex; justify-content: space-between;"><div style="float: left;"><div title="#e6e6fa00" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #e6e6fa00;"></div> under</div><div style="margin: 0 auto; display: inline-block;">bad <div title="#00000000" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #00000000;"></div></div><div style="float: right;">over <div title="#bcbcbcff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #bcbcbcff;"></div></div></div></div></div>
 </div>
 <p>To assign classes to underlying points, just feed the property <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> with a (N,) shaped numpy array containing integers. These integers will be used as indices to the colormap.</p>
-<p><code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code> has a convenience method called <code class="docutils literal notranslate"><span class="pre">indices_in_above_threshold_patches</span></code>, which returns an array with the indices of the points that are inside the patches that are above a certain threshold.</p>
-<p>Below, we get the indices of points that fall in patches that are above two thresholds and we color them with the first 2 non-transparent colors (<code class="docutils literal notranslate"><span class="pre">color_indices</span></code> <code class="docutils literal notranslate"><span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">2</span></code>) of the histogram categorical colormap (color index <code class="docutils literal notranslate"><span class="pre">0</span></code> is transparent for the histogram).</p>
+<p><code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code> has a convenience method called <code class="docutils literal notranslate"><span class="pre">indices_in_patches_above_threshold</span></code>, which finds histogram patches where counts are above threshold and returns the indices of the points belonging to those patches.</p>
+<p>Below, we define two different thresholds and get the indices of points that fall in those patches. We assign classes <code class="docutils literal notranslate"><span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">2</span></code> to those indices and feed this array to <code class="docutils literal notranslate"><span class="pre">color_indices</span></code>.</p>
+<p><em>Note that class <code class="docutils literal notranslate"><span class="pre">0</span></code> represents the background, thus, <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> <code class="docutils literal notranslate"><span class="pre">0</span></code> are transparent for the histogram.</em></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">threshold_1</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">threshold_2</span> <span class="o">=</span> <span class="mi">4</span>
 
-<span class="n">indices_in_patches_above_threshold_1</span> <span class="o">=</span> <span class="n">histogram</span><span class="o">.</span><span class="n">indices_in_above_threshold_patches</span><span class="p">(</span><span class="n">threshold_1</span><span class="p">)</span>
-<span class="n">indices_in_patches_above_threshold_2</span> <span class="o">=</span> <span class="n">histogram</span><span class="o">.</span><span class="n">indices_in_above_threshold_patches</span><span class="p">(</span><span class="n">threshold_2</span><span class="p">)</span>
+<span class="n">indices_in_patches_above_threshold_1</span> <span class="o">=</span> <span class="n">histogram</span><span class="o">.</span><span class="n">indices_in_patches_above_threshold</span><span class="p">(</span><span class="n">threshold_1</span><span class="p">)</span>
+<span class="n">indices_in_patches_above_threshold_2</span> <span class="o">=</span> <span class="n">histogram</span><span class="o">.</span><span class="n">indices_in_patches_above_threshold</span><span class="p">(</span><span class="n">threshold_2</span><span class="p">)</span>
 
 <span class="n">color_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
 <span class="n">color_indices</span><span class="p">[</span><span class="n">indices_in_patches_above_threshold_1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
@@ -503,7 +528,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/98cd5ad8c79f2b1d7263127c9ab6c93f05bcd753677649cf619447da4dea4dc5.png" src="../_images/98cd5ad8c79f2b1d7263127c9ab6c93f05bcd753677649cf619447da4dea4dc5.png" />
+<img alt="../_images/ed0246794f382c5faec501e1694d128e0fdf32b2cd1014a058f5ac4898d2384d.png" src="../_images/ed0246794f382c5faec501e1694d128e0fdf32b2cd1014a058f5ac4898d2384d.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -522,7 +547,7 @@
 </div>
 </div>
 <p>Colors are kept if new data is added, but they may not make sense anymore.</p>
-<p>For example, below, patches where data was previously colored received more data (with ‘unlabelled’ colors (color index 0)), thus many patches are transparent again (dominant color index is 0).</p>
+<p>For example, below, patches where data was previously colored received more data (with ‘unlabelled’ colors, <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> being <code class="docutils literal notranslate"><span class="pre">0</span></code>), thus many patches turn transparent again (because dominant color index becomes <code class="docutils literal notranslate"><span class="pre">0</span></code> in those).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Adding 400 more samples</span>
@@ -535,7 +560,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/c15ffb2392c975e10beb52ea8245252659ff4d6ebf4c40045de576517908a9f2.png" src="../_images/c15ffb2392c975e10beb52ea8245252659ff4d6ebf4c40045de576517908a9f2.png" />
+<img alt="../_images/d00b5bb9cf7a44a075aef2981679d5c148a441f846be91e8aa0e2d33313ff11d.png" src="../_images/d00b5bb9cf7a44a075aef2981679d5c148a441f846be91e8aa0e2d33313ff11d.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -553,7 +578,7 @@
 </div>
 </div>
 </div>
-<p>Set <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> to <code class="docutils literal notranslate"><span class="pre">0</span></code> to reset the colors.</p>
+<p>For the default overlay colormap (<code class="docutils literal notranslate"><span class="pre">cat10_modified_first_transparent</span></code>), we can reset colors by setting <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> to <code class="docutils literal notranslate"><span class="pre">0</span></code> (default) or <code class="docutils literal notranslate"><span class="pre">np.nan</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">color_indices</span> <span class="o">=</span> <span class="mi">0</span>
@@ -562,12 +587,14 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/50a5cc5d39cd964d68627238e759e30a3ae616b78fac693cbe7e8bc67b847695.png" src="../_images/50a5cc5d39cd964d68627238e759e30a3ae616b78fac693cbe7e8bc67b847695.png" />
+<img alt="../_images/761682ac9471d7742173fd5d452880c5704048f6d4c8d597f9ec17e6c5a279bc.png" src="../_images/761682ac9471d7742173fd5d452880c5704048f6d4c8d597f9ec17e6c5a279bc.png" />
 </div>
 </div>
 </section>
-<section id="changing-histogram-colormap">
-<h2>Changing Histogram Colormap<a class="headerlink" href="#changing-histogram-colormap" title="Link to this heading">#</a></h2>
+<section id="properties">
+<h2>Properties<a class="headerlink" href="#properties" title="Link to this heading">#</a></h2>
+<section id="histogram-colormap">
+<h3>Histogram Colormap<a class="headerlink" href="#histogram-colormap" title="Link to this heading">#</a></h3>
 <p>You can change the histogram colormap by setting the <code class="docutils literal notranslate"><span class="pre">histogram_colormap</span></code> attribute. Below, we show the default histogram colormap, which is <code class="docutils literal notranslate"><span class="pre">magma</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -576,7 +603,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div style="vertical-align: middle;"><strong>magma</strong> </div><div class="cmap"><img alt="magma colormap" title="magma" style="border: 1px solid #555;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAABACAYAAABsv8+/AAAAFHRFWHRUaXRsZQBtYWdtYSBjb2xvcm1hcCO8Z6IAAAAadEVYdERlc2NyaXB0aW9uAG1hZ21hIGNvbG9ybWFw3ePORAAAADB0RVh0QXV0aG9yAE1hdHBsb3RsaWIgdjMuOC40LCBodHRwczovL21hdHBsb3RsaWIub3JnZM6ytAAAADJ0RVh0U29mdHdhcmUATWF0cGxvdGxpYiB2My44LjQsIGh0dHBzOi8vbWF0cGxvdGxpYi5vcmdKaC2TAAACNUlEQVR4nO3WS5KjMBAFwJL6/mdmFg12UCDsnu3L3DhUKn2wCccbVT9bVVXV+P2ouY/28Zjn+mI89nG1cZ9/jV/1n/v6ct3PbX3W8/xxzuzn1rG+3aPXl+NFfWv3Os5/9f9+v2Pr+7T5Nu6fY1Ufva/25+999Tiex2vwWlfnvmO+99d5/ji319/n9X3v+9fnP4+/7fu8bvvuXpfx9nzOPt/Xv/tX63v9PH7fY2v79ue4H1/3Pe8zPvUt6u/fbzvv07+HPn8Zn+9x7ev33Otza+vqVL+sn/fjutTbfc5/i8v+uvTVqe940HX/aPX7F230F6O96J/mjwuNXv/42R7oct58Xj/6/Kp//nHdqv9c3+Z9fdVfX/fPtv9z3//vO2/7jp8ZAAgiAABAIAEAAAIJAAAQSAAAgEACAAAEEgAAIJAAAACBBAAACCQAAEAgAQAAAgkAABBIAACAQAIAAAQSAAAgkAAAAIEEAAAIJAAAQCABAAACCQAAEEgAAIBAAgAABBIAACCQAAAAgQQAAAgkAABAIAEAAAIJAAAQSAAAgEACAAAEEgAAIJAAAACBBAAACCQAAEAgAQAAAgkAABBIAACAQAIAAAQSAAAgkAAAAIEEAAAIJAAAQCABAAACCQAAEEgAAIBAAgAABBIAACCQAAAAgQQAAAgkAABAIAEAAAIJAAAQSAAAgEACAAAEEgAAIJAAAACBBAAACCQAAEAgAQAAAgkAABBIAACAQAIAAAQSAAAg0D8FVi814EhgQgAAAABJRU5ErkJggg=="></div><div style="vertical-align: middle; max-width: 514px; display: flex; justify-content: space-between;"><div style="float: left;"><div title="#000004ff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #000004ff;"></div> under</div><div style="margin: 0 auto; display: inline-block;">bad <div title="#00000000" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #00000000;"></div></div><div style="float: right;">over <div title="#fcfdbfff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #fcfdbfff;"></div></div></div></div>
+<div class="output text_html"><div style="vertical-align: middle;"><strong>magma</strong> </div><div class="cmap"><img alt="magma colormap" title="magma" style="border: 1px solid #555;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAABACAYAAABsv8+/AAAAFHRFWHRUaXRsZQBtYWdtYSBjb2xvcm1hcCO8Z6IAAAAadEVYdERlc2NyaXB0aW9uAG1hZ21hIGNvbG9ybWFw3ePORAAAADF0RVh0QXV0aG9yAE1hdHBsb3RsaWIgdjMuMTAuMSwgaHR0cHM6Ly9tYXRwbG90bGliLm9yZxYcXggAAAAzdEVYdFNvZnR3YXJlAE1hdHBsb3RsaWIgdjMuMTAuMSwgaHR0cHM6Ly9tYXRwbG90bGliLm9yZ7M4TfwAAAI1SURBVHic7dZLkqMwEAXAkvr+Z2YWDXZQIOye7cvcOFQqfbAJxxtVP1tVVdX4/ai5j/bxmOf6Yjz2cbVxn3+NX/Wf+/py3c9tfdbz/HHO7OfWsb7do9eX40V9a/c6zn/1/36/Y+v7tPk27p9jVR+9r/bn7331OJ7Ha/BaV+e+Y77313n+OLfX3+f1fe/71+c/j7/t+7xu++5el/H2fM4+39e/+1fre/08ft9ja/v257gfX/c97zM+9S3q799vO+/Tv4c+fxmf73Ht6/fc63Nr6+pUv6yf9+O61Nt9zn+Ly/669NWp73jQdf9o9fsXbfQXo73on+aPC41e//jZHuhy3nxeP/r8qn/+cd2q/1zf5n191V9f98+2/3Pf/+87b/uOnxkACCIAAEAgAQAAAgkAABBIAACAQAIAAAQSAAAgkAAAAIEEAAAIJAAAQCABAAACCQAAEEgAAIBAAgAABBIAACCQAAAAgQQAAAgkAABAIAEAAAIJAAAQSAAAgEACAAAEEgAAIJAAAACBBAAACCQAAEAgAQAAAgkAABBIAACAQAIAAAQSAAAgkAAAAIEEAAAIJAAAQCABAAACCQAAEEgAAIBAAgAABBIAACCQAAAAgQQAAAgkAABAIAEAAAIJAAAQSAAAgEACAAAEEgAAIJAAAACBBAAACCQAAEAgAQAAAgkAABBIAACAQAIAAAQSAAAgkAAAAIEEAAAIJAAAQCABAAACCQAAEEgAAIBAAgAABBIAACDQPwVWLzXgSGBCAAAAAElFTkSuQmCC"></div><div style="vertical-align: middle; max-width: 514px; display: flex; justify-content: space-between;"><div style="float: left;"><div title="#000004ff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #000004ff;"></div> under</div><div style="margin: 0 auto; display: inline-block;">bad <div title="#00000000" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #00000000;"></div></div><div style="float: right;">over <div title="#fcfdbfff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #fcfdbfff;"></div></div></div></div></div>
 </div>
 <p>Here we display another colormap from matplotlib (<code class="docutils literal notranslate"><span class="pre">viridis</span></code>) and assign it to the histogram.</p>
 <div class="cell docutils container">
@@ -586,7 +613,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div style="vertical-align: middle;"><strong>viridis</strong> </div><div class="cmap"><img alt="viridis colormap" title="viridis" style="border: 1px solid #555;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAABACAYAAABsv8+/AAAAFnRFWHRUaXRsZQB2aXJpZGlzIGNvbG9ybWFwrE0mCwAAABx0RVh0RGVzY3JpcHRpb24AdmlyaWRpcyBjb2xvcm1hcAtjl3IAAAAwdEVYdEF1dGhvcgBNYXRwbG90bGliIHYzLjguNCwgaHR0cHM6Ly9tYXRwbG90bGliLm9yZ2TOsrQAAAAydEVYdFNvZnR3YXJlAE1hdHBsb3RsaWIgdjMuOC40LCBodHRwczovL21hdHBsb3RsaWIub3JnSmgtkwAAAiJJREFUeJzt1kGSmzAURdEv2FqWkP0vJfQgMhQCGceV2Ttn4pL0EVQPum771X5vVVXVWv39XfrPeV193V5zS98f1sf5/fPjey73zu6/3Hv/uz2cz57f9vP68rxO9+/zre7nhvvG+et6vH92bw3PDfcsD+eX59+/53n96f3362/f87/vf5yr93Of72/fPV9P89tX3zGeH3OT8/07Zs+/32+TuXZZD8/VODf8W5uuH/b7vctlfuv7NazH8/t7ZnP7bz2cD3NL+/Ph3Hl+/efz83vWun/vuL++nquH9eu9w/uu6/vvOO49f/8xf77vOj+8b7Y/fMfse9ca/y7nv+d62a++X+f1vt+G/b7u+/u6TxzzS//tc2053QMABBEAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAoB9ucImHxcKZtAAAAABJRU5ErkJggg=="></div><div style="vertical-align: middle; max-width: 514px; display: flex; justify-content: space-between;"><div style="float: left;"><div title="#440154ff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #440154ff;"></div> under</div><div style="margin: 0 auto; display: inline-block;">bad <div title="#00000000" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #00000000;"></div></div><div style="float: right;">over <div title="#fde725ff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #fde725ff;"></div></div></div></div>
+<div class="output text_html"><div style="vertical-align: middle;"><strong>viridis</strong> </div><div class="cmap"><img alt="viridis colormap" title="viridis" style="border: 1px solid #555;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAABACAYAAABsv8+/AAAAFnRFWHRUaXRsZQB2aXJpZGlzIGNvbG9ybWFwrE0mCwAAABx0RVh0RGVzY3JpcHRpb24AdmlyaWRpcyBjb2xvcm1hcAtjl3IAAAAxdEVYdEF1dGhvcgBNYXRwbG90bGliIHYzLjEwLjEsIGh0dHBzOi8vbWF0cGxvdGxpYi5vcmcWHF4IAAAAM3RFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHYzLjEwLjEsIGh0dHBzOi8vbWF0cGxvdGxpYi5vcmezOE38AAACIklEQVR4nO3WQZKbMBRF0S/YWpaQ/S8l9CAyFAIZx5XZO2fikvQRVA+6bvvVfm9VVdVa/f1d+s95XX3dXnNL3x/Wx/n98+N7LvfO7r/ce/+7PZzPnt/28/ryvE737/Ot7ueG+8b563q8f3ZvDc8N9ywP55fn37/nef3p/ffrb9/zv+9/nKv3c5/vb989X0/z21ffMZ4fc5Pz/Ttmz7/fb5O5dlkPz9U4N/xbm64f9vu9y2V+6/s1rMfz+3tmc/tvPZwPc0v78+HceX795/Pze9a6f++4v76eq4f1673D+67r++847j1//zF/vu86P7xvtj98x+x71xr/Lue/53rZr75f5/W+34b9vu77+7pPHPNL/+1zbTndAwAEEQAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAECgH25wiYfFwpm0AAAAAElFTkSuQmCC"></div><div style="vertical-align: middle; max-width: 514px; display: flex; justify-content: space-between;"><div style="float: left;"><div title="#440154ff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #440154ff;"></div> under</div><div style="margin: 0 auto; display: inline-block;">bad <div title="#00000000" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #00000000;"></div></div><div style="float: right;">over <div title="#fde725ff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #fde725ff;"></div></div></div></div></div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -596,12 +623,65 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/c78002a526e5c05467ea0a9dfc4190dac2fe87d7156ff564ad0b309f565c95ac.png" src="../_images/c78002a526e5c05467ea0a9dfc4190dac2fe87d7156ff564ad0b309f565c95ac.png" />
+<img alt="../_images/e2ca7ef97174db79aa3ea71568a7ef380329b45d770b8b6c22a8a8e65a224c6b.png" src="../_images/e2ca7ef97174db79aa3ea71568a7ef380329b45d770b8b6c22a8a8e65a224c6b.png" />
 </div>
 </div>
 </section>
-<section id="changing-histogram-bins">
-<h2>Changing Histogram Bins<a class="headerlink" href="#changing-histogram-bins" title="Link to this heading">#</a></h2>
+<section id="histogram-color-normalization">
+<h3>Histogram Color Normalization<a class="headerlink" href="#histogram-color-normalization" title="Link to this heading">#</a></h3>
+<p>You can change the histogram color normalization by setting the <code class="docutils literal notranslate"><span class="pre">histogram_color_normalization_method</span></code> attribute. Below, we show the default color normalization, which is <code class="docutils literal notranslate"><span class="pre">linear</span></code>, by <code class="docutils literal notranslate"><span class="pre">log</span></code>. This is useful for visualizing data with a wide range of values.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">histogram_color_normalization_method</span> <span class="o">=</span> <span class="s1">&#39;log&#39;</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:943: UserWarning: Log normalization applied to color indices with min value 0.01. Values below 0.01 were set to 0.01.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="../_images/6c5589206e9329bf260a7379282535476a0ea9431fcce34e078df97ab942a74c.png" src="../_images/6c5589206e9329bf260a7379282535476a0ea9431fcce34e078df97ab942a74c.png" />
+</div>
+</div>
+</section>
+<section id="histogram-interpolation">
+<h3>Histogram Interpolation<a class="headerlink" href="#histogram-interpolation" title="Link to this heading">#</a></h3>
+<p>You can change the histogram interpolation by setting the <code class="docutils literal notranslate"><span class="pre">histogram_interpolation</span></code> attribute. Below, we replace the default interpolation, which is <code class="docutils literal notranslate"><span class="pre">nearest</span></code>, by <code class="docutils literal notranslate"><span class="pre">bilinear</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">histogram_interpolation</span> <span class="o">=</span> <span class="s1">&#39;bilinear&#39;</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:943: UserWarning: Log normalization applied to color indices with min value 0.01. Values below 0.01 were set to 0.01.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="../_images/39d29eab177b12b6b032148358c347304afee8b0255f38dfb756d9b7487051bb.png" src="../_images/39d29eab177b12b6b032148358c347304afee8b0255f38dfb756d9b7487051bb.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">histogram_interpolation</span> <span class="o">=</span> <span class="s1">&#39;nearest&#39;</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:943: UserWarning: Log normalization applied to color indices with min value 0.01. Values below 0.01 were set to 0.01.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="../_images/6c5589206e9329bf260a7379282535476a0ea9431fcce34e078df97ab942a74c.png" src="../_images/6c5589206e9329bf260a7379282535476a0ea9431fcce34e078df97ab942a74c.png" />
+</div>
+</div>
+</section>
+<section id="histogram-bins">
+<h3>Histogram Bins<a class="headerlink" href="#histogram-bins" title="Link to this heading">#</a></h3>
 <p>You can set the number of bins in the histogram by setting the <code class="docutils literal notranslate"><span class="pre">bins</span></code> attribute. The default number of bins is 20.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -611,7 +691,113 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/f85840ab5c2bed8dbc481859b5d8fa64d364724933f3e880112affa5c752270b.png" src="../_images/f85840ab5c2bed8dbc481859b5d8fa64d364724933f3e880112affa5c752270b.png" />
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:943: UserWarning: Log normalization applied to color indices with min value 0.01. Values below 0.01 were set to 0.01.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="../_images/1954fbfe15002e51486014d2daa3f8970db0629576fef6b1ceab214fb13f5a70.png" src="../_images/1954fbfe15002e51486014d2daa3f8970db0629576fef6b1ceab214fb13f5a70.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="assigning-a-feature-as-an-overlay">
+<h2>Assigning a Feature as an Overlay<a class="headerlink" href="#assigning-a-feature-as-an-overlay" title="Link to this heading">#</a></h2>
+<p>You can assign a feature to be displayed as an overlay on the histogram. This feature can be a continuous or categorical feature.
+Let’s assign the x coordinate as an overlay and use a different colormap (‘jet’) to display it.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">jet</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div style="vertical-align: middle;"><strong>jet</strong> </div><div class="cmap"><img alt="jet colormap" title="jet" style="border: 1px solid #555;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAABACAYAAABsv8+/AAAAEnRFWHRUaXRsZQBqZXQgY29sb3JtYXBCuQ5RAAAAGHRFWHREZXNjcmlwdGlvbgBqZXQgY29sb3JtYXBOkXwLAAAAMXRFWHRBdXRob3IATWF0cGxvdGxpYiB2My4xMC4xLCBodHRwczovL21hdHBsb3RsaWIub3JnFhxeCAAAADN0RVh0U29mdHdhcmUATWF0cGxvdGxpYiB2My4xMC4xLCBodHRwczovL21hdHBsb3RsaWIub3JnszhN/AAAAZxJREFUeJzt1stOAkEQQNHi4Xf74YK6oMdETHThE+85m0pNQ2cSWNzdzP3TzMzM3WXMcb52/yv37uZdR/O25vrbHk9rnmdmZr/m4WVezo9vnq95WHPW52bbr+dnz//rPbf5vtv+4T3ntZ+2+bjmrPPL3K19tnm+2j96/tPf++v3/fJ7PK25fvZ52PbT1b6dz+t5+uL9u+7dDwCQIwAAIEgAAECQAACAIAEAAEECAACCBAAABAkAAAgSAAAQJAAAIEgAAECQAACAIAEAAEECAACCBAAABAkAAAgSAAAQJAAAIEgAAECQAACAIAEAAEECAACCBAAABAkAAAgSAAAQJAAAIEgAAECQAACAIAEAAEECAACCBAAABAkAAAgSAAAQJAAAIEgAAECQAACAIAEAAEECAACCBAAABAkAAAgSAAAQJAAAIEgAAECQAACAIAEAAEECAACCBAAABAkAAAgSAAAQJAAAIEgAAECQAACAIAEAAEECAACCBAAABAkAAAgSAAAQJAAAIEgAAECQAACAIAEAAEECAACCBAAABD0DNdmz/onkAD8AAAAASUVORK5CYII="></div><div style="vertical-align: middle; max-width: 514px; display: flex; justify-content: space-between;"><div style="float: left;"><div title="#000080ff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #000080ff;"></div> under</div><div style="margin: 0 auto; display: inline-block;">bad <div title="#00000000" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #00000000;"></div></div><div style="float: right;">over <div title="#800000ff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #800000ff;"></div></div></div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">feature</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="c1"># x coordinates</span>
+<span class="n">histogram</span><span class="o">.</span><span class="n">overlay_colormap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">jet</span>
+<span class="n">histogram</span><span class="o">.</span><span class="n">color_indices</span> <span class="o">=</span> <span class="n">feature</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/6223d108da081a396f979507a75403d1d899f7a55d3d06abff843f46561b500b.png" src="../_images/6223d108da081a396f979507a75403d1d899f7a55d3d06abff843f46561b500b.png" />
+</div>
+</div>
+<p>Of course now we lose the histogram count information, but we can edit the overlay opacity or visibility to better see the original histogram again.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">overlay_opacity</span> <span class="o">=</span> <span class="mf">0.4</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:943: UserWarning: Log normalization applied to color indices with min value 0.01. Values below 0.01 were set to 0.01.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="../_images/a5b4f62c9ec178ce26d655681ad0f9c693aafb9c4f4a95cd7184ded8e5e0f35e.png" src="../_images/a5b4f62c9ec178ce26d655681ad0f9c693aafb9c4f4a95cd7184ded8e5e0f35e.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">overlay_visible</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/1954fbfe15002e51486014d2daa3f8970db0629576fef6b1ceab214fb13f5a70.png" src="../_images/1954fbfe15002e51486014d2daa3f8970db0629576fef6b1ceab214fb13f5a70.png" />
+</div>
+</div>
+<p>Here we restore the defualt overlay opacity and visibility.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">overlay_opacity</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">histogram</span><span class="o">.</span><span class="n">overlay_visible</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:943: UserWarning: Log normalization applied to color indices with min value 0.01. Values below 0.01 were set to 0.01.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="../_images/6223d108da081a396f979507a75403d1d899f7a55d3d06abff843f46561b500b.png" src="../_images/6223d108da081a396f979507a75403d1d899f7a55d3d06abff843f46561b500b.png" />
+</div>
+</div>
+<p>We can also apply other color normalization method and interpolation to the overlay. Below, we change the overlay normalization to <code class="docutils literal notranslate"><span class="pre">symlog</span></code> and the interpolation to <code class="docutils literal notranslate"><span class="pre">bilinear</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">overlay_color_normalization_method</span> <span class="o">=</span> <span class="s1">&#39;symlog&#39;</span>
+<span class="n">histogram</span><span class="o">.</span><span class="n">overlay_interpolation</span> <span class="o">=</span> <span class="s1">&#39;bilinear&#39;</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:943: UserWarning: Log normalization applied to color indices with min value 0.01. Values below 0.01 were set to 0.01.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="../_images/4ba77e9f64bc3b42a90c135df7d846c67ee25f5ebab6363dcdec88b4067c9c72.png" src="../_images/4ba77e9f64bc3b42a90c135df7d846c67ee25f5ebab6363dcdec88b4067c9c72.png" />
+</div>
+</div>
+<p>We can clear the overlay again by setting <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> to <code class="docutils literal notranslate"><span class="pre">np.nan</span></code>.</p>
+<p><em>Note that setting <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> to <code class="docutils literal notranslate"><span class="pre">0</span></code> here will not clear the overlay because we changed the overlay colormap above and the first color (index <code class="docutils literal notranslate"><span class="pre">0</span></code>) of the new colormap is not transparent.</em></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">color_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/1954fbfe15002e51486014d2daa3f8970db0629576fef6b1ceab214fb13f5a70.png" src="../_images/1954fbfe15002e51486014d2daa3f8970db0629576fef6b1ceab214fb13f5a70.png" />
 </div>
 </div>
 </section>
@@ -626,7 +812,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/0d7e3f1d86b8feaa05130db0aedb5ade3303d2aae57219443f391c1f657ba056.png" src="../_images/0d7e3f1d86b8feaa05130db0aedb5ade3303d2aae57219443f391c1f657ba056.png" />
+<img alt="../_images/99eb50bff7659c4d233d63750deb8f6d29ebd48b741f0350c24c1e9e1d0dc07a.png" src="../_images/99eb50bff7659c4d233d63750deb8f6d29ebd48b741f0350c24c1e9e1d0dc07a.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -637,7 +823,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/f85840ab5c2bed8dbc481859b5d8fa64d364724933f3e880112affa5c752270b.png" src="../_images/f85840ab5c2bed8dbc481859b5d8fa64d364724933f3e880112affa5c752270b.png" />
+<img alt="../_images/1954fbfe15002e51486014d2daa3f8970db0629576fef6b1ceab214fb13f5a70.png" src="../_images/1954fbfe15002e51486014d2daa3f8970db0629576fef6b1ceab214fb13f5a70.png" />
 </div>
 </div>
 </section>
@@ -698,8 +884,7 @@
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -711,8 +896,14 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-histogram-2d-plot">Creating a Histogram 2D Plot</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-data-to-the-histogram-2d-artist">Adding Data to the Histogram 2D Artist</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assigning-classes-to-data-points">Assigning Classes to Data Points</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#changing-histogram-colormap">Changing Histogram Colormap</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#changing-histogram-bins">Changing Histogram Bins</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#properties">Properties</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#histogram-colormap">Histogram Colormap</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#histogram-color-normalization">Histogram Color Normalization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#histogram-interpolation">Histogram Interpolation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#histogram-bins">Histogram Bins</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assigning-a-feature-as-an-overlay">Assigning a Feature as an Overlay</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#histogram-visibility">Histogram Visibility</a></li>
 </ul>
   </nav></div>
@@ -762,8 +953,8 @@ By Marcelo Leomil Zoccoler
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

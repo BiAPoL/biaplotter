@@ -7,7 +7,7 @@ This package is not intended to be a napari plugin by itself, but it is intended
 
 ## Installation
 
-* Make sure you have Python in your computer, e.g. download [miniforge](https://github.com/conda-forge/miniforge?tab=readme-ov-file#download).
+* Make sure you have Python in your computer, e.g. download [miniforge](https://conda-forge.org/download/).
 
 * Create a new environment, for example, like this:
 

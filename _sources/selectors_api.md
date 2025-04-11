@@ -209,6 +209,10 @@
    .. automethod:: on_button_press
    .. automethod:: remove
 
+   .. rubric:: Signals Documentation
+
+   .. autoattribute:: selection_applied_signal
+
    .. rubric:: Slots Methods Documentation
 
    .. automethod:: update_active_artist

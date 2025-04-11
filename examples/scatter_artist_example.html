@@ -16,22 +16,20 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -49,11 +47,10 @@
     <link rel="stylesheet" type="text/css" href="../_static/css/micromodal.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
-  <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
@@ -86,7 +83,6 @@
     <link rel="prev" title="BiaPlotter" href="../intro.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -102,8 +98,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="../search.html"
       method="get">
@@ -111,6 +118,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search this book..."
          aria-label="Search this book..."
          autocomplete="off"
@@ -118,8 +126,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -135,8 +143,7 @@
       
       
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -166,17 +173,21 @@
     
     
     <img src="../_static/logo.png" class="logo__image only-light" alt="BiaPlotter - Home"/>
-    <img src="../_static/logo.png" class="logo__image only-dark pst-js-only" alt="BiaPlotter - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="BiaPlotter - Home"/>`);</script>
   
   
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
@@ -206,14 +217,9 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
   </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -357,16 +363,24 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
+  </button>
+`);
+</script>
 <button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
@@ -394,6 +408,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-data-to-the-scatter-artist">Adding Data to the Scatter Artist</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assigning-classes-to-data-points">Assigning Classes to Data Points</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-point-properties">Setting point properties</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scatter-color-normalization">Scatter Color Normalization</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scatter-visibility">Scatter Visibility</a></li>
 </ul>
             </nav>
@@ -416,6 +431,7 @@
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">biaplotter.artists</span><span class="w"> </span><span class="kn">import</span> <span class="n">Scatter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nap_plot_tools.cmap</span><span class="w"> </span><span class="kn">import</span> <span class="n">cat10_mod_cmap</span>
 </pre></div>
 </div>
 </div>
@@ -431,7 +447,11 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/55ad6f09974659058ed6ec303b68ef045c7c70849e2cd3bc6219f19b28ba7860.png" src="../_images/55ad6f09974659058ed6ec303b68ef045c7c70849e2cd3bc6219f19b28ba7860.png" />
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\colormap.py:25: UserWarning: Categorical colormap detected. Setting categorical=True. If the colormap is continuous, set categorical=False explicitly.
+  warnings.warn(&#39;Categorical colormap detected. Setting categorical=True. If the colormap is continuous, set categorical=False explicitly.&#39;)
+</pre></div>
+</div>
+<img alt="../_images/0cbf1359a7a70fab4cc16a8c1e9c6fe1bc989234a4665de6aff9e1106c6b267b.png" src="../_images/0cbf1359a7a70fab4cc16a8c1e9c6fe1bc989234a4665de6aff9e1106c6b267b.png" />
 </div>
 </div>
 </section>
@@ -448,22 +468,22 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/14016d533e9022aac0fc446142d025a4587a827f019a02faf1bef0087c879fba.png" src="../_images/14016d533e9022aac0fc446142d025a4587a827f019a02faf1bef0087c879fba.png" />
+<img alt="../_images/28bbb938c6979ab19c791dedc626c75de95135fa0bd16f0dfbb68de1de096f51.png" src="../_images/28bbb938c6979ab19c791dedc626c75de95135fa0bd16f0dfbb68de1de096f51.png" />
 </div>
 </div>
 </section>
 <section id="assigning-classes-to-data-points">
 <h2>Assigning Classes to Data Points<a class="headerlink" href="#assigning-classes-to-data-points" title="Link to this heading">#</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">Scatter</span></code> artist comes with a custom categorical colormap, which can be used to assign different classes to points.</p>
-<p>You can access the scatter current categorical colormap via its private <code class="docutils literal notranslate"><span class="pre">_colormap</span></code> attribute.</p>
+<p>You can access the scatter current categorical colormap via its <code class="docutils literal notranslate"><span class="pre">overlay_colormap</span></code> attribute.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scatter</span><span class="o">.</span><span class="n">categorical_colormap</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scatter</span><span class="o">.</span><span class="n">overlay_colormap</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div style="vertical-align: middle;"><strong>cat10_modified</strong> </div><div class="cmap"><img alt="cat10_modified colormap" title="cat10_modified" style="border: 1px solid #555;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAABACAYAAABsv8+/AAAAHXRFWHRUaXRsZQBjYXQxMF9tb2RpZmllZCBjb2xvcm1hcAoIQosAAAAjdEVYdERlc2NyaXB0aW9uAGNhdDEwX21vZGlmaWVkIGNvbG9ybWFwDCOnegAAADB0RVh0QXV0aG9yAE1hdHBsb3RsaWIgdjMuOS4xLCBodHRwczovL21hdHBsb3RsaWIub3JnVHRzAAAAADJ0RVh0U29mdHdhcmUATWF0cGxvdGxpYiB2My45LjEsIGh0dHBzOi8vbWF0cGxvdGxpYi5vcmd60uwnAAAGNUlEQVR4nO3W+5POZRjH8TdNOocOpFVTI0VCIYepjeSUsAqtw5aNJUo2KdtxpdSu00Y57E4otVFKFLUSaTV0GKutKIZCQkeNDmoaTf1w+S/u9+vHfZ7n+73u+7ruez81Dhz45z+ABmVnAXDB34sBOK1pAQCjcl8GIONQBgBfj7oFgOwL4/P5J64DIPOaFwAYUuN1AN5qfgSA1jWXAlBjZHcA7hiwAoA59csAKCm+FIBVzeoA8Mx58wCo+PU2AA6d8ioA919/EQAr6sdzDw9rBUDPFjcDsOvPEwCofDi+v6XDFACObHgOgEU3PwXAy8vuAKBurycB6PBeHgBjBr8W63ryWgB+m1gJwOiym+L5Y1YCMHRB1Fc5oAcAM5evive0vASAvSvXA5Bz2xAAFjwyPurNzQLg3uWxTyWFcwEoLb4XgGllbwPQcsRgAGoPGgTAlMVfAvDe7VcCkL/hJADGdvkXgN1vRJ0nFj8EwLvtO8bnm9YCMLFX9OnKyvkAjOzSFoDhG6ti3X0GRl2zJwHweknsQ89G3wJw5xdNAPh9SKzv1LwJsa591VHXvvh7x6PlALy/dTgAA5fGHCzqOA6ABzcvAeCpVg9GXRuHAnC02QoALv7qMgBqtNkGwPmr/gBg+pgWACwt2QhAwfCmADQp2QXA0Mfi85zeCwF4dU/MVWHOuwD06H8AgPkLzgfg6Yk/AZCX9wsA45d1AWDrrTH3p38X9fQ9rg0Akw5Ffwta5gIwYUX0a+aUeP81zWIuSrdHv1Z23g1Al7nx/C+XjQJgR8YwAB7gLQCydkSfJrfdDMCW72P99XbOAqDh1ZMBqKoZ68hb1x6Asd03RN2zmgMwb8kmAEYNjvmaXBL9Lhr3CgBfVOQD8Gvr5wHovTXOb/sLY152rukNQMvRPwKwvds3AAzu+CwAZQtHADD10ZcAaJwV/a67Kfr02xXdYt0l0wHIfTa+v2dSNQCZ8+I8ja4Z52BG0yIAVh9ZFPtwbZzP8pxDAFxWfjkAqwa8A8DMrTMA6Nw4O/ZjYTyv/X2x/9uGNgTgrLkfArB/XexbRueHAfhl1q0AnJkf525/VtSbeW68r+jjmKeiunEei3tG3S9VxXueaPsGAK2ntQPgo5k7AWg0oAMAH+c3AqDdrK8BeKcqzuPbHaJfpyx9BoCrCmMu82+MvvcpWgbADxPifLVaHffbz33j/Ztn1wHg/tmx3yP6lgKw+IPPAJh/y3lRV/FeAGotiX0rbxz3U3bV3QDMqRXnu3+9FwH45Lu47/rf8Hnsy0exHyO2FQOwpetjAJy9POZw38BOALRZuAaAz8qjjk7ZowGYNjcn9mvYsf8bU/oDkLkg5npa5hUAFFTHOVnbYywA57xQCEDDB+Jeqrgrzs+g0qkAbH88+t/ixpjL6p9zAdj/ffxu+CUlABSujXOVl1sBwK7VMd+Hm8c90/1A9C/nqz8BWNM07ouum96M/bgn1ntdadxfFeM7x/OO3TfZ/WoCkPF+AwCmHx/97XdCrHNj/Vhnjx2/AzDnjOjXpCbxvtnH7u9xBVH35OlxHxT2ibm8Z3s1AHfWPh2A9Q3OjfdVbol9yop6d68/CsB/Z0bfLqrXC4Cdn8b5+atZPwCaHzwIwI6T457rdHHM4brNUUf9Uw8DcP3I+wCI1UmSpKQYACRJSpABQJKkBBkAJElKkAFAkqQEGQAkSUqQAUCSpAQZACRJSpABQJKkBBkAJElKkAFAkqQEGQAkSUqQAUCSpAQZACRJSpABQJKkBBkAJElKkAFAkqQEGQAkSUqQAUCSpAQZACRJSpABQJKkBBkAJElKkAFAkqQEGQAkSUqQAUCSpAQZACRJSpABQJKkBBkAJElKkAFAkqQEGQAkSUqQAUCSpAQZACRJSpABQJKkBBkAJElKkAFAkqQEGQAkSUqQAUCSpAQZACRJSpABQJKkBBkAJElKkAFAkqQEGQAkSUqQAUCSpAQZACRJSpABQJKkBBkAJElKkAFAkqQEGQAkSUqQAUCSpAQZACRJSpABQJKkBBkAJElKkAFAkqQEGQAkSUqQAUCSpAQZACRJSpABQJKkBBkAJElKkAFAkqQEGQAkSUqQAUCSpAQZACRJSpABQJKkBP0P9QB9wuaIb6AAAAAASUVORK5CYII="></div><div style="vertical-align: middle; max-width: 514px; display: flex; justify-content: space-between;"><div style="float: left;"><div title="#e6e6faff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #e6e6faff;"></div> under</div><div style="margin: 0 auto; display: inline-block;">bad <div title="#00000000" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #00000000;"></div></div><div style="float: right;">over <div title="#bcbcbcff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #bcbcbcff;"></div></div></div></div>
+<div class="output text_html"><div style="vertical-align: middle;"><strong>cat10_modified</strong> </div><div class="cmap"><img alt="cat10_modified colormap" title="cat10_modified" style="border: 1px solid #555;" src="data:image/png;base64,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"></div><div style="vertical-align: middle; max-width: 514px; display: flex; justify-content: space-between;"><div style="float: left;"><div title="#e6e6faff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #e6e6faff;"></div> under</div><div style="margin: 0 auto; display: inline-block;">bad <div title="#00000000" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #00000000;"></div></div><div style="float: right;">over <div title="#bcbcbcff" style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #bcbcbcff;"></div></div></div></div></div>
 </div>
 <p>To assign classes to points, just feed the property <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> with a (N,) shaped numpy array containing integers. These integers will be used as indices to the colormap.</p>
 <p>Below, we randomly color the points with the 5 first colors of the scatter default colormap (light gray is the default color with color index 0).</p>
@@ -476,7 +496,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/82b98bbce0aa4c38111fae587e67923e7f2659d02343658166605931964b05f8.png" src="../_images/82b98bbce0aa4c38111fae587e67923e7f2659d02343658166605931964b05f8.png" />
+<img alt="../_images/8faf1493295a9b8f2fa7c4cf1b76a8bcf4fce47ac1ddb7580bcd7c47714702f0.png" src="../_images/8faf1493295a9b8f2fa7c4cf1b76a8bcf4fce47ac1ddb7580bcd7c47714702f0.png" />
 </div>
 </div>
 <p>Changing the data - i.e., adding new data of the <em>same size</em> will keep the point properties (e.g., the <code class="docutils literal notranslate"><span class="pre">color_indices</span></code>) as they are:</p>
@@ -489,7 +509,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/3069274e91b876ab7d7d48b89f498870e76fcff478982c12f4555fdaf0b99680.png" src="../_images/3069274e91b876ab7d7d48b89f498870e76fcff478982c12f4555fdaf0b99680.png" />
+<img alt="../_images/fbd17243c3aa0f977cd84f09e5ef26ba776ab94dd86bf93612ef6a2ec2b863fa.png" src="../_images/fbd17243c3aa0f977cd84f09e5ef26ba776ab94dd86bf93612ef6a2ec2b863fa.png" />
 </div>
 </div>
 <p>Adding new data of a different size resets the coloring:</p>
@@ -504,7 +524,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/33e06efc13b40ffd232125793d567623cdb619b3175664a2a383b1a2a2b59a22.png" src="../_images/33e06efc13b40ffd232125793d567623cdb619b3175664a2a383b1a2a2b59a22.png" />
+<img alt="../_images/ae36dba0eeb7f6bd1f5aa05398019dbfa7210dc6e21596f70811164efba6168a.png" src="../_images/ae36dba0eeb7f6bd1f5aa05398019dbfa7210dc6e21596f70811164efba6168a.png" />
 </div>
 </div>
 </section>
@@ -521,7 +541,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ee9301cd808e319185b45942a21d9b2198b4a7a4214b0d36e7b79cd4b1e28238.png" src="../_images/ee9301cd808e319185b45942a21d9b2198b4a7a4214b0d36e7b79cd4b1e28238.png" />
+<img alt="../_images/7326ecdb14aa446301e54a17b3ea575ec6d5626869275321aa806e9cab9fb08f.png" src="../_images/7326ecdb14aa446301e54a17b3ea575ec6d5626869275321aa806e9cab9fb08f.png" />
 </div>
 </div>
 <p>Again, changing the data will keep the point properties as they are:</p>
@@ -534,7 +554,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/cd2b783a35587e706c43c4e5cb392e2a446ef704cb86aa94d16964e16dbf6a22.png" src="../_images/cd2b783a35587e706c43c4e5cb392e2a446ef704cb86aa94d16964e16dbf6a22.png" />
+<img alt="../_images/b0785f4fae30ad2a5e810a22f7b297c4a613fae3418043b52d38729b791e82af.png" src="../_images/b0785f4fae30ad2a5e810a22f7b297c4a613fae3418043b52d38729b791e82af.png" />
 </div>
 </div>
 <p>You can undo this by simply setting all alpha values to 1:</p>
@@ -546,7 +566,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/d1982da19775837a2a27c4c276426d6955c03eea29a15f6aab0dcefcad4e576a.png" src="../_images/d1982da19775837a2a27c4c276426d6955c03eea29a15f6aab0dcefcad4e576a.png" />
+<img alt="../_images/7a7b7c694536618005ff5597211b810439cac6f22b68972f20b9abe9d36f4f1c.png" src="../_images/7a7b7c694536618005ff5597211b810439cac6f22b68972f20b9abe9d36f4f1c.png" />
 </div>
 </div>
 <p>You can also set the sizes of the points (values around ~50 are typically a good starting point):</p>
@@ -559,20 +579,88 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/1b21e8aaec41f8865d60b202c339fcb0f5cbaa603fa7fa1948fc510c81180679.png" src="../_images/1b21e8aaec41f8865d60b202c339fcb0f5cbaa603fa7fa1948fc510c81180679.png" />
+<img alt="../_images/a0c619ab593a89570e265a076baf0228046b01143fff8d2b064032877566705f.png" src="../_images/a0c619ab593a89570e265a076baf0228046b01143fff8d2b064032877566705f.png" />
 </div>
 </div>
-<p>And again, changing the data but keeping the size of the data (i.e., the number of samples, to be more precise) will keep the point properties as they are:</p>
+<p>If you change to a continuous <code class="docutils literal notranslate"><span class="pre">overlay_colormap</span></code>, you can use the <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> property to represent a feature of the data with colors, like the size example above.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="n">scatter</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scatter</span><span class="o">.</span><span class="n">overlay_colormap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span>
+<span class="n">scatter</span><span class="o">.</span><span class="n">color_indices</span> <span class="o">=</span> <span class="n">size</span>
 <span class="n">fig</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/91ec21c87abf9d6f1fc03e6c7d9b0f74186fd2d13d94de4dc767a80abfc41097.png" src="../_images/91ec21c87abf9d6f1fc03e6c7d9b0f74186fd2d13d94de4dc767a80abfc41097.png" />
+<img alt="../_images/cca2c78b47e85fc9fe87c9804e02ccbee05e0716bf40eea9d609281f43e44ee4.png" src="../_images/cca2c78b47e85fc9fe87c9804e02ccbee05e0716bf40eea9d609281f43e44ee4.png" />
+</div>
+</div>
+</section>
+<section id="scatter-color-normalization">
+<h2>Scatter Color Normalization<a class="headerlink" href="#scatter-color-normalization" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">Scatter</span></code> class also provides different color normalization options. This is useful when you have a continuous feature that has a non-linear distribution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">feature</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We first show the feature colored in a ‘linear’ scale (default).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scatter</span><span class="o">.</span><span class="n">color_indices</span> <span class="o">=</span> <span class="n">feature</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/0116402b7f66d94fb34eda465ff538907d643b426deaf035d805ea700cee1add.png" src="../_images/0116402b7f66d94fb34eda465ff538907d643b426deaf035d805ea700cee1add.png" />
+</div>
+</div>
+<p>Most of the points are colored in the same color, because the feature has a non-linear distribution.</p>
+<p>Then, we normalize the color indices using the ‘log’ scale. The points are now colored in a more balanced way.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scatter</span><span class="o">.</span><span class="n">color_normalization_method</span> <span class="o">=</span> <span class="s1">&#39;log&#39;</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/cca2c78b47e85fc9fe87c9804e02ccbee05e0716bf40eea9d609281f43e44ee4.png" src="../_images/cca2c78b47e85fc9fe87c9804e02ccbee05e0716bf40eea9d609281f43e44ee4.png" />
+</div>
+</div>
+<p>Of course this only makes sense if the colormap is continuous and the <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> represent a feature. If we set the colormap back to categorical, the normalization is set back to ‘linear’ and you should replace the <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> back the class numbers.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scatter</span><span class="o">.</span><span class="n">overlay_colormap</span> <span class="o">=</span> <span class="n">cat10_mod_cmap</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\colormap.py:25: UserWarning: Categorical colormap detected. Setting categorical=True. If the colormap is continuous, set categorical=False explicitly.
+  warnings.warn(&#39;Categorical colormap detected. Setting categorical=True. If the colormap is continuous, set categorical=False explicitly.&#39;)
+C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:284: UserWarning: Color indices must be integers for categorical colormap. Change `overlay_colormap` to a continuous colormap or set `color_indices` to integers.
+  warnings.warn(
+C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:287: UserWarning: Categorical colormap detected. Setting color normalization method to linear.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="../_images/07a396be4594bf011546c10db4d89c01569b12c62742174e589b9ca122405505.png" src="../_images/07a396be4594bf011546c10db4d89c01569b12c62742174e589b9ca122405505.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">color_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">scatter</span><span class="o">.</span><span class="n">color_indices</span> <span class="o">=</span> <span class="n">color_indices</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/e56e9036b2bb2de4f6a852cefc8d4404456df0a8d40ec7474008661dd0d11f77.png" src="../_images/e56e9036b2bb2de4f6a852cefc8d4404456df0a8d40ec7474008661dd0d11f77.png" />
 </div>
 </div>
 </section>
@@ -587,7 +675,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ad2047ea833089572698e866df9230b71cf80dabc1bee09a408d3f618f098f91.png" src="../_images/ad2047ea833089572698e866df9230b71cf80dabc1bee09a408d3f618f098f91.png" />
+<img alt="../_images/4775f7593d222a7e934400a4055b96a87620aadb9ddbdf22de7810bb42561535.png" src="../_images/4775f7593d222a7e934400a4055b96a87620aadb9ddbdf22de7810bb42561535.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -598,7 +686,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/91ec21c87abf9d6f1fc03e6c7d9b0f74186fd2d13d94de4dc767a80abfc41097.png" src="../_images/91ec21c87abf9d6f1fc03e6c7d9b0f74186fd2d13d94de4dc767a80abfc41097.png" />
+<img alt="../_images/e56e9036b2bb2de4f6a852cefc8d4404456df0a8d40ec7474008661dd0d11f77.png" src="../_images/e56e9036b2bb2de4f6a852cefc8d4404456df0a8d40ec7474008661dd0d11f77.png" />
 </div>
 </div>
 </section>
@@ -659,8 +747,7 @@
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -673,6 +760,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-data-to-the-scatter-artist">Adding Data to the Scatter Artist</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assigning-classes-to-data-points">Assigning Classes to Data Points</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-point-properties">Setting point properties</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scatter-color-normalization">Scatter Color Normalization</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scatter-visibility">Scatter Visibility</a></li>
 </ul>
   </nav></div>
@@ -722,8 +810,8 @@ By Marcelo Leomil Zoccoler
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>
