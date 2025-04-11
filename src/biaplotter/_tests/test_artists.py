@@ -1,10 +1,8 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 import pytest
 
-from biaplotter.artists import (
-    Scatter, Histogram2D
-)
+from biaplotter.artists import Histogram2D, Scatter
 
 
 def test_scatter():
@@ -19,8 +17,10 @@ def test_scatter():
     # Test Scatter signals
     ## Test data_changed_signal
     collected_data_signals = []
+
     def on_data_changed(data):
         collected_data_signals.append(data)
+
     scatter.data_changed_signal.connect(on_data_changed)
     assert len(collected_data_signals) == 0
     scatter.data = data
@@ -29,13 +29,16 @@ def test_scatter():
 
     ## Test color_indices_changed_signal
     collected_color_indices_signals = []
+
     def on_color_indices_changed(color_indices):
         collected_color_indices_signals.append(color_indices)
+
     scatter.color_indices_changed_signal.connect(on_color_indices_changed)
     assert len(collected_color_indices_signals) == 0
     # Set color_indices with an array of increasing repeating integers from 0 to 5
     scatter.color_indices = np.linspace(
-        start=0, stop=5, num=size, endpoint=False, dtype=int)
+        start=0, stop=5, num=size, endpoint=False, dtype=int
+    )
     assert len(collected_color_indices_signals) == 1
     assert np.all(collected_color_indices_signals[0] == scatter.color_indices)
 
@@ -54,8 +57,14 @@ def test_scatter():
     # Test axis limits
     x_margin = 0.05 * (np.max(data[:, 0]) - np.min(data[:, 0]))
     y_margin = 0.05 * (np.max(data[:, 1]) - np.min(data[:, 1]))
-    assert np.isclose(ax.get_xlim(), (np.min(data[:, 0]) - x_margin, np.max(data[:, 0]) + x_margin)).all()
-    assert np.isclose(ax.get_ylim(), (np.min(data[:, 1]) - y_margin, np.max(data[:, 1]) + y_margin)).all()
+    assert np.isclose(
+        ax.get_xlim(),
+        (np.min(data[:, 0]) - x_margin, np.max(data[:, 0]) + x_margin),
+    ).all()
+    assert np.isclose(
+        ax.get_ylim(),
+        (np.min(data[:, 1]) - y_margin, np.max(data[:, 1]) + y_margin),
+    ).all()
 
     # Test size property
     scatter.size = 5.0
@@ -69,7 +78,7 @@ def test_scatter():
     assert np.all(sizes == np.linspace(1, 10, size))
 
     # Test size reset when new data is set
-    scatter.data = np.random.rand(size//2, 2)
+    scatter.data = np.random.rand(size // 2, 2)
     assert np.all(scatter.size == 50.0)  # that's the default
     sizes = scatter._scatter.get_sizes()
     assert np.all(sizes == 50.0)
@@ -81,7 +90,7 @@ def test_scatter():
     # test alpha reset when new data is set
     scatter.data = np.random.rand(size, 2)
     assert np.all(scatter._scatter.get_alpha() == 1.0)
-    
+
     # Test changing overlay_colormap
     assert scatter.overlay_colormap.name == "cat10_modified"
     scatter.overlay_colormap = plt.cm.viridis
@@ -110,7 +119,9 @@ def test_histogram2d():
 
     # Expected output
     indices_non_zero_overlay = (
-        np.array([8, 9, 10], dtype=int), np.array([8, 9, 7], dtype=int))
+        np.array([8, 9, 10], dtype=int),
+        np.array([8, 9, 7], dtype=int),
+    )
 
     np.random.seed(42)
 
@@ -124,8 +135,10 @@ def test_histogram2d():
     # Test Histogram2D signals
     ## Test data_changed_signal
     collected_data_signals = []
+
     def on_data_changed(data):
         collected_data_signals.append(data)
+
     histogram.data_changed_signal.connect(on_data_changed)
     assert len(collected_data_signals) == 0
     histogram.data = data
@@ -133,8 +146,10 @@ def test_histogram2d():
     assert np.all(collected_data_signals[0] == data)
     ## Test color_indices_changed_signal
     collected_color_indices_signals = []
+
     def on_color_indices_changed(color_indices):
         collected_color_indices_signals.append(color_indices)
+
     histogram.color_indices_changed_signal.connect(on_color_indices_changed)
     assert len(collected_color_indices_signals) == 0
     # Set color indices of data in patches exceeding threshold to 1 (orange color)
@@ -154,7 +169,9 @@ def test_histogram2d():
     assert histogram.color_indices.shape == (size,)
     assert histogram.bins == bins
     assert histogram.histogram_colormap.name == "magma"
-    assert histogram.overlay_colormap.name == "cat10_modified_first_transparent"
+    assert (
+        histogram.overlay_colormap.name == "cat10_modified_first_transparent"
+    )
     assert histogram.histogram_color_normalization_method == "linear"
     assert histogram.histogram_interpolation == "nearest"
     assert histogram.overlay_interpolation == "nearest"
@@ -174,19 +191,23 @@ def test_histogram2d():
     histogram.histogram_colormap = plt.cm.viridis
     assert histogram.histogram_colormap.name == "viridis"
 
-    # Test changing histogram color_normalization_method to "log" 
+    # Test changing histogram color_normalization_method to "log"
     histogram.histogram_color_normalization_method = "log"
     assert histogram.histogram_color_normalization_method == "log"
 
     # Test changing overlay_color_normalization_method to "log" under a categorical overlay_colormap
     histogram.overlay_color_normalization_method = "log"
-    assert histogram.overlay_color_normalization_method == "linear" # categorical colormap does not support log normalization
+    assert (
+        histogram.overlay_color_normalization_method == "linear"
+    )  # categorical colormap does not support log normalization
 
     # Test changing overlay_colormap to a continuous colormap and color_normalization_method to "log"
     histogram.overlay_colormap = plt.cm.viridis
     histogram.overlay_color_normalization_method = "log"
     assert histogram.overlay_colormap.name == "viridis"
-    assert histogram.overlay_color_normalization_method == "log" # continuous colormap supports log normalization
+    assert (
+        histogram.overlay_color_normalization_method == "log"
+    )  # continuous colormap supports log normalization
 
     # Test other histogram display options
     histogram.histogram_interpolation = "bilinear"
@@ -210,52 +231,57 @@ def test_histogram2d():
     histogram.color_indices = np.nan
     assert histogram._overlay_histogram_image is None
 
+
 # Test calculate_statistic_histogram_method for different statistics
 statistics = ["sum", "median", "mean"]
 expected_results = [
-    np.array([
-        [    0., np.nan, np.nan],
-        [np.nan,     9., np.nan],
-        [np.nan, np.nan,    15.]
-       ]),
-    np.array([
-        [0.    , np.nan, np.nan],
-        [np.nan, 2.    , np.nan],
-        [np.nan, np.nan,    7.5]
-        ]),
-    np.array([
-        [0.    , np.nan, np.nan],
-        [np.nan, 3.    , np.nan],
-        [np.nan, np.nan,    7.5]
-        ]),
-
+    np.array(
+        [[0.0, np.nan, np.nan], [np.nan, 9.0, np.nan], [np.nan, np.nan, 15.0]]
+    ),
+    np.array(
+        [[0.0, np.nan, np.nan], [np.nan, 2.0, np.nan], [np.nan, np.nan, 7.0]]
+    ),
+    np.array(
+        [[0.0, np.nan, np.nan], [np.nan, 3.0, np.nan], [np.nan, np.nan, 7.5]]
+    ),
 ]
-@pytest.mark.parametrize("statistic,expected_array", zip(statistics, expected_results), ids=statistics)
-def test_calculate_statistic_histogram_method(statistic,expected_array):
-    input_xy_data = np.array([
+
+
+@pytest.mark.parametrize(
+    "statistic,expected_array",
+    zip(statistics, expected_results),
+    ids=statistics,
+)
+def test_calculate_statistic_histogram_method(statistic, expected_array):
+    input_xy_data = np.array(
+        [
             [1, 2],
             [3, 4],
             [3, 5],
             [4, 5],
             [5, 6],
             [6, 7],
-        ])
+        ]
+    )
     bins = 3
     input_features = np.array([0, 1, 2, 6, 7, 8])
 
-    expected_histogram_array = np.array([
-        [1., 0., 0.],
-       [0., 3., 0.],
-       [0., 0., 2.]])
-    
+    expected_histogram_array = np.array(
+        [[1.0, 0.0, 0.0], [0.0, 3.0, 0.0], [0.0, 0.0, 2.0]]
+    )
+
     histogram = Histogram2D(data=input_xy_data, bins=bins)
     histogram_array, x_edges, y_edges = histogram.histogram
     assert np.all(histogram_array == expected_histogram_array)
     # Get the bin index for each x value ( -1 to start from index 0 and clip to handle edge cases)
-    x_bin_indices = (np.digitize(
-        input_xy_data[:, 0], x_edges, right=False) - 1).clip(0, len(x_edges)-2)
+    x_bin_indices = (
+        np.digitize(input_xy_data[:, 0], x_edges, right=False) - 1
+    ).clip(0, len(x_edges) - 2)
     # Get the bin index for each y value ( -1 to start from index 0 and clip to handle edge cases)
-    y_bin_indices = (np.digitize(
-        input_xy_data[:, 1], y_edges, right=False) - 1).clip(0, len(y_edges)-2)
-    result = histogram._calculate_statistic_histogram(x_bin_indices, y_bin_indices, input_features, statistic=statistic)
+    y_bin_indices = (
+        np.digitize(input_xy_data[:, 1], y_edges, right=False) - 1
+    ).clip(0, len(y_edges) - 2)
+    result = histogram._calculate_statistic_histogram(
+        x_bin_indices, y_bin_indices, input_features, statistic=statistic
+    )
     assert np.array_equal(result, expected_array, equal_nan=True)
