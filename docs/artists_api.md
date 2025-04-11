@@ -12,13 +12,13 @@
       ~Artist.data
       ~Artist.visible
       ~Artist.color_indices
+      ~Artist.overlay_colormap
 
    .. rubric:: Attributes Summary
 
    .. autosummary::
 
       ~Artist.ax
-      ~Artist.categorical_colormap
 
    .. rubric:: Methods Summary
 
@@ -31,11 +31,11 @@
    .. autoattribute:: data
    .. autoattribute:: visible
    .. autoattribute:: color_indices
+   .. autoattribute:: overlay_colormap
 
    .. rubric:: Attributes Documentation
 
    .. autoattribute:: ax
-   .. autoattribute:: categorical_colormap
 
    .. rubric:: Methods Documentation
 
@@ -120,7 +120,6 @@
       ~Histogram2D.overlay_color_normalization_method
       ~Histogram2D.overlay_opacity
       ~Histogram2D.overlay_visible
-      ~Histogram2D.indices_in_patches_above_threshold
 
 
    .. rubric:: Attributes Summary
@@ -133,7 +132,7 @@
 
    .. autosummary::
 
-      ~Histogram2D.indices_in_above_threshold_patches
+      ~Histogram2D.indices_in_patches_above_threshold
       ~Histogram2D.draw
 
    .. rubric:: Signals Summary
@@ -158,7 +157,6 @@
    .. autoattribute:: overlay_color_normalization_method
    .. autoattribute:: overlay_opacity
    .. autoattribute:: overlay_visible
-   .. autoattribute:: indices_in_patches_above_threshold
 
 
    .. rubric:: Attributes Documentation
@@ -167,7 +165,7 @@
 
    .. rubric:: Methods Documentation
 
-   .. automethod:: indices_in_above_threshold_patches
+   .. automethod:: indices_in_patches_above_threshold
    .. automethod:: draw
 
    .. rubric:: Signals Documentation
