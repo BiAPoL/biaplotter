@@ -51,6 +51,7 @@
       ~Scatter.data
       ~Scatter.visible
       ~Scatter.color_indices
+      ~Scatter.alpha
       ~Scatter.size
       ~Scatter.overlay_colormap
       ~Scatter.overlay_visible
@@ -81,6 +82,7 @@
    .. autoattribute:: visible
    .. autoattribute:: color_indices
    .. autoattribute:: size
+   .. autoattribute:: alpha
    .. autoattribute:: overlay_colormap
    .. autoattribute:: overlay_visible
    .. autoattribute:: color_normalization_method
@@ -118,6 +120,7 @@
       ~Histogram2D.overlay_color_normalization_method
       ~Histogram2D.overlay_opacity
       ~Histogram2D.overlay_visible
+      ~Histogram2D.indices_in_patches_above_threshold
 
 
    .. rubric:: Attributes Summary
@@ -155,6 +158,7 @@
    .. autoattribute:: overlay_color_normalization_method
    .. autoattribute:: overlay_opacity
    .. autoattribute:: overlay_visible
+   .. autoattribute:: indices_in_patches_above_threshold
 
 
    .. rubric:: Attributes Documentation
