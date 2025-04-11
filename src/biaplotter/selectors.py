@@ -1,7 +1,7 @@
 from __future__ import annotations  # Only necessary for Python 3.7 to 3.9
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -140,7 +140,13 @@ class BaseRectangleSelector(Selector):
 
     @property
     def data(self) -> np.ndarray:
-        """Gets or sets the data from which points will be selected."""
+        """Gets or sets the data from which points will be selected.
+
+        Returns
+        -------
+        np.ndarray
+            The data from which points will be selected.
+        """
         return self._data
 
     @data.setter
@@ -252,7 +258,13 @@ class BaseEllipseSelector(Selector):
 
     @property
     def data(self) -> np.ndarray:
-        """Gets or sets the data from which points will be selected."""
+        """Gets or sets the data from which points will be selected.
+
+        Returns
+        -------
+        np.ndarray
+            The data from which points will be selected.
+        """
         return self._data
 
     @data.setter
@@ -334,7 +346,13 @@ class BaseLassoSelector(Selector):
 
     @property
     def data(self) -> np.ndarray:
-        """Gets or sets the data from which points will be selected."""
+        """Gets or sets the data from which points will be selected.
+
+        Returns
+        -------
+        np.ndarray
+            The data from which points will be selected.
+        """
         return self._data
 
     @data.setter
@@ -426,8 +444,14 @@ class Interactive(Selector):
         )
 
     @property
-    def class_value(self):
-        """Gets or sets the current class value."""
+    def class_value(self) -> int:
+        """Gets or sets the current class value.
+
+        Returns
+        -------
+        int
+            The current class value.
+        """
         return self._class_value
 
     @class_value.setter
@@ -436,8 +460,14 @@ class Interactive(Selector):
         self._class_value = value
 
     @property
-    def active_artist(self):
-        """Gets or sets the active artist."""
+    def active_artist(self) -> Union[Scatter, Histogram2D]:
+        """Gets or sets the active artist.
+
+        Returns
+        -------
+        Union[Scatter, Histogram2D]
+            The active artist.
+        """
         return self._active_artist
 
     @active_artist.setter
@@ -446,8 +476,14 @@ class Interactive(Selector):
         self._active_artist = value
 
     @property
-    def selected_indices(self):
-        """Gets or sets the indices of the selected points."""
+    def selected_indices(self) -> np.ndarray:
+        """Gets or sets the indices of the selected points.
+
+        Returns
+        -------
+        np.ndarray
+            The indices of the selected points.
+        """
         return self._selected_indices
 
     @selected_indices.setter
@@ -555,6 +591,10 @@ class InteractiveRectangleSelector(Interactive, BaseRectangleSelector):
     data : (N, 2) np.ndarray, optional
         The data to be selected.
 
+    Other Parameters
+    ----------------
+    name : str
+        The name of the selector, set to 'Interactive Rectangle Selector' by default.
     """
 
     def __init__(
@@ -577,11 +617,7 @@ class InteractiveRectangleSelector(Interactive, BaseRectangleSelector):
             The press event.
         erelease : MouseEvent
             The release event.
-
-        Returns
-        -------
-        np.ndarray
-            The indices of the selected points."""
+        """
         self.selected_indices = super().on_select(eclick, erelease)
 
 
@@ -600,6 +636,10 @@ class InteractiveEllipseSelector(Interactive, BaseEllipseSelector):
     data : (N, 2) np.ndarray, optional
         The data to be selected.
 
+    Other Parameters
+    ----------------
+    name : str
+        The name of the selector, set to 'Interactive Ellipse Selector' by default.
     """
 
     def __init__(
@@ -622,11 +662,7 @@ class InteractiveEllipseSelector(Interactive, BaseEllipseSelector):
             The press event.
         erelease : MouseEvent
             The release event.
-
-        Returns
-        -------
-        np.ndarray
-            The indices of the selected points."""
+        """
         self.selected_indices = super().on_select(eclick, erelease)
 
 
@@ -669,10 +705,6 @@ class InteractiveLassoSelector(Interactive, BaseLassoSelector):
         ----------
         vertices : np.ndarray
             The vertices of the lasso.
-
-        Returns
-        -------
-        np.ndarray
-            The indices of the selected points."""
+        """
         self.selected_indices = super().on_select(vertices)
         self.apply_selection()
