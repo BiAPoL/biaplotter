@@ -1,13 +1,14 @@
-import pytest
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+import pytest
 
-from biaplotter.selectors import (
-    BaseEllipseSelector, BaseRectangleSelector, BaseLassoSelector,
-    InteractiveRectangleSelector, InteractiveEllipseSelector, InteractiveLassoSelector
-)
-from biaplotter.plotter import CanvasWidget
 from biaplotter.artists import Scatter
+from biaplotter.plotter import CanvasWidget
+from biaplotter.selectors import (BaseEllipseSelector, BaseLassoSelector,
+                                  BaseRectangleSelector,
+                                  InteractiveEllipseSelector,
+                                  InteractiveLassoSelector,
+                                  InteractiveRectangleSelector)
 
 
 class MockMouseEvent:
@@ -30,17 +31,23 @@ def setup_selector(request):
     return selector
 
 
-@pytest.mark.parametrize("setup_selector, eclick_coords, erelease_coords, expected_indices", [
-    # Test case for BaseEllipseSelector
-    (BaseEllipseSelector, (1, 1), (5, 5), [2, 3, 4]),
-    # Empty region test case for BaseEllipseSelector
-    (BaseEllipseSelector, (0, 3), (1, 4), []),
-    # Test case for BaseRectangleSelector
-    (BaseRectangleSelector, (1.5, 1), (4.5, 5), [2, 3, 4]),
-    # Empty region test case for BaseRectangleSelector
-    (BaseRectangleSelector, (0, 3), (1, 4), [])
-], indirect=["setup_selector"])
-def test_base_ellipse_and_rectangle_selectors(setup_selector, eclick_coords, erelease_coords, expected_indices):
+@pytest.mark.parametrize(
+    "setup_selector, eclick_coords, erelease_coords, expected_indices",
+    [
+        # Test case for BaseEllipseSelector
+        (BaseEllipseSelector, (1, 1), (5, 5), [2, 3, 4]),
+        # Empty region test case for BaseEllipseSelector
+        (BaseEllipseSelector, (0, 3), (1, 4), []),
+        # Test case for BaseRectangleSelector
+        (BaseRectangleSelector, (1.5, 1), (4.5, 5), [2, 3, 4]),
+        # Empty region test case for BaseRectangleSelector
+        (BaseRectangleSelector, (0, 3), (1, 4), []),
+    ],
+    indirect=["setup_selector"],
+)
+def test_base_ellipse_and_rectangle_selectors(
+    setup_selector, eclick_coords, erelease_coords, expected_indices
+):
     """Test BaseEllipseSelector and BaseRectangleSelector."""
     selector = setup_selector
     eclick = MockMouseEvent(*eclick_coords)
@@ -48,24 +55,37 @@ def test_base_ellipse_and_rectangle_selectors(setup_selector, eclick_coords, ere
     actual_indices = selector.on_select(eclick, erelease)
     actual_indices.sort()
 
-    assert np.array_equal(actual_indices, expected_indices), "Indices of selected points {} do not match expected values {}.".format(
-        actual_indices, expected_indices)
+    assert np.array_equal(
+        actual_indices, expected_indices
+    ), "Indices of selected points {} do not match expected values {}.".format(
+        actual_indices, expected_indices
+    )
 
 
-@pytest.mark.parametrize("setup_selector, vertices, expected_indices", [
-    (BaseLassoSelector, [(1.5, 1), (1.5, 5), (4.5, 5), (4.5, 1)], [
-     2, 3, 4]),  # Test case for BaseLassoSelector
-    # Empty region test case for BaseLassoSelector
-    (BaseLassoSelector, [(0, 3), (0, 4), (1, 4)], []),
-], indirect=["setup_selector"])
+@pytest.mark.parametrize(
+    "setup_selector, vertices, expected_indices",
+    [
+        (
+            BaseLassoSelector,
+            [(1.5, 1), (1.5, 5), (4.5, 5), (4.5, 1)],
+            [2, 3, 4],
+        ),  # Test case for BaseLassoSelector
+        # Empty region test case for BaseLassoSelector
+        (BaseLassoSelector, [(0, 3), (0, 4), (1, 4)], []),
+    ],
+    indirect=["setup_selector"],
+)
 def test_base_lasso_selector(setup_selector, vertices, expected_indices):
     """Test BaseLassoSelector."""
     selector = setup_selector
     actual_indices = selector.on_select(vertices)
     actual_indices.sort()
 
-    assert np.array_equal(actual_indices, expected_indices), "Indices of selected points {} do not match expected values {}.".format(
-        actual_indices, expected_indices)
+    assert np.array_equal(
+        actual_indices, expected_indices
+    ), "Indices of selected points {} do not match expected values {}.".format(
+        actual_indices, expected_indices
+    )
 
 
 @pytest.fixture
@@ -74,15 +94,21 @@ def selector_class(request):
     return request.param
 
 
-@pytest.mark.parametrize("selector_class, expected_color_indices", [
-    # Test case for InteractiveRectangleSelector
-    (InteractiveRectangleSelector, [0, 0, 1, 1, 1, 0]),
-    # Test case for InteractiveEllipseSelector
-    (InteractiveEllipseSelector, [0, 0, 1, 1, 1, 0]),
-    # Test case for InteractiveLassoSelector
-    (InteractiveLassoSelector, [0, 0, 1, 1, 1, 0])
-], indirect=["selector_class"])
-def test_interactive_selectors(make_napari_viewer, selector_class, expected_color_indices):
+@pytest.mark.parametrize(
+    "selector_class, expected_color_indices",
+    [
+        # Test case for InteractiveRectangleSelector
+        (InteractiveRectangleSelector, [0, 0, 1, 1, 1, 0]),
+        # Test case for InteractiveEllipseSelector
+        (InteractiveEllipseSelector, [0, 0, 1, 1, 1, 0]),
+        # Test case for InteractiveLassoSelector
+        (InteractiveLassoSelector, [0, 0, 1, 1, 1, 0]),
+    ],
+    indirect=["selector_class"],
+)
+def test_interactive_selectors(
+    make_napari_viewer, selector_class, expected_color_indices
+):
     """Test InteractiveRectangleSelector, InteractiveEllipseSelector, and InteractiveLassoSelector."""
     viewer = make_napari_viewer()
     widget = CanvasWidget(viewer)
@@ -101,6 +127,8 @@ def test_interactive_selectors(make_napari_viewer, selector_class, expected_colo
     selector.selected_indices = [2, 3, 4]
     # artist color indices are updated based on selected indices
     selector.apply_selection()
-    assert np.array_equal(artist.color_indices, expected_color_indices), \
-        "Color indices {} do not match expected values {}.".format(
-            selector.color_indices, expected_color_indices)
+    assert np.array_equal(
+        artist.color_indices, expected_color_indices
+    ), "Color indices {} do not match expected values {}.".format(
+        selector.color_indices, expected_color_indices
+    )

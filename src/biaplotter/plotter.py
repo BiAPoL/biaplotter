@@ -1,24 +1,23 @@
 from __future__ import annotations
 
-from pathlib import Path
 from enum import Enum, auto
-from nap_plot_tools import CustomToolbarWidget, QtColorSpinBox
-from napari.layers import Labels, Points, Tracks
-from napari_matplotlib.base import BaseNapariMPLWidget
-from napari_matplotlib.util import Interval
-from qtpy.QtWidgets import QHBoxLayout, QLabel, QWidget
-from psygnal import Signal
-from typing import Union, TYPE_CHECKING, Optional
+from pathlib import Path
+from typing import TYPE_CHECKING, Optional, Union
 
-from biaplotter.artists import Scatter, Histogram2D
-from biaplotter.selectors import InteractiveRectangleSelector, InteractiveEllipseSelector, InteractiveLassoSelector
+from nap_plot_tools import CustomToolbarWidget, QtColorSpinBox
+from napari_matplotlib.base import BaseNapariMPLWidget
+from psygnal import Signal
+from qtpy.QtWidgets import QHBoxLayout, QLabel, QWidget
+
+from biaplotter.artists import Histogram2D, Scatter
+from biaplotter.selectors import (InteractiveEllipseSelector,
+                                  InteractiveLassoSelector,
+                                  InteractiveRectangleSelector)
 
 if TYPE_CHECKING:
     import napari
 
-icon_folder_path = (
-    Path(__file__).parent / "icons"
-)
+icon_folder_path = Path(__file__).parent / "icons"
 
 
 class ArtistType(Enum):
@@ -59,18 +58,24 @@ class CanvasWidget(BaseNapariMPLWidget):
 
         This class automatically connects the following signals to slots:
 
-        * **data_changed_signal** from each artist to the **update_data** slot in each selector. This allows artists to notify selectors when the data changes. Selectors can then synchronize their data with the artist's data.  
+        * **data_changed_signal** from each artist to the **update_data** slot in each selector. This allows artists to notify selectors when the data changes. Selectors can then synchronize their data with the artist's data.
     """
 
     #: Signal emitted when the current `active_artist` changes
     artist_changed_signal: Signal = Signal(ArtistType)
 
-    def __init__(self, napari_viewer: "napari.viewer.Viewer", parent: Optional[QWidget] = None, label_text: str = "Class:"):
+    def __init__(
+        self,
+        napari_viewer: "napari.viewer.Viewer",
+        parent: Optional[QWidget] = None,
+        label_text: str = "Class:",
+    ):
         super().__init__(napari_viewer, parent=parent)
         self.add_single_axes()
         # Add selection tools layout below canvas
-        selection_tools_layout, selection_toolbar, class_spinbox = self._build_selection_toolbar_layout(
-            label_text=label_text)
+        selection_tools_layout, selection_toolbar, class_spinbox = (
+            self._build_selection_toolbar_layout(label_text=label_text)
+        )
         #: The selection tools layout.
         self.selection_tools_layout: QHBoxLayout = selection_tools_layout
         #: The selection toolbar.
@@ -104,6 +109,15 @@ class CanvasWidget(BaseNapariMPLWidget):
             checked_icon_path=icon_folder_path / "rectangle_checked.png",
             callback=self.on_enable_selector,
         )
+        # Add button to show/hide plot overlay
+        self.selection_toolbar.add_custom_button(
+            name="Hide/Show Plot Overlay",
+            tooltip="Click to hide/show the plot colors overlay",
+            default_icon_path=icon_folder_path / "hide_overlay.png",
+            checkable=True,
+            checked_icon_path=icon_folder_path / "hide_overlay_checked.png",
+            callback=self.hide_color_overlay,
+        )
 
         # Add selection tools layout to main layout below matplotlib toolbar and above canvas
         self.layout().insertLayout(1, self.selection_tools_layout)
@@ -121,12 +135,18 @@ class CanvasWidget(BaseNapariMPLWidget):
         # Create selectors
         #: Dictionary of selectors.
         self.selectors: dict = {}
-        self.add_selector(SelectorType.LASSO, InteractiveLassoSelector(
-            ax=self.axes, canvas_widget=self))
-        self.add_selector(SelectorType.ELLIPSE, InteractiveEllipseSelector(
-            ax=self.axes, canvas_widget=self))
-        self.add_selector(SelectorType.RECTANGLE,
-                          InteractiveRectangleSelector(self.axes, self))
+        self.add_selector(
+            SelectorType.LASSO,
+            InteractiveLassoSelector(ax=self.axes, canvas_widget=self),
+        )
+        self.add_selector(
+            SelectorType.ELLIPSE,
+            InteractiveEllipseSelector(ax=self.axes, canvas_widget=self),
+        )
+        self.add_selector(
+            SelectorType.RECTANGLE,
+            InteractiveRectangleSelector(self.axes, self),
+        )
         # Connect data_changed signals from each artist to set data in each selector
         for artist in self.artists.values():
             for selector in self.selectors.values():
@@ -166,6 +186,16 @@ class CanvasWidget(BaseNapariMPLWidget):
         selection_tools_layout.addStretch(1)
         return selection_tools_layout, selection_toolbar, class_spinbox
 
+    def hide_color_overlay(self, checked: bool):
+        """Show or hide the plot overlay.
+
+        Parameters
+        ----------
+        checked : bool
+            Whether the button is checked or not.
+        """
+        self.active_artist.overlay_visible = not checked
+
     def on_enable_selector(self, checked: bool):
         """Enables or disables the selected selector.
 
@@ -198,7 +228,7 @@ class CanvasWidget(BaseNapariMPLWidget):
                     selector.remove()
 
     @property
-    def active_artist(self):
+    def active_artist(self) -> Union[Scatter, Histogram2D]:
         """Sets or returns the active artist.
 
         If set, makes the selected artist visible and all other artists invisible.
@@ -217,8 +247,7 @@ class CanvasWidget(BaseNapariMPLWidget):
 
     @active_artist.setter
     def active_artist(self, value: Scatter | Histogram2D):
-        """Sets the active artist.
-        """
+        """Sets the active artist."""
         self._active_artist = value
         for artist in self.artists.values():
             if artist == self._active_artist:
@@ -232,7 +261,12 @@ class CanvasWidget(BaseNapariMPLWidget):
         # Emit signal to notify that the current artist has changed
         self.artist_changed_signal.emit(active_artist_type)
 
-    def add_artist(self, artist_type: ArtistType, artist_instance: Scatter | Histogram2D, visible: bool = False):
+    def add_artist(
+        self,
+        artist_type: ArtistType,
+        artist_instance: Scatter | Histogram2D,
+        visible: bool = False,
+    ):
         """
         Adds a new artist instance to the artists dictionary.
 
@@ -248,7 +282,15 @@ class CanvasWidget(BaseNapariMPLWidget):
         self.artists[artist_type] = artist_instance
         artist_instance.visible = visible
 
-    def add_selector(self, selector_type: SelectorType, selector_instance: InteractiveRectangleSelector | InteractiveEllipseSelector | InteractiveLassoSelector):
+    def add_selector(
+        self,
+        selector_type: SelectorType,
+        selector_instance: (
+            InteractiveRectangleSelector
+            | InteractiveEllipseSelector
+            | InteractiveLassoSelector
+        ),
+    ):
         """
         Adds a new selector instance to the selectors dictionary.
 
@@ -261,5 +303,6 @@ class CanvasWidget(BaseNapariMPLWidget):
         """
         if selector_type in self.selectors:
             raise ValueError(
-                f"Selector '{selector_type.name}' already exists.")
+                f"Selector '{selector_type.name}' already exists."
+            )
         self.selectors[selector_type] = selector_instance

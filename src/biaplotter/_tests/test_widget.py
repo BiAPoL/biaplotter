@@ -1,8 +1,6 @@
 import numpy as np
 
-from biaplotter.plotter import (
-    CanvasWidget
-)
+from biaplotter.plotter import CanvasWidget
 
 
 def test_widget(make_napari_viewer):

@@ -1,8 +1,15 @@
-__version__ = "0.0.5alpha.3"
+__version__ = "0.0.6"
+from .artists import Histogram2D, Scatter
+from .colormap import BiaColormap
 from .plotter import CanvasWidget
-from .artists import Scatter, Histogram2D
-from .selectors import InteractiveRectangleSelector, InteractiveEllipseSelector, InteractiveLassoSelector
+from .selectors import (InteractiveEllipseSelector, InteractiveLassoSelector,
+                        InteractiveRectangleSelector)
 
 __all__ = (
-    "CanvasWidget", "Scatter", "Histogram2D", "InteractiveRectangleSelector", "InteractiveEllipseSelector", "InteractiveLassoSelector"
+    "CanvasWidget",
+    "Scatter",
+    "Histogram2D",
+    "InteractiveRectangleSelector",
+    "InteractiveEllipseSelector",
+    "InteractiveLassoSelector",
 )
