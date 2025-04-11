@@ -5,7 +5,6 @@ from typing import List, Tuple, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib import patches
 from matplotlib.cm import ScalarMappable
 from matplotlib.collections import QuadMesh
 from matplotlib.colors import (CenteredNorm, Colormap, LogNorm, Normalize,
@@ -87,6 +86,18 @@ class Artist(ABC):
         """Abstract setter for the indices into the colormap."""
         pass
 
+    @property
+    @abstractmethod
+    def overlay_colormap(self) -> BiaColormap:
+        """Abstract property for the overlay colormap."""
+        pass
+
+    @overlay_colormap.setter
+    @abstractmethod
+    def overlay_colormap(self, value: Colormap):
+        """Abstract setter for the overlay colormap."""
+        pass
+
     @abstractmethod
     def draw(self):
         """Abstract method to draw or redraw the artist."""
@@ -114,7 +125,7 @@ class Scatter(Artist):
     -----
     **Signals:**
 
-        * **data_changed_signal** emitted when the data is changed.
+        * **data_changed_signal** emitted when the data are changed.
         * **color_indices_changed_signal** emitted when the color indices are changed.
 
     Examples
@@ -131,7 +142,7 @@ class Scatter(Artist):
     >>> plt.show()
     """
 
-    #: Signal emitted when the `data` is changed.
+    #: Signal emitted when the `data` are changed.
     data_changed_signal: Signal = Signal(np.ndarray)
     #: Signal emitted when the `color_indices` are changed.
     color_indices_changed_signal: Signal = Signal(np.ndarray)
@@ -175,7 +186,7 @@ class Scatter(Artist):
         Notes
         -----
         data_changed_signal : Signal
-            Signal emitted when the data is changed.
+            Signal emitted when the data are changed.
         """
         return self._data
 
@@ -365,6 +376,9 @@ class Scatter(Artist):
     @property
     def overlay_visible(self) -> bool:
         """Gets or sets the visibility of the overlay colormap.
+
+        Returns
+        -------
         overlay_visible : bool
            visibility of the overlay colormap.
         """
@@ -397,6 +411,8 @@ class Scatter(Artist):
     def alpha(self) -> Union[float, np.ndarray]:
         """Gets or sets the alpha value of the scatter plot.
 
+        Returns
+        -------
         alpha : float
             alpha value of the scatter plot.
         """
@@ -468,12 +484,12 @@ class Histogram2D(Artist):
     -----
     **Signals:**
 
-        * **data_changed_signal** emitted when the data is changed.
+        * **data_changed_signal** emitted when the data are changed.
         * **color_indices_changed_signal** emitted when the color indices are changed.
 
     """
 
-    #: Signal emitted when the `data` is changed.
+    #: Signal emitted when the `data` are changed.
     data_changed_signal: Signal = Signal(np.ndarray)
     #: Signal emitted when the `color_indices` are changed.
     color_indices_changed_signal: Signal = Signal(np.ndarray)
@@ -527,7 +543,7 @@ class Histogram2D(Artist):
         Notes
         -----
         data_changed_signal : Signal
-            Signal emitted when the data is changed.
+            Signal emitted when the data are changed.
         """
         return self._data
 
