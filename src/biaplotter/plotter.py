@@ -5,9 +5,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Optional, Union
 
 from nap_plot_tools import CustomToolbarWidget, QtColorSpinBox
-from napari.layers import Labels, Points, Tracks
 from napari_matplotlib.base import BaseNapariMPLWidget
-from napari_matplotlib.util import Interval
 from psygnal import Signal
 from qtpy.QtWidgets import QHBoxLayout, QLabel, QWidget
 
@@ -230,7 +228,7 @@ class CanvasWidget(BaseNapariMPLWidget):
                     selector.remove()
 
     @property
-    def active_artist(self):
+    def active_artist(self) -> Union[Scatter, Histogram2D]:
         """Sets or returns the active artist.
 
         If set, makes the selected artist visible and all other artists invisible.
