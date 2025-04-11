@@ -1,6 +1,8 @@
-import matplotlib.colors as mcolors
 import warnings
+
+import matplotlib.colors as mcolors
 from cmap import Colormap
+
 
 class BiaColormap:
     """
@@ -13,16 +15,25 @@ class BiaColormap:
     categorical : bool, optional
         If True, the colormap is considered categorical. If False, the colormap is considered continuous. If not specified, the class will try to infer it from the colormap name. Default is False.
     """
+
     def __init__(self, cmap, categorical=False):
-        if not isinstance(cmap, (mcolors.LinearSegmentedColormap, mcolors.ListedColormap)):
+        if not isinstance(
+            cmap, (mcolors.LinearSegmentedColormap, mcolors.ListedColormap)
+        ):
             try:
                 cmap = Colormap(cmap, name=cmap.name)
             except:
-                raise ValueError('cmap must be a LinearSegmentedColormap or ListedColormap object or a ColormapLike object from cmap library')
+                raise ValueError(
+                    "cmap must be a LinearSegmentedColormap or ListedColormap object or a ColormapLike object from cmap library"
+                )
         self.cmap = cmap
         # if cat or tab or Set in cmap name, set categorical to True
-        if categorical == False and ('cat' in cmap.name or 'tab' in cmap.name or 'Set' in cmap.name):
-            warnings.warn('Categorical colormap detected. Setting categorical=True. If the colormap is continuous, set categorical=False explicitly.')
+        if categorical == False and (
+            "cat" in cmap.name or "tab" in cmap.name or "Set" in cmap.name
+        ):
+            warnings.warn(
+                "Categorical colormap detected. Setting categorical=True. If the colormap is continuous, set categorical=False explicitly."
+            )
             categorical = True
         self.categorical = categorical
 
