@@ -509,6 +509,7 @@ class Histogram2D(Artist):
         """
         #: Stores the matplotlib histogram2D object
         self._histogram_image = None
+        self._histogram = None
         self._bins = bins
         self._histogram_colormap = BiaColormap(histogram_colormap)
         self._overlay_colormap = BiaColormap(overlay_colormap)
