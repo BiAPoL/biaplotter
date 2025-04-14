@@ -7,17 +7,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.cm import ScalarMappable
 from matplotlib.collections import QuadMesh
-from matplotlib.colors import (
-    CenteredNorm,
-    Colormap,
-    LogNorm,
-    Normalize,
-    SymLogNorm,
-)
-from nap_plot_tools.cmap import (
-    cat10_mod_cmap,
-    cat10_mod_cmap_first_transparent,
-)
+from matplotlib.colors import (CenteredNorm, Colormap, LogNorm, Normalize,
+                               SymLogNorm)
+from nap_plot_tools.cmap import (cat10_mod_cmap,
+                                 cat10_mod_cmap_first_transparent)
 from psygnal import Signal
 
 from biaplotter.colormap import BiaColormap

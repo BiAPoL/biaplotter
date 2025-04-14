@@ -10,11 +10,9 @@ from psygnal import Signal
 from qtpy.QtWidgets import QHBoxLayout, QLabel, QWidget
 
 from biaplotter.artists import Histogram2D, Scatter
-from biaplotter.selectors import (
-    InteractiveEllipseSelector,
-    InteractiveLassoSelector,
-    InteractiveRectangleSelector,
-)
+from biaplotter.selectors import (InteractiveEllipseSelector,
+                                  InteractiveLassoSelector,
+                                  InteractiveRectangleSelector)
 
 if TYPE_CHECKING:
     import napari
