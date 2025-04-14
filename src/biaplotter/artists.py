@@ -325,6 +325,15 @@ class Scatter(Artist):
                     vmax=np.nanmax(self._color_indices),
                 )
 
+    def _get_normalization_instance(self) -> Normalize:
+        """
+        Returns the normalization instance for the scatter plot
+        based on the current color_indices.
+
+        This method preserves the existing behavior including warnings.
+        """
+        return self._get_normalization(self._color_indices)
+
     def _validate_categorical_colormap(self):
         """Validate settings for a categorical colormap."""
         if self._color_indices.dtype != int:
@@ -509,6 +518,7 @@ class Histogram2D(Artist):
         """
         #: Stores the matplotlib histogram2D object
         self._histogram_image = None
+        self._histogram = None
         self._bins = bins
         self._histogram_colormap = BiaColormap(histogram_colormap)
         self._overlay_colormap = BiaColormap(overlay_colormap)
@@ -836,7 +846,7 @@ class Histogram2D(Artist):
         self.draw()
 
     @property
-    def histogram(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray, QuadMesh]:
+    def histogram(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Returns the 2D histogram array and edges.
 
         Returns
@@ -1095,14 +1105,14 @@ class Histogram2D(Artist):
                 )
         return norm
 
-    def _get_normalization_class(self, is_overlay):
+    def _get_normalization_class(self, is_overlay=False):
         """
         Get the normalization class
 
         Parameters
         ----------
         is_overlay : bool
-            whether the histogram is an overlay or not.
+            whether the histogram is an overlay or not. By default False.
 
         Returns
         -------
@@ -1149,6 +1159,39 @@ class Histogram2D(Artist):
             return self._handle_norm_method_for_continuous_colormap(
                 is_overlay, norm_class, histogram_data
             )
+
+    def _get_normalization_instance(
+        self, histogram_data: np.ndarray = None, overlay: bool = False
+    ) -> Normalize:
+        """
+        Returns the normalization instance for the histogram.
+
+        Parameters
+        ----------
+        histogram_data : np.ndarray, optional
+            The 2D data array used for normalization. If not provided, the method uses the histogram
+            counts computed during the latest data update.
+        overlay : bool, default False
+            If True, the normalization is determined using the overlay color settings.
+
+        Returns
+        -------
+        norm : Normalize
+            The normalization instance with the appropriate settings.
+
+        Raises
+        ------
+        ValueError
+            If no histogram data is provided and the histogram has not yet been computed.
+        """
+        if histogram_data is None:
+            if self._histogram is None:
+                raise ValueError(
+                    "Histogram has not been computed; please set the data first."
+                )
+            # Use the counts from the histogram (returned as the first element by np.histogram2d)
+            histogram_data = self._histogram[0]
+        return self._select_norm_class(overlay, histogram_data)
 
     def _histogram2D_array_to_rgba(
         self, ax, histogram_data, x_edges, y_edges, is_overlay=False
