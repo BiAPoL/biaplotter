@@ -6,10 +6,15 @@ from typing import TYPE_CHECKING, Union
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.path import Path as mplPath
-from matplotlib.widgets import (EllipseSelector, LassoSelector,
-                                RectangleSelector)
-from nap_plot_tools.cmap import (cat10_mod_cmap,
-                                 cat10_mod_cmap_first_transparent)
+from matplotlib.widgets import (
+    EllipseSelector,
+    LassoSelector,
+    RectangleSelector,
+)
+from nap_plot_tools.cmap import (
+    cat10_mod_cmap,
+    cat10_mod_cmap_first_transparent,
+)
 from psygnal import Signal
 from qtpy.QtCore import Qt
 from qtpy.QtGui import QGuiApplication

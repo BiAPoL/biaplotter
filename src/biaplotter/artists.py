@@ -7,10 +7,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.cm import ScalarMappable
 from matplotlib.collections import QuadMesh
-from matplotlib.colors import (CenteredNorm, Colormap, LogNorm, Normalize,
-                               SymLogNorm)
-from nap_plot_tools.cmap import (cat10_mod_cmap,
-                                 cat10_mod_cmap_first_transparent)
+from matplotlib.colors import (
+    CenteredNorm,
+    Colormap,
+    LogNorm,
+    Normalize,
+    SymLogNorm,
+)
+from nap_plot_tools.cmap import (
+    cat10_mod_cmap,
+    cat10_mod_cmap_first_transparent,
+)
 from psygnal import Signal
 
 from biaplotter.colormap import BiaColormap
@@ -324,12 +331,12 @@ class Scatter(Artist):
                     vmin=np.nanmin(self._color_indices),
                     vmax=np.nanmax(self._color_indices),
                 )
-            
+
     def _get_normalization_instance(self) -> Normalize:
         """
         Returns the normalization instance for the scatter plot
         based on the current color_indices.
-        
+
         This method preserves the existing behavior including warnings.
         """
         return self._get_normalization(self._color_indices)
@@ -1160,7 +1167,9 @@ class Histogram2D(Artist):
                 is_overlay, norm_class, histogram_data
             )
 
-    def _get_normalization_instance(self, histogram_data: np.ndarray = None, overlay: bool = False) -> Normalize:
+    def _get_normalization_instance(
+        self, histogram_data: np.ndarray = None, overlay: bool = False
+    ) -> Normalize:
         """
         Returns the normalization instance for the histogram.
 
@@ -1184,7 +1193,9 @@ class Histogram2D(Artist):
         """
         if histogram_data is None:
             if self._histogram is None:
-                raise ValueError("Histogram has not been computed; please set the data first.")
+                raise ValueError(
+                    "Histogram has not been computed; please set the data first."
+                )
             # Use the counts from the histogram (returned as the first element by np.histogram2d)
             histogram_data = self._histogram[0]
         return self._select_norm_class(overlay, histogram_data)

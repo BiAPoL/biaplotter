@@ -4,11 +4,14 @@ import pytest
 
 from biaplotter.artists import Scatter
 from biaplotter.plotter import CanvasWidget
-from biaplotter.selectors import (BaseEllipseSelector, BaseLassoSelector,
-                                  BaseRectangleSelector,
-                                  InteractiveEllipseSelector,
-                                  InteractiveLassoSelector,
-                                  InteractiveRectangleSelector)
+from biaplotter.selectors import (
+    BaseEllipseSelector,
+    BaseLassoSelector,
+    BaseRectangleSelector,
+    InteractiveEllipseSelector,
+    InteractiveLassoSelector,
+    InteractiveRectangleSelector,
+)
 
 
 class MockMouseEvent:
