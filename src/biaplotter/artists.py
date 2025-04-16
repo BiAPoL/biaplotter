@@ -194,6 +194,9 @@ class Scatter(Artist):
     def data(self, value: np.ndarray):
         """Sets the data for the scatter plot, resetting other properties to defaults."""
         if value is None or len(value) == 0:
+            if self._scatter is not None:
+                self._scatter.remove()
+                self._scatter = None
             return
 
         if self._data is not None:
@@ -280,11 +283,17 @@ class Scatter(Artist):
         return self._color_indices
 
     @color_indices.setter
-    def color_indices(self, indices: np.ndarray):
+    def color_indices(self, indices: Union[np.ndarray, float]):
         """Sets color indices for the scatter plot and updates colors accordingly."""
         # Check if indices are a scalar
         if np.isscalar(indices):
             indices = np.full(len(self._data), indices)
+        if indices is None or len(indices) == 0:
+            if self._scatter is not None:
+                self._scatter.set_facecolor("lightgray")
+                self._scatter.set_edgecolor("white")
+            return
+        
         self._color_indices = indices
 
         if indices is not None and self._scatter is not None:
@@ -550,9 +559,11 @@ class Histogram2D(Artist):
     @data.setter
     def data(self, value: np.ndarray):
         """Sets the data for the 2D histogram, updating the display as needed."""
-        if value is None:
-            return
-        if len(value) == 0:
+        if value is None or len(value) == 0:
+            if self._histogram_image is not None:
+                self._histogram_image.remove()
+                self._histogram_image = None
+                self._histogram = None
             return
         self._data = value
         # emit signal
@@ -633,16 +644,20 @@ class Histogram2D(Artist):
         return self._color_indices
 
     @color_indices.setter
-    def color_indices(self, indices: np.ndarray):
+    def color_indices(self, indices: Union[np.ndarray, float]):
         """Sets color indices for the 2D histogram underlying data and updates colors accordingly."""
-        # Check if indices are a scalar
-        if np.isscalar(indices):
-            indices = np.full(len(self._data), indices)
-        self._color_indices = indices
         # Remove the existing overlay to redraw
         if self._overlay_histogram_image is not None:
             self._overlay_histogram_image.remove()
             self._overlay_histogram_image = None
+        # Check if indices are a scalar
+        if np.isscalar(indices):
+            indices = np.full(len(self._data), indices)
+        if indices is None or len(indices) == 0:
+            return
+        
+        self._color_indices = indices
+        
         counts, x_edges, y_edges = self._histogram
         # Get the bin index for each x value ( -1 to start from index 0 and clip to handle edge cases)
         x_bin_indices = (
