@@ -1009,6 +1009,15 @@ class Histogram2D(Artist):
         except ValueError:
             return False
 
+    def _get_rgba_colors(self, indices, norm):
+        """Convert normalized data to RGBA colors."""
+        sm = ScalarMappable(norm=norm, cmap=self.overlay_colormap.cmap)
+        rgba_colors = sm.to_rgba(indices)
+        if not self._overlay_visible:
+            rgba_colors = cat10_mod_cmap_first_transparent(0)  # Set colors to light gray
+        return rgba_colors
+
+
     def _handle_norm_method_for_categorical_colormap(
         self, is_overlay, colormap, dtype
     ):
