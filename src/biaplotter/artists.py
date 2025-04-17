@@ -50,11 +50,28 @@ class Artist(ABC):
         #: Stores the array of indices to map to the colormap
         self._color_indices: np.array = color_indices
 
+        #: Signal emitted when the `data` are changed.
+        data_changed_signal: Signal = Signal(np.ndarray)
+        #: Signal emitted when the `color_indices` are changed.
+        color_indices_changed_signal: Signal = Signal(np.ndarray)
+
     @property
-    @abstractmethod
     def data(self) -> np.ndarray:
-        """Abstract property for the artist's data."""
-        pass
+        """Gets or sets the data associated with the artist.
+
+        Updates colors if color_indices are set. Triggers a draw idle command.
+
+        Returns
+        -------
+        data : (N, 2) np.ndarray
+           data for the artist. Does not respond if set to None or empty array.
+
+        Notes
+        -----
+        data_changed_signal : Signal
+            Signal emitted when the data are changed.
+        """
+        return self._data
 
     @data.setter
     @abstractmethod
@@ -63,10 +80,17 @@ class Artist(ABC):
         pass
 
     @property
-    @abstractmethod
     def visible(self) -> bool:
-        """Abstract property for the artist's visibility."""
-        pass
+        """Gets or sets the visibility of the artist.
+
+        Triggers a draw idle command.
+
+        Returns
+        -------
+        visible : bool
+            visibility of the artist.
+        """
+        return self._visible
 
     @visible.setter
     @abstractmethod
@@ -75,10 +99,23 @@ class Artist(ABC):
         pass
 
     @property
-    @abstractmethod
     def color_indices(self) -> np.ndarray:
-        """Abstract property for the indices into the colormap."""
-        pass
+        """Gets or sets the current color indices used for the artist.
+
+        Triggers a draw idle command.
+
+        Returns
+        -------
+        color_indices : (N,) np.ndarray[int] or int
+            indices to map to the overlay_colormap. Accepts a scalar or an array of integers.
+
+        Notes
+        -----
+        color_indices_changed_signal : Signal
+            Signal emitted when the color indices are changed.
+
+        """
+        return self._color_indices
 
     @color_indices.setter
     @abstractmethod
@@ -87,21 +124,25 @@ class Artist(ABC):
         pass
 
     @property
-    @abstractmethod
     def overlay_colormap(self) -> BiaColormap:
-        """Abstract property for the overlay colormap."""
-        pass
+        """Gets or sets the overlay colormap for the artist.
+
+        Returns
+        -------
+        overlay_colormap : BiaColormap
+            colormap for the artist with a `categorical` attribute.
+        """
+        return self._overlay_colormap
 
     @overlay_colormap.setter
-    @abstractmethod
     def overlay_colormap(self, value: Colormap):
-        """Abstract setter for the overlay colormap."""
-        pass
+        """Sets the overlay colormap for the artist."""
+        self._overlay_colormap = BiaColormap(value)
+        self.color_indices = self._color_indices
 
-    @abstractmethod
     def draw(self):
-        """Abstract method to draw or redraw the artist."""
-        pass
+        """Draws or redraws the artist."""
+        self.ax.figure.canvas.draw_idle()
 
 
 class Scatter(Artist):
@@ -142,10 +183,7 @@ class Scatter(Artist):
     >>> plt.show()
     """
 
-    #: Signal emitted when the `data` are changed.
-    data_changed_signal: Signal = Signal(np.ndarray)
-    #: Signal emitted when the `color_indices` are changed.
-    color_indices_changed_signal: Signal = Signal(np.ndarray)
+
 
     def __init__(
         self,
@@ -171,24 +209,6 @@ class Scatter(Artist):
         self._alpha = 1  # Default alpha
         self._size = 50  # Default size
         self.draw()  # Initial draw of the scatter plot
-
-    @property
-    def data(self) -> np.ndarray:
-        """Gets or sets the data associated with the scatter plot.
-
-        Updates colors if color_indices are set. Triggers a draw idle command.
-
-        Returns
-        -------
-        data : (N, 2) np.ndarray
-           data for the artist. Does not respond if set to None or empty array.
-
-        Notes
-        -----
-        data_changed_signal : Signal
-            Signal emitted when the data are changed.
-        """
-        return self._data
 
     @data.setter
     def data(self, value: np.ndarray):
@@ -239,19 +259,6 @@ class Scatter(Artist):
         # Redraw the plot
         self.draw()
 
-    @property
-    def visible(self) -> bool:
-        """Gets or sets the visibility of the scatter plot.
-
-        Triggers a draw idle command.
-
-        Returns
-        -------
-        visible : bool
-            visibility of the scatter plot.
-        """
-        return self._visible
-
     @visible.setter
     def visible(self, value: bool):
         """Sets the visibility of the scatter plot."""
@@ -259,25 +266,6 @@ class Scatter(Artist):
         if self._scatter is not None:
             self._scatter.set_visible(value)
         self.draw()
-
-    @property
-    def color_indices(self) -> np.ndarray:
-        """Gets or sets the current color indices used for the scatter plot.
-
-        Triggers a draw idle command.
-
-        Returns
-        -------
-        color_indices : (N,) np.ndarray[int] or int
-            indices to map to the overlay_colormap. Accepts a scalar or an array of integers.
-
-        Notes
-        -----
-        color_indices_changed_signal : Signal
-            Signal emitted when the color indices are changed.
-
-        """
-        return self._color_indices
 
     @color_indices.setter
     def color_indices(self, indices: np.ndarray):
@@ -366,23 +354,6 @@ class Scatter(Artist):
         return rgba_colors
 
     @property
-    def overlay_colormap(self) -> BiaColormap:
-        """Gets or sets the overlay colormap for the scatter plot.
-
-        Returns
-        -------
-        overlay_colormap : BiaColormap
-            colormap for the scatter plot with a `categorical` attribute.
-        """
-        return self._overlay_colormap
-
-    @overlay_colormap.setter
-    def overlay_colormap(self, value: Colormap):
-        """Sets the overlay colormap for the scatter plot."""
-        self._overlay_colormap = BiaColormap(value)
-        self.color_indices = self._color_indices
-
-    @property
     def overlay_visible(self) -> bool:
         """Gets or sets the visibility of the overlay colormap.
 
@@ -463,9 +434,7 @@ class Scatter(Artist):
             )
         self.draw()
 
-    def draw(self):
-        """Draws or redraws the scatter plot."""
-        self.ax.figure.canvas.draw_idle()
+
 
 
 class Histogram2D(Artist):
@@ -497,11 +466,6 @@ class Histogram2D(Artist):
         * **color_indices_changed_signal** emitted when the color indices are changed.
 
     """
-
-    #: Signal emitted when the `data` are changed.
-    data_changed_signal: Signal = Signal(np.ndarray)
-    #: Signal emitted when the `color_indices` are changed.
-    color_indices_changed_signal: Signal = Signal(np.ndarray)
 
     def __init__(
         self,
@@ -539,23 +503,6 @@ class Histogram2D(Artist):
         self.cmin = cmin
         self.draw()  # Initial draw of the histogram
 
-    @property
-    def data(self) -> np.ndarray:
-        """Gets or sets the data associated with the 2D histogram.
-
-        Updates colors if color_indices are set. Triggers a draw idle command.
-
-        Returns
-        -------
-        data : (N, 2) np.ndarray
-            data for the artist. Does not respond if set to None or empty array.
-
-        Notes
-        -----
-        data_changed_signal : Signal
-            Signal emitted when the data are changed.
-        """
-        return self._data
 
     @data.setter
     def data(self, value: np.ndarray):
@@ -599,18 +546,6 @@ class Histogram2D(Artist):
             self.color_indices = color_indices
         self.draw()
 
-    @property
-    def visible(self) -> bool:
-        """Gets or sets the visibility of the 2D histogram.
-
-        Triggers a draw idle command.
-
-        Returns
-        -------
-        visible : bool
-            visibility of the 2D histogram.
-        """
-        return self._visible
 
     @visible.setter
     def visible(self, value: bool):
@@ -622,25 +557,6 @@ class Histogram2D(Artist):
             if self._overlay_histogram_image is not None:
                 self._overlay_histogram_image.set_visible(value)
         self.draw()
-
-    @property
-    def color_indices(self) -> np.ndarray:
-        """Gets or sets the current color indices used for the 2D histogram underlying data.
-
-        Triggers a draw idle command.
-
-        Returns
-        -------
-        color_indices : (N,) np.ndarray[int] or int
-            indices to map to the overlay colormap. Accepts a scalar or an array.
-
-        Notes
-        -----
-        color_indices_changed_signal : Signal
-            Signal emitted when the color indices are changed.
-
-        """
-        return self._color_indices
 
     @color_indices.setter
     def color_indices(self, indices: np.ndarray):
@@ -683,23 +599,6 @@ class Histogram2D(Artist):
         # emit signal
         self.color_indices_changed_signal.emit(self._color_indices)
         self.draw()
-
-    @property
-    def overlay_colormap(self) -> BiaColormap:
-        """Gets or sets the overlay colormap for the 2D histogram.
-
-        Returns
-        -------
-        overlay_colormap : BiaColormap
-            colormap for the overlay histogram with a `categorical` attribute.
-        """
-        return self._overlay_colormap
-
-    @overlay_colormap.setter
-    def overlay_colormap(self, value: Colormap):
-        """Sets the overlay colormap for the 2D histogram."""
-        self._overlay_colormap = BiaColormap(value)
-        self.color_indices = self._color_indices
 
     @property
     def histogram_color_normalization_method(self) -> str:
@@ -1241,6 +1140,3 @@ class Histogram2D(Artist):
         rgba_array[np.isnan(histogram_data)] = [0, 0, 0, 0]
         return rgba_array
 
-    def draw(self):
-        """Draws or redraws the 2D histogram."""
-        self.ax.figure.canvas.draw_idle()
