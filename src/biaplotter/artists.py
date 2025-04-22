@@ -49,11 +49,20 @@ class Artist(ABC):
         self._overlay_colormap: Colormap = BiaColormap(overlay_colormap)
         #: Stores the array of indices to map to the colormap
         self._color_indices: np.array = color_indices
+        # store handles to mpl artists for modifying plots
+        self._mpl_artists: dict = {}
 
         #: Signal emitted when the `data` are changed.
         data_changed_signal: Signal = Signal(np.ndarray)
         #: Signal emitted when the `color_indices` are changed.
         color_indices_changed_signal: Signal = Signal(np.ndarray)
+
+    def _remove_artists(self):
+        """
+        Remove all contents from the plot.
+        """
+        [a.remove() for a in self._mpl_artists.values()]
+        self._mpl_artists = {}
 
     @property
     def data(self) -> np.ndarray:
@@ -93,10 +102,11 @@ class Artist(ABC):
         return self._visible
 
     @visible.setter
-    @abstractmethod
     def visible(self, value: bool):
-        """Abstract setter for the artist's visibility."""
-        pass
+        """Sets the visibility of the scatter plot."""
+        self._visible = value
+        [a.set_visible(value) for a in self._mpl_artists.values()]
+        self.draw()
 
     @property
     def color_indices(self) -> np.ndarray:
@@ -195,7 +205,6 @@ class Scatter(Artist):
         """Initializes the scatter plot artist."""
         super().__init__(ax, data, overlay_colormap, color_indices)
         #: Stores the scatter plot matplotlib object
-        self._scatter = None
         self._overlay_colormap = BiaColormap(overlay_colormap)
         self._overlay_visible = True
         self._normalization_methods = {
@@ -225,20 +234,22 @@ class Scatter(Artist):
         # Emit the data changed signal
         self.data_changed_signal.emit(self._data)
 
-        if self._scatter is None or data_length_changed:
+        # check if self._mpl_artists is empty
+
+        if not self._mpl_artists or data_length_changed:
             # Create the scatter plot if it doesn't exist yet
-            if self._scatter is not None:
-                self._scatter.remove()
+            self._remove_artists()
 
             # Create a new scatter plot with the updated data
-            self._scatter = self.ax.scatter(self._data[:, 0], self._data[:, 1])
+            self._mpl_artists['scatter'] = self.ax.scatter(
+                self._data[:, 0], self._data[:, 1])
             self.size = 50  # Default size
             self.alpha = 1  # Default alpha
             self.color_indices = np.zeros(
                 len(value), dtype=int
             )  # Default color indices
         else:
-            self._scatter.set_offsets(
+            self._mpl_artists['scatter'].set_offsets(
                 value
             )  #  somehow resets the size and alpha
             self.color_indices = self._color_indices
@@ -259,14 +270,6 @@ class Scatter(Artist):
         # Redraw the plot
         self.draw()
 
-    @visible.setter
-    def visible(self, value: bool):
-        """Sets the visibility of the scatter plot."""
-        self._visible = value
-        if self._scatter is not None:
-            self._scatter.set_visible(value)
-        self.draw()
-
     @color_indices.setter
     def color_indices(self, indices: np.ndarray):
         """Sets color indices for the scatter plot and updates colors accordingly."""
@@ -278,8 +281,8 @@ class Scatter(Artist):
         if indices is not None and self._scatter is not None:
             norm = self._get_normalization(indices)
             rgba_colors = self._get_rgba_colors(indices, norm)
-            self._scatter.set_facecolor(rgba_colors)
-            self._scatter.set_edgecolor("white")
+            self._mpl_artists['scatter'].set_facecolor(rgba_colors)
+            self._mpl_artists['scatter'].set_edgecolor("white")
 
         # emit signal
         self.color_indices_changed_signal.emit(self._color_indices)
@@ -396,7 +399,7 @@ class Scatter(Artist):
         alpha : float
             alpha value of the scatter plot.
         """
-        return self._scatter.get_alpha()
+        return self._mpl_artists['scatter'].get_alpha()
 
     @alpha.setter
     def alpha(self, value: Union[float, np.ndarray]):
@@ -405,8 +408,8 @@ class Scatter(Artist):
 
         if np.isscalar(value):
             value = np.ones(len(self._data)) * value
-        if self._scatter is not None:
-            self._scatter.set_alpha(value)
+        if self._mpl_artists['scatter'] is not None:
+            self._mpl_artists['scatter'].set_alpha(value)
         self.draw()
 
     @property
@@ -426,15 +429,13 @@ class Scatter(Artist):
     def size(self, value: Union[float, np.ndarray]):
         """Sets the size of the points in the scatter plot."""
         self._size = value
-        if self._scatter is not None:
-            self._scatter.set_sizes(
+        if not self._mpl_artists:
+            self._mpl_artists['scatter'].set_sizes(
                 np.full(len(self._data), value)
                 if np.isscalar(value)
                 else value
             )
         self.draw()
-
-
 
 
 class Histogram2D(Artist):
