@@ -136,6 +136,7 @@ class CanvasWidget(BaseNapariMPLWidget):
         """
         Initializes the selectors.
         """
+        self._active_selector: InteractiveRectangleSelector | InteractiveEllipseSelector | InteractiveLassoSelector = None
         self.selectors: dict = {}
         self.add_selector(
             'LASSO',
@@ -246,6 +247,7 @@ class CanvasWidget(BaseNapariMPLWidget):
         for selector in self.selectors.values():
             selector.selected_indices = None
             selector.remove()
+        self._active_selector = None
         
         # Emit signal only if requested
         if emit_signal:
