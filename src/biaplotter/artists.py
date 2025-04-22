@@ -71,11 +71,14 @@ class Artist(ABC):
         )
 
     @abstractmethod
-    def _create_plot(self):
-
+    def _create_plot(self, force_redraw: bool = True):
         raise NotImplementedError(
             "This method should be implemented in the derived class."
         )
+
+    def _modify_plot(self):
+        """Modify the existing plot with new data or properties."""
+        pass
 
     def _remove_artists(self, keys: List[str] = None):
         """
@@ -106,10 +109,24 @@ class Artist(ABC):
         return self._data
 
     @data.setter
-    @abstractmethod
     def data(self, value: np.ndarray):
-        """Abstract setter for the artist's data."""
-        pass
+        """Sets the data for the scatter plot, resetting other properties to defaults."""
+        if value is None or len(value) == 0:
+            return
+
+        if self._data is not None:
+            data_length_changed = len(value) != len(self._data)
+        else:
+            data_length_changed = True
+        self._data = value
+
+        # Emit the data changed signal
+        self.data_changed_signal.emit(self._data)
+        self._create_plot(force_redraw=data_length_changed)
+
+        # Redraw the plot
+        self._update_axes_limits()
+        self.draw()
 
     @property
     def visible(self) -> bool:
@@ -242,53 +259,24 @@ class Scatter(Artist):
         self._size = 50  # Default size
         self.draw()  # Initial draw of the scatter plot
 
-    @data.setter
-    def data(self, value: np.ndarray):
-        """Sets the data for the scatter plot, resetting other properties to defaults."""
-        if value is None or len(value) == 0:
-            return
-
-        if self._data is not None:
-            data_length_changed = len(value) != len(self._data)
-        else:
-            data_length_changed = True
-        self._data = value
-
-        # Emit the data changed signal
-        self.data_changed_signal.emit(self._data)
-
-        # check if self._mpl_artists is empty
-        if not self._mpl_artists or data_length_changed:
-            # Create the scatter plot if it doesn't exist yet
-            self._create_plot()
-        else:
-            self._modify_plot()
-
-        # Redraw the plot
-        self._update_axes_limits()
-        self.draw()
-
-    def _create_plot(self):
+    def _create_plot(self, force_redraw: bool = True):
         """Creates the scatter plot with the data and default properties."""
 
-        self._remove_artists()
-        # Create a new scatter plot with the updated data
-        self._mpl_artists['scatter'] = self.ax.scatter(
-            self._data)
-        self.size = 50  # Default size
-        self.alpha = 1  # Default alpha
-        self.color_indices = 0
-
-    def _modify_plot(self):
-        """Modifies the existing scatter plot with new data/properties."""
-        if self._mpl_artists['scatter'] is not None:
+        if force_redraw or self._mpl_artists['scatter'] is None:
+            self._remove_artists()
+            # Create a new scatter plot with the updated data
+            self._mpl_artists['scatter'] = self.ax.scatter(
+                self._data)
+            self.size = 50  # Default size
+            self.alpha = 1  # Default alpha
+            self.color_indices = 0
+        else:
             self._mpl_artists['scatter'].set_offsets(
                 self._data
             )  #  somehow resets the size and alpha
             self.color_indices = self._color_indices
             self.size = self._size
             self.alpha = self._alpha
-
 
     @color_indices.setter
     def color_indices(self, indices: np.ndarray):
@@ -535,10 +523,14 @@ class Histogram2D(Artist):
         self.data_changed_signal.emit(self._data)
         # Remove the existing histogram to redraw
         self._remove_artists()
-    
+        self._create_plot()
+
+        self.draw()
+
+    def _create_plot(self):
         # Calculate and draw the new histogram
         self._histogram = np.histogram2d(
-            value[:, 0], value[:, 1], bins=self._bins
+            self._data[:, 0], self._data[:, 1], bins=self._bins
         )
         counts, x_edges, y_edges = self._histogram
         self._histogram_rgba = self._histogram2D_array_to_rgba(
@@ -553,17 +545,8 @@ class Histogram2D(Artist):
             alpha=1,
         )
 
-        if self._color_indices is None:
-            self.color_indices = 0  # Set default color index
-        else:
-            # Update colors if color indices are set, resize if data shape has changed
-            color_indices_size = len(self._color_indices)
-            color_indices = np.resize(self._color_indices, self._data.shape[0])
-            if len(color_indices) > color_indices_size:
-                # Fill with zeros where new data is larger
-                color_indices[color_indices_size:] = 0
-            self.color_indices = color_indices
-        self.draw()
+        self.color_indices = 0  # Set default color index
+
 
     @color_indices.setter
     def color_indices(self, indices: np.ndarray):
