@@ -1,18 +1,12 @@
 import pytest
+from matplotlib.widgets import (EllipseSelector, LassoSelector,
+                                RectangleSelector)
+
+from biaplotter.artists import Histogram2D, Scatter
 from biaplotter.plotter import CanvasWidget
-from biaplotter.artists import Scatter, Histogram2D
-from biaplotter.selectors import (
-    InteractiveLassoSelector,
-    InteractiveEllipseSelector,
-    InteractiveRectangleSelector,
-)
-from matplotlib.widgets import (
-    LassoSelector,
-    EllipseSelector,
-    RectangleSelector,
-)
-
-
+from biaplotter.selectors import (InteractiveEllipseSelector,
+                                  InteractiveLassoSelector,
+                                  InteractiveRectangleSelector)
 
 
 @pytest.fixture
@@ -55,7 +49,9 @@ def test_set_active_artist(canvas_widget):
 
 def test_add_and_remove_selector(canvas_widget):
     """Test adding and removing selectors."""
-    lasso = InteractiveEllipseSelector(ax=canvas_widget.axes, canvas_widget=canvas_widget)
+    lasso = InteractiveEllipseSelector(
+        ax=canvas_widget.axes, canvas_widget=canvas_widget
+    )
     canvas_widget.add_selector("NEW_LASSO", lasso)
     assert "NEW_LASSO" in canvas_widget.selectors
     assert canvas_widget.selectors["NEW_LASSO"] == lasso
@@ -68,11 +64,15 @@ def test_set_active_selector(canvas_widget):
     """Test setting the active selector."""
     canvas_widget.active_selector = "LASSO"
     assert canvas_widget.active_selector == canvas_widget.selectors["LASSO"]
-    assert isinstance(canvas_widget.selectors["LASSO"]._selector, LassoSelector)
+    assert isinstance(
+        canvas_widget.selectors["LASSO"]._selector, LassoSelector
+    )
 
     canvas_widget.active_selector = "ELLIPSE"
     assert canvas_widget.active_selector == canvas_widget.selectors["ELLIPSE"]
-    assert not isinstance(canvas_widget.selectors["LASSO"]._selector, LassoSelector)
+    assert not isinstance(
+        canvas_widget.selectors["LASSO"]._selector, LassoSelector
+    )
 
 
 def test_disable_all_selectors(canvas_widget):
@@ -82,7 +82,6 @@ def test_disable_all_selectors(canvas_widget):
     assert canvas_widget.active_selector is None
     for selector in canvas_widget.selectors.values():
         assert selector._selector is None
-
 
 
 def test_hide_color_overlay(canvas_widget):
@@ -96,14 +95,20 @@ def test_hide_color_overlay(canvas_widget):
 
 def test_signals(canvas_widget, qtbot):
     """Test that signals are emitted correctly."""
-    with qtbot.waitSignal(canvas_widget.artist_changed_signal, timeout=100) as signal:
+    with qtbot.waitSignal(
+        canvas_widget.artist_changed_signal, timeout=100
+    ) as signal:
         canvas_widget.active_artist = "SCATTER"
     assert signal.args == ["SCATTER"]
 
-    with qtbot.waitSignal(canvas_widget.selector_changed_signal, timeout=100) as signal:
+    with qtbot.waitSignal(
+        canvas_widget.selector_changed_signal, timeout=100
+    ) as signal:
         canvas_widget.active_selector = "LASSO"
     assert signal.args == ["LASSO"]
 
-    with qtbot.waitSignal(canvas_widget.selector_changed_signal, timeout=100) as signal:
+    with qtbot.waitSignal(
+        canvas_widget.selector_changed_signal, timeout=100
+    ) as signal:
         canvas_widget._disable_all_selectors()
     assert signal.args == [""]

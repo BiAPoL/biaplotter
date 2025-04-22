@@ -43,7 +43,7 @@ class CanvasWidget(BaseNapariMPLWidget):
 
         * **artist_changed_signal** emitted when the current artist changes.
         * **selector_changed_signal** emitted when the current selector changes.
-        
+
     Signals and Slots:
 
         This class automatically connects the following signals to slots:
@@ -87,7 +87,7 @@ class CanvasWidget(BaseNapariMPLWidget):
 
         # Add buttons to the toolbar
         self.selection_toolbar.add_custom_button(
-            name='LASSO',
+            name="LASSO",
             tooltip="Click to enable/disable Lasso selection",
             default_icon_path=icon_folder_path / "lasso.png",
             checkable=True,
@@ -95,7 +95,7 @@ class CanvasWidget(BaseNapariMPLWidget):
             callback=self.on_enable_selector,
         )
         self.selection_toolbar.add_custom_button(
-            name='ELLIPSE',
+            name="ELLIPSE",
             tooltip="Click to enable/disable Ellipse selection",
             default_icon_path=icon_folder_path / "ellipse.png",
             checkable=True,
@@ -103,7 +103,7 @@ class CanvasWidget(BaseNapariMPLWidget):
             callback=self.on_enable_selector,
         )
         self.selection_toolbar.add_custom_button(
-            name='RECTANGLE',
+            name="RECTANGLE",
             tooltip="Click to enable/disable Rectangle selection",
             default_icon_path=icon_folder_path / "rectangle.png",
             checkable=True,
@@ -128,26 +128,30 @@ class CanvasWidget(BaseNapariMPLWidget):
         """
         self._active_artist: Scatter | Histogram2D = None
         self.artists: dict = {}
-        self.add_artist('SCATTER', Scatter(ax=self.axes))
-        self.add_artist('HISTOGRAM2D', Histogram2D(ax=self.axes))
-        self.active_artist = 'HISTOGRAM2D'
+        self.add_artist("SCATTER", Scatter(ax=self.axes))
+        self.add_artist("HISTOGRAM2D", Histogram2D(ax=self.axes))
+        self.active_artist = "HISTOGRAM2D"
 
     def _initialize_selectors(self):
         """
         Initializes the selectors.
         """
-        self._active_selector: InteractiveRectangleSelector | InteractiveEllipseSelector | InteractiveLassoSelector = None
+        self._active_selector: (
+            InteractiveRectangleSelector
+            | InteractiveEllipseSelector
+            | InteractiveLassoSelector
+        ) = None
         self.selectors: dict = {}
         self.add_selector(
-            'LASSO',
+            "LASSO",
             InteractiveLassoSelector(ax=self.axes, canvas_widget=self),
         )
         self.add_selector(
-            'ELLIPSE',
+            "ELLIPSE",
             InteractiveEllipseSelector(ax=self.axes, canvas_widget=self),
         )
         self.add_selector(
-            'RECTANGLE',
+            "RECTANGLE",
             InteractiveRectangleSelector(self.axes, self),
         )
 
@@ -224,14 +228,14 @@ class CanvasWidget(BaseNapariMPLWidget):
         normalized_name = selector_name.upper()
         if normalized_name not in self.selectors:
             raise ValueError(f"Selector '{selector_name}' does not exist.")
-        
+
         # Disable all selectors without emitting the signal
         self._disable_all_selectors(emit_signal=False)
-        
+
         # Activate the new selector
         self.selectors[normalized_name].create_selector()
         self._active_selector = self.selectors[normalized_name]
-        
+
         # Emit signal to notify that the current selector has changed
         self.selector_changed_signal.emit(normalized_name)
 
@@ -248,7 +252,7 @@ class CanvasWidget(BaseNapariMPLWidget):
             selector.selected_indices = None
             selector.remove()
         self._active_selector = None
-        
+
         # Emit signal only if requested
         if emit_signal:
             self.selector_changed_signal.emit("")
@@ -295,7 +299,12 @@ class CanvasWidget(BaseNapariMPLWidget):
         self._set_active_selector(value)
 
     # Public Methods
-    def add_artist(self, artist_name: str, artist_instance: Scatter | Histogram2D, visible: bool = False):
+    def add_artist(
+        self,
+        artist_name: str,
+        artist_instance: Scatter | Histogram2D,
+        visible: bool = False,
+    ):
         """
         Adds a new artist instance to the artists dictionary using a string name.
 
