@@ -524,24 +524,8 @@ class Histogram2D(Artist):
         self.cmin = cmin
         self.draw()  # Initial draw of the histogram
 
-
-    @data.setter
-    def data(self, value: np.ndarray):
-        """Sets the data for the 2D histogram, updating the display as needed."""
-        if value is None:
-            return
-        if len(value) == 0:
-            return
-        self._data = value
-        # emit signal
-        self.data_changed_signal.emit(self._data)
-        # Remove the existing histogram to redraw
+    def _create_plot(self, force_redraw: bool = True):
         self._remove_artists()
-        self._create_plot()
-
-        self.draw()
-
-    def _create_plot(self):
         # Calculate and draw the new histogram
         self._histogram = np.histogram2d(
             self._data[:, 0], self._data[:, 1], bins=self._bins
