@@ -77,6 +77,12 @@ class Artist(ABC):
         raise NotImplementedError(
             "This method should be implemented in the derived class."
         )
+    
+    #@abstractmethod
+    def _draw_selection_on_plot(self, indiecs: np.ndarray):
+        raise NotImplementedError(
+            "This method should be implemented in the derived class."
+        )
 
     def _modify_plot(self):
         """Modify the existing plot with new data or properties."""
@@ -174,10 +180,19 @@ class Artist(ABC):
         return self._color_indices
 
     @color_indices.setter
-    @abstractmethod
     def color_indices(self, indices: np.ndarray):
-        """Abstract setter for the indices into the colormap."""
-        pass
+        """Sets color indices for the plot and updates colors accordingly."""
+        # Check if indices are a scalar
+        if np.isscalar(indices):
+            indices = np.full(len(self._data), indices)
+        self._color_indices = indices
+
+        if indices is not None and self._mpl_artists:
+            self._draw_selection_on_plot(indices)
+
+        # emit signal
+        self.color_indices_changed_signal.emit(self._color_indices)
+        self.draw()
 
     @property
     def overlay_colormap(self) -> BiaColormap:
@@ -284,23 +299,16 @@ class Scatter(Artist):
             self.size = self._size
             self.alpha = self._alpha
 
-    @color_indices.setter
-    def color_indices(self, indices: np.ndarray):
-        """Sets color indices for the scatter plot and updates colors accordingly."""
-        # Check if indices are a scalar
-        if np.isscalar(indices):
-            indices = np.full(len(self._data), indices)
-        self._color_indices = indices
+    def _draw_selection_on_plot(self, indices: np.ndarray) -> np.ndarray:
+        """
+        Add a color to the drawn scatter points
+        """
+        norm = self._get_normalization(indices)
+        rgba_colors = self._get_rgba_colors(indices, norm)
+        self._mpl_artists['scatter'].set_facecolor(rgba_colors)
+        self._mpl_artists['scatter'].set_edgecolor("white")
 
-        if indices is not None and self._scatter is not None:
-            norm = self._get_normalization(indices)
-            rgba_colors = self._get_rgba_colors(indices, norm)
-            self._mpl_artists['scatter'].set_facecolor(rgba_colors)
-            self._mpl_artists['scatter'].set_edgecolor("white")
-
-        # emit signal
-        self.color_indices_changed_signal.emit(self._color_indices)
-        self.draw()
+        return rgba_colors
 
     def _get_normalization(self, indices):
         """Determine the normalization method and return the normalization object."""
