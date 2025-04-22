@@ -89,7 +89,13 @@ class Artist(ABC):
             a.remove() for a in self._mpl_artists.values()
             if keys is None or a in keys
             ]
-        self._mpl_artists = {}
+        
+        if keys:
+            for key in keys:
+                if key in self._mpl_artists:
+                    del self._mpl_artists[key]
+        else:
+            self._mpl_artists = {}
 
     @property
     def data(self) -> np.ndarray:
