@@ -559,17 +559,14 @@ class Histogram2D(Artist):
         # Remove the existing overlay to redraw
         self._remove_artists(["overlay_histogram_image"])
         counts, x_edges, y_edges = self._histogram
-        # Get the bin index for each x value ( -1 to start from index 0 and clip to handle edge cases)
-        x_bin_indices = (
-            np.digitize(self._data[:, 0], x_edges, right=False) - 1
-        ).clip(0, len(x_edges) - 2)
-        # Get the bin index for each y value ( -1 to start from index 0 and clip to handle edge cases)
-        y_bin_indices = (
-            np.digitize(self._data[:, 1], y_edges, right=False) - 1
-        ).clip(0, len(y_edges) - 2)
+
         # Assign median values to the bins (fill with NaNs if no data in the bin)
-        statistic_histogram = self._calculate_statistic_histogram(
-            x_bin_indices, y_bin_indices, indices, statistic="median"
+        statistic_histogram, _, _, _ = binned_statistic_2d(
+            x = self._data[:, 0],
+            y= self._data[:, 1],
+            values=indices,
+            statistic="median",
+            bins=[x_edges, y_edges]
         )
         if not np.all(np.isnan(statistic_histogram)):
             # Draw the overlay
@@ -783,82 +780,6 @@ class Histogram2D(Artist):
             indices.extend(bin_indices)
 
         return indices
-
-    def _calculate_statistic_histogram(
-        self,
-        x_indices,
-        y_indices,
-        features,
-        statistic="median",
-        use_lower_median=True,
-    ):
-        """
-        Calculate either a mean, median or sum "histogram" for provided indices and features.
-
-        This means that in each patch, instead of portraying the count of points, we portray the mean, median or sum of those values.
-
-        Parameters
-        ----------
-        x_indices : np.ndarray
-            indices of the x bins
-        y_indices : np.ndarray
-            indices of the y bins
-        features : np.ndarray
-            features to calculate the statistic
-        statistic : str
-            the statistic to calculate, 'sum', 'mean', or 'median'.
-        use_lower_median : bool, optional
-            whether to use lower median or upper median for even number of elements, by default True.
-
-        Returns
-        -------
-        statistic_histogram : np.ndarray
-            the calculated statistic histogram
-        """
-        height = max(x_indices) + 1
-        width = max(y_indices) + 1
-        statistic_histogram = np.full(
-            (height, width), np.nan
-        )  # Initialize with NaNs
-
-        if statistic == "mean":
-            sums = np.zeros((height, width))
-            counts = np.zeros((height, width))
-            for x, y, feature in zip(x_indices, y_indices, features):
-                sums[x, y] += feature
-                counts[x, y] += 1
-            np.divide(sums, counts, out=statistic_histogram, where=counts != 0)
-        elif statistic == "median":
-            feature_lists = defaultdict(list)
-            for x, y, feature in zip(x_indices, y_indices, features):
-                feature_lists[(x, y)].append(feature)
-            for (x, y), feats in feature_lists.items():
-                if feats:
-                    # If length of features is even, use lower or upper median based on the flag
-                    # This is done to ensure that the median returns an actual element from the array
-                    if len(feats) % 2 == 0:
-                        if use_lower_median:
-                            statistic_histogram[x, y] = np.median(
-                                np.sort(feats)[:-1]
-                            )
-                        else:
-                            statistic_histogram[x, y] = np.median(
-                                np.sort(feats)[1:]
-                            )
-                    else:
-                        statistic_histogram[x, y] = np.median(feats)
-        elif statistic == "sum":
-            sums = np.zeros((height, width))
-            sums_flags = np.zeros((height, width)).astype(bool)
-            for x, y, feature in zip(x_indices, y_indices, features):
-                if np.isnan(sums[x, y]):
-                    # Initialize sum as 0 when first feature is added
-                    sums[x, y] = 0
-                sums[x, y] += feature
-                sums_flags[x, y] = True
-            statistic_histogram[sums_flags] = sums[sums_flags]
-
-        return statistic_histogram
 
     def _is_categorical_colormap(self, colormap):
         """
