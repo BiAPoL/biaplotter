@@ -66,12 +66,6 @@ class Scatter(Artist):
         #: Stores the scatter plot matplotlib object
         self._overlay_colormap = BiaColormap(overlay_colormap)
         self._overlay_visible = True
-        self._normalization_methods = {
-            "linear": Normalize,
-            "log": LogNorm,
-            "symlog": SymLogNorm,
-            "centered": CenteredNorm,
-        }
         self._color_normalization_method = "linear"
         self.data = data
         self._alpha = 1  # Default alpha
@@ -310,12 +304,6 @@ class Histogram2D(Artist):
         self._overlay_interpolation = "nearest"
         self._overlay_opacity = 1
         self._overlay_visible = True
-        self._normalization_methods = {
-            "linear": Normalize,
-            "log": LogNorm,
-            "symlog": SymLogNorm,
-            "centered": CenteredNorm,
-        }
         self._margins = 0
         self._histogram_color_normalization_method = "linear"
         self._overlay_color_normalization_method = "linear"

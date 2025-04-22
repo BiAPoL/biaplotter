@@ -4,7 +4,8 @@ from psygnal import Signal
 
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.colors import Colormap
+from matplotlib.colors import (CenteredNorm, Colormap, LogNorm, Normalize,
+                               SymLogNorm)
 from nap_plot_tools.cmap import cat10_mod_cmap
 from biaplotter.colormap import BiaColormap
 
@@ -50,6 +51,13 @@ class Artist(ABC):
         # store handles to mpl artists for modifying plots
         self._mpl_artists: dict = {}
         self._margins = 0.05
+
+        self._normalization_methods = {
+            "linear": Normalize,
+            "log": LogNorm,
+            "symlog": SymLogNorm,
+            "centered": CenteredNorm,
+        }
 
     def _update_axes_limits(self):
         """Update the axes limits based on the data range with a margin."""
