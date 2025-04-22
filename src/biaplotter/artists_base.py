@@ -70,7 +70,7 @@ class Artist(ABC):
             "This method should be implemented in the derived class."
         )
     
-    #@abstractmethod
+    @abstractmethod
     def _draw_selection_on_plot(self, indiecs: np.ndarray):
         raise NotImplementedError(
             "This method should be implemented in the derived class."
