@@ -546,37 +546,14 @@ class Histogram2D(Artist):
 
         self.color_indices = 0  # Set default color index
 
-    @property
-    def color_indices(self) -> np.ndarray:
-        """Gets or sets the current color indices used for the artist.
-
-        Triggers a draw idle command.
-
-        Returns
-        -------
-        color_indices : (N,) np.ndarray[int] or int
-            indices to map to the overlay_colormap. Accepts a scalar or an array of integers.
-
-        Notes
-        -----
-        color_indices_changed_signal : Signal
-            Signal emitted when the color indices are changed.
-
+    def _draw_selection_on_plot(self, indices: np.ndarray):
         """
-        return self._color_indices
-
-    @color_indices.setter
-    def color_indices(self, indices: np.ndarray):
-        """Sets color indices for the 2D histogram underlying data and updates colors accordingly."""
-        # Check if indices are a scalar
-        if np.isscalar(indices):
-            indices = np.full(len(self._data), indices)
-        self._color_indices = indices
-
+        Draws the overlay histogram on the plot.
+        """
         # Remove the existing overlay to redraw
         self._remove_artists(["overlay_histogram_image"])
-        counts, x_edges, y_edges = self._histogram
 
+        _, x_edges, y_edges = self._histogram
         # Assign median values to the bins (fill with NaNs if no data in the bin)
         statistic_histogram, _, _, _ = binned_statistic_2d(
             x = self._data[:, 0],
@@ -598,10 +575,6 @@ class Histogram2D(Artist):
                 interpolation=self._overlay_interpolation,
                 alpha=self._overlay_opacity,
             )
-
-        # emit signal
-        self.color_indices_changed_signal.emit(self._color_indices)
-        self.draw()
 
     @property
     def histogram_color_normalization_method(self) -> str:
@@ -705,7 +678,7 @@ class Histogram2D(Artist):
     def overlay_interpolation(self, value: str):
         """Sets the interpolation method for the overlay histogram."""
         self._overlay_interpolation = value
-        self.data = self._data
+        self._draw_selection_on_plot(self._color_indices)
 
     @property
     def overlay_opacity(self):
@@ -724,7 +697,7 @@ class Histogram2D(Artist):
     def overlay_opacity(self, value):
         """Sets the opacity of the overlay histogram."""
         self._overlay_opacity = value
-        self.data = self._data
+        self._draw_selection_on_plot(self._color_indices)
 
     @property
     def overlay_visible(self):
