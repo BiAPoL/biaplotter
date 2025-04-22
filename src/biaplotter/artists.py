@@ -57,6 +57,26 @@ class Artist(ABC):
         #: Signal emitted when the `color_indices` are changed.
         color_indices_changed_signal: Signal = Signal(np.ndarray)
 
+    def _update_axes_limits(self):
+        """Update the axes limits based on the data range with a margin."""
+        x_margin = 0.05 * (np.nanmax(self._data[:, 0]) - np.nanmin(self._data[:, 0]))
+        y_margin = 0.05 * (np.nanmax(self._data[:, 1]) - np.nanmin(self._data[:, 1]))
+        self.ax.set_xlim(
+            np.nanmin(self._data[:, 0]) - x_margin,
+            np.nanmax(self._data[:, 0]) + x_margin,
+        )
+        self.ax.set_ylim(
+            np.nanmin(self._data[:, 1]) - y_margin,
+            np.nanmax(self._data[:, 1]) + y_margin,
+        )
+
+    @abstractmethod
+    def _create_plot(self):
+
+        raise NotImplementedError(
+            "This method should be implemented in the derived class."
+        )
+
     def _remove_artists(self, keys: List[str] = None):
         """
         Remove all contents from the plot.
@@ -238,40 +258,37 @@ class Scatter(Artist):
         self.data_changed_signal.emit(self._data)
 
         # check if self._mpl_artists is empty
-
         if not self._mpl_artists or data_length_changed:
             # Create the scatter plot if it doesn't exist yet
-            self._remove_artists()
-
-            # Create a new scatter plot with the updated data
-            self._mpl_artists['scatter'] = self.ax.scatter(
-                self._data[:, 0], self._data[:, 1])
-            self.size = 50  # Default size
-            self.alpha = 1  # Default alpha
-            self.color_indices = np.zeros(
-                len(value), dtype=int
-            )  # Default color indices
+            self._create_plot()
         else:
+            self._modify_plot()
+
+        # Redraw the plot
+        self._update_axes_limits()
+        self.draw()
+
+    def _create_plot(self):
+        """Creates the scatter plot with the data and default properties."""
+
+        self._remove_artists()
+        # Create a new scatter plot with the updated data
+        self._mpl_artists['scatter'] = self.ax.scatter(
+            self._data)
+        self.size = 50  # Default size
+        self.alpha = 1  # Default alpha
+        self.color_indices = 0
+
+    def _modify_plot(self):
+        """Modifies the existing scatter plot with new data/properties."""
+        if self._mpl_artists['scatter'] is not None:
             self._mpl_artists['scatter'].set_offsets(
-                value
+                self._data
             )  #  somehow resets the size and alpha
             self.color_indices = self._color_indices
             self.size = self._size
             self.alpha = self._alpha
 
-        x_margin = 0.05 * (np.nanmax(value[:, 0]) - np.nanmin(value[:, 0]))
-        y_margin = 0.05 * (np.nanmax(value[:, 1]) - np.nanmin(value[:, 1]))
-        self.ax.set_xlim(
-            np.nanmin(value[:, 0]) - x_margin,
-            np.nanmax(value[:, 0]) + x_margin,
-        )
-        self.ax.set_ylim(
-            np.nanmin(value[:, 1]) - y_margin,
-            np.nanmax(value[:, 1]) + y_margin,
-        )
-
-        # Redraw the plot
-        self.draw()
 
     @color_indices.setter
     def color_indices(self, indices: np.ndarray):
