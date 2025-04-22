@@ -86,17 +86,15 @@ class Artist(ABC):
         """
         Remove all contents from the plot.
         """
-        [
-            a.remove() for a in self._mpl_artists.values()
-            if keys is None or a in keys
-            ]
-        
-        if keys:
-            for key in keys:
-                if key in self._mpl_artists:
-                    del self._mpl_artists[key]
-        else:
+
+        if not keys:
+            [artist.remove() for artist in self._mpl_artists.values()]
             self._mpl_artists = {}
+        else:
+            for key in keys:
+                if key in self._mpl_artists.keys():
+                    self._mpl_artists[key].remove()
+                    del self._mpl_artists[key]
 
     @property
     def data(self) -> np.ndarray:
