@@ -546,6 +546,24 @@ class Histogram2D(Artist):
 
         self.color_indices = 0  # Set default color index
 
+    @property
+    def color_indices(self) -> np.ndarray:
+        """Gets or sets the current color indices used for the artist.
+
+        Triggers a draw idle command.
+
+        Returns
+        -------
+        color_indices : (N,) np.ndarray[int] or int
+            indices to map to the overlay_colormap. Accepts a scalar or an array of integers.
+
+        Notes
+        -----
+        color_indices_changed_signal : Signal
+            Signal emitted when the color indices are changed.
+
+        """
+        return self._color_indices
 
     @color_indices.setter
     def color_indices(self, indices: np.ndarray):
