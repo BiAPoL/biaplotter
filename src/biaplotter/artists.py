@@ -548,7 +548,7 @@ class Histogram2D(Artist):
         )
         counts, x_edges, y_edges = self._histogram
         self._histogram_rgba = self._histogram2D_array_to_rgba(
-            self.ax, counts, x_edges, y_edges, is_overlay=False
+            counts, is_overlay=False
         )
         self._mpl_artists['histogram_image'] = self.ax.imshow(
             self._histogram_rgba,
@@ -585,7 +585,7 @@ class Histogram2D(Artist):
         if not np.all(np.isnan(statistic_histogram)):
             # Draw the overlay
             self.overlay_histogram_rgba = self._histogram2D_array_to_rgba(
-                self.ax, statistic_histogram, x_edges, y_edges, is_overlay=True
+                statistic_histogram, is_overlay=True
             )
             self._mpl_artists['overlay_histogram_image'] = self.ax.imshow(
                 self.overlay_histogram_rgba,
@@ -1017,7 +1017,7 @@ class Histogram2D(Artist):
         return self._select_norm_class(overlay, histogram_data)
 
     def _histogram2D_array_to_rgba(
-        self, ax, histogram_data, x_edges, y_edges, is_overlay=False
+        self, histogram_data, is_overlay=False
     ):
         """
         Convert a 2D data array to a RGBA image object via pcolormesh using a matplotlib colormap.
@@ -1041,26 +1041,9 @@ class Histogram2D(Artist):
             RGBA image array
         """
         norm = self._select_norm_class(is_overlay, histogram_data)
-        histogram_data = histogram_data.T
-        xcenters = (x_edges[:-1] + x_edges[1:]) / 2
-        ycenters = (y_edges[:-1] + y_edges[1:]) / 2
-        qm = ax.pcolormesh(
-            xcenters,
-            ycenters,
-            histogram_data,
-            shading="nearest",
-            alpha=1,
-            visible=True,
-            norm=norm,
-            cmap=[self.histogram_colormap.cmap, self.overlay_colormap.cmap][
+        cmap = [self.histogram_colormap.cmap, self.overlay_colormap.cmap][
                 is_overlay
-            ],
-        )
-        rgba_array = qm.to_rgba(
-            qm.get_array().reshape(histogram_data.shape), norm=True
-        )
-        qm.remove()
-        # Set NaN values to transparent
-        rgba_array[np.isnan(histogram_data)] = [0, 0, 0, 0]
-        return rgba_array
+            ]
+        
+        return cmap(norm(histogram_data.T))
 
