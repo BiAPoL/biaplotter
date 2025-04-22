@@ -518,6 +518,7 @@ class Histogram2D(Artist):
             "symlog": SymLogNorm,
             "centered": CenteredNorm,
         }
+        self._margins = 0
         self._histogram_color_normalization_method = "linear"
         self._overlay_color_normalization_method = "linear"
         self.data = data
