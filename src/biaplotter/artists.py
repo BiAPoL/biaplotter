@@ -57,11 +57,14 @@ class Artist(ABC):
         #: Signal emitted when the `color_indices` are changed.
         color_indices_changed_signal: Signal = Signal(np.ndarray)
 
-    def _remove_artists(self):
+    def _remove_artists(self, keys: List[str] = None):
         """
         Remove all contents from the plot.
         """
-        [a.remove() for a in self._mpl_artists.values()]
+        [
+            a.remove() for a in self._mpl_artists.values()
+            if keys is None or a in keys
+            ]
         self._mpl_artists = {}
 
     @property
@@ -482,7 +485,6 @@ class Histogram2D(Artist):
         """Initializes the 2D histogram artist.
         """
         #: Stores the matplotlib histogram2D object
-        self._histogram_image = None
         self._histogram = None
         self._bins = bins
         self._histogram_colormap = BiaColormap(histogram_colormap)
@@ -491,7 +493,6 @@ class Histogram2D(Artist):
         self._overlay_interpolation = "nearest"
         self._overlay_opacity = 1
         self._overlay_visible = True
-        self._overlay_histogram_image = None
         self._normalization_methods = {
             "linear": Normalize,
             "log": LogNorm,
@@ -516,8 +517,8 @@ class Histogram2D(Artist):
         # emit signal
         self.data_changed_signal.emit(self._data)
         # Remove the existing histogram to redraw
-        if self._histogram_image is not None:
-            self._histogram_image.remove()
+        self._remove_artists()
+    
         # Calculate and draw the new histogram
         self._histogram = np.histogram2d(
             value[:, 0], value[:, 1], bins=self._bins
@@ -526,7 +527,7 @@ class Histogram2D(Artist):
         self._histogram_rgba = self._histogram2D_array_to_rgba(
             self.ax, counts, x_edges, y_edges, is_overlay=False
         )
-        self._histogram_image = self.ax.imshow(
+        self._mpl_artists['histogram_image'] = self.ax.imshow(
             self._histogram_rgba,
             extent=[x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]],
             origin="lower",
@@ -547,18 +548,6 @@ class Histogram2D(Artist):
             self.color_indices = color_indices
         self.draw()
 
-
-    @visible.setter
-    def visible(self, value: bool):
-        """Sets the visibility of the 2D histogram."""
-        self._visible = value
-        if self._histogram_image is not None:
-            artist = self._histogram_image
-            artist.set_visible(value)
-            if self._overlay_histogram_image is not None:
-                self._overlay_histogram_image.set_visible(value)
-        self.draw()
-
     @color_indices.setter
     def color_indices(self, indices: np.ndarray):
         """Sets color indices for the 2D histogram underlying data and updates colors accordingly."""
@@ -566,10 +555,9 @@ class Histogram2D(Artist):
         if np.isscalar(indices):
             indices = np.full(len(self._data), indices)
         self._color_indices = indices
+
         # Remove the existing overlay to redraw
-        if self._overlay_histogram_image is not None:
-            self._overlay_histogram_image.remove()
-            self._overlay_histogram_image = None
+        self._remove_artists(["overlay_histogram_image"])
         counts, x_edges, y_edges = self._histogram
         # Get the bin index for each x value ( -1 to start from index 0 and clip to handle edge cases)
         x_bin_indices = (
@@ -588,7 +576,7 @@ class Histogram2D(Artist):
             self.overlay_histogram_rgba = self._histogram2D_array_to_rgba(
                 self.ax, statistic_histogram, x_edges, y_edges, is_overlay=True
             )
-            self._overlay_histogram_image = self.ax.imshow(
+            self._mpl_artists['overlay_histogram_image'] = self.ax.imshow(
                 self.overlay_histogram_rgba,
                 extent=[x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]],
                 origin="lower",
@@ -741,8 +729,8 @@ class Histogram2D(Artist):
     def overlay_visible(self, value):
         """Sets the visibility of the overlay histogram."""
         self._overlay_visible = value
-        if self._overlay_histogram_image is not None:
-            self._overlay_histogram_image.set_visible(value)
+        if 'overlay_histogram_image' in self._mpl_artists:
+            self._mpl_artists['overlay_histogram_image'].set_visible(value)
         self.draw()
 
     @property
