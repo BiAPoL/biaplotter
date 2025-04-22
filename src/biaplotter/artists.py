@@ -57,11 +57,12 @@ class Artist(ABC):
         self._color_indices: np.array = color_indices
         # store handles to mpl artists for modifying plots
         self._mpl_artists: dict = {}
+        self._margins = 0.05
 
     def _update_axes_limits(self):
         """Update the axes limits based on the data range with a margin."""
-        x_margin = 0.05 * (np.nanmax(self._data[:, 0]) - np.nanmin(self._data[:, 0]))
-        y_margin = 0.05 * (np.nanmax(self._data[:, 1]) - np.nanmin(self._data[:, 1]))
+        x_margin = self._margins * (np.nanmax(self._data[:, 0]) - np.nanmin(self._data[:, 0]))
+        y_margin = self._margins * (np.nanmax(self._data[:, 1]) - np.nanmin(self._data[:, 1]))
         self.ax.set_xlim(
             np.nanmin(self._data[:, 0]) - x_margin,
             np.nanmax(self._data[:, 0]) + x_margin,
