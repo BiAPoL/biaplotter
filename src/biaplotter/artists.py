@@ -14,6 +14,7 @@ from nap_plot_tools.cmap import (cat10_mod_cmap,
 from psygnal import Signal
 
 from biaplotter.colormap import BiaColormap
+from scipy.stats import binned_statistic_2d
 
 
 class Artist(ABC):
