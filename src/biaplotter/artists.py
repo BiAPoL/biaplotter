@@ -91,7 +91,7 @@ class Scatter(Artist):
             self.size = self._size
             self.alpha = self._alpha
 
-    def _draw_selection_on_plot(self, indices: np.ndarray) -> np.ndarray:
+    def _draw_selection_on_plot(self, indices: np.ndarray):
         """
         Add a color to the drawn scatter points
         """
