@@ -130,15 +130,6 @@ class Scatter(Artist):
                     vmax=np.nanmax(self._color_indices),
                 )
 
-    def _get_normalization_instance(self) -> Normalize:
-        """
-        Returns the normalization instance for the scatter plot
-        based on the current color_indices.
-
-        This method preserves the existing behavior including warnings.
-        """
-        return self._get_normalization(self._color_indices)
-
     def _validate_categorical_colormap(self):
         """Validate settings for a categorical colormap."""
         if self._color_indices.dtype != int:
