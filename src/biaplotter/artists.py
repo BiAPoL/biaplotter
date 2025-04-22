@@ -31,6 +31,11 @@ class Artist(ABC):
         array of indices to map to the colormap, by default None
     """
 
+    #: Signal emitted when the `data` are changed.
+    data_changed_signal: Signal = Signal(np.ndarray)
+    #: Signal emitted when the `color_indices` are changed.
+    color_indices_changed_signal: Signal = Signal(np.ndarray)
+
     def __init__(
         self,
         ax: plt.Axes = None,
@@ -51,11 +56,6 @@ class Artist(ABC):
         self._color_indices: np.array = color_indices
         # store handles to mpl artists for modifying plots
         self._mpl_artists: dict = {}
-
-        #: Signal emitted when the `data` are changed.
-        data_changed_signal: Signal = Signal(np.ndarray)
-        #: Signal emitted when the `color_indices` are changed.
-        color_indices_changed_signal: Signal = Signal(np.ndarray)
 
     def _update_axes_limits(self):
         """Update the axes limits based on the data range with a margin."""
