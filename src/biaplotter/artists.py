@@ -318,7 +318,7 @@ class Histogram2D(Artist):
             self._data[:, 0], self._data[:, 1], bins=self._bins
         )
         counts, x_edges, y_edges = self._histogram
-        self._histogram_rgba = self._histogram2D_array_to_rgba(
+        self._histogram_rgba = self.color_indices_to_rgba(
             counts, is_overlay=False
         )
         self._mpl_artists['histogram_image'] = self.ax.imshow(
@@ -350,7 +350,7 @@ class Histogram2D(Artist):
         )
         if not np.all(np.isnan(statistic_histogram)):
             # Draw the overlay
-            self.overlay_histogram_rgba = self._histogram2D_array_to_rgba(
+            self.overlay_histogram_rgba = self.color_indices_to_rgba(
                 statistic_histogram, is_overlay=True
             )
             self._mpl_artists['overlay_histogram_image'] = self.ax.imshow(
@@ -361,6 +361,20 @@ class Histogram2D(Artist):
                 interpolation=self._overlay_interpolation,
                 alpha=self._overlay_opacity,
             )
+
+    def color_indices_to_rgba(self, indices, is_overlay: bool = False) -> np.ndarray:
+        """
+        Convert color indices to RGBA colors using the overlay colormap.
+        """
+        norm = self._select_norm_class(is_overlay, indices)
+        colormap = [self.histogram_colormap.cmap,
+                self.overlay_colormap.cmap][
+                is_overlay
+            ]
+
+        rgba = colormap(norm(indices))
+
+        return rgba
 
     @property
     def histogram_color_normalization_method(self) -> str:
@@ -777,35 +791,3 @@ class Histogram2D(Artist):
             # Use the counts from the histogram (returned as the first element by np.histogram2d)
             histogram_data = self._histogram[0]
         return self._select_norm_class(overlay, histogram_data)
-
-    def _histogram2D_array_to_rgba(
-        self, histogram_data, is_overlay=False
-    ):
-        """
-        Convert a 2D data array to a RGBA image object via pcolormesh using a matplotlib colormap.
-
-        Parameters
-        ----------
-        ax : plt.Axes
-            axes to plot on
-        histogram_data : np.ndarray
-            2D data array to be converted to RGBA image
-        x_edges : np.ndarray
-            x bin edges
-        y_edges : np.ndarray
-            y bin edges
-        is_overlay : bool, optional
-            whether the histogram is an overlay or not, by default False
-
-        Returns
-        -------
-        rgba_array : np.ndarray
-            RGBA image array
-        """
-        norm = self._select_norm_class(is_overlay, histogram_data)
-        cmap = [self.histogram_colormap.cmap, self.overlay_colormap.cmap][
-                is_overlay
-            ]
-        
-        return cmap(norm(histogram_data.T))
-
