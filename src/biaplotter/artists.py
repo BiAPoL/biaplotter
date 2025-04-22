@@ -243,7 +243,7 @@ class Scatter(Artist):
     def size(self, value: Union[float, np.ndarray]):
         """Sets the size of the points in the scatter plot."""
         self._size = value
-        if not self._mpl_artists:
+        if self._mpl_artists is not None:
             self._mpl_artists['scatter'].set_sizes(
                 np.full(len(self._data), value)
                 if np.isscalar(value)
