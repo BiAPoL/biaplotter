@@ -95,12 +95,21 @@ class Scatter(Artist):
         """
         Add a color to the drawn scatter points
         """
-        norm = self._get_normalization(indices)
-        rgba_colors = self._get_rgba_colors(indices, norm)
+        rgba_colors = self.color_indices_to_rgba()
         self._mpl_artists['scatter'].set_facecolor(rgba_colors)
         self._mpl_artists['scatter'].set_edgecolor("white")
 
         return rgba_colors
+    
+    def color_indices_to_rgba(self) -> np.ndarray:
+        """
+        Convert color indices to RGBA colors using the colormap.
+        """
+        norm = self._get_normalization(self._color_indices)
+        colormap = self.overlay_colormap.cmap
+
+        rgba = colormap(norm(self._color_indices))
+        return rgba
 
     def _get_normalization(self, indices):
         """Determine the normalization method and return the normalization object."""

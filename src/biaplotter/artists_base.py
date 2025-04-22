@@ -83,6 +83,24 @@ class Artist(ABC):
         raise NotImplementedError(
             "This method should be implemented in the derived class."
         )
+    
+    @abstractmethod
+    def color_indices_to_rgba(self, indices: np.ndarray) -> np.ndarray:
+        """Convert color indices to RGBA values using the overlay colormap.
+
+        Parameters
+        ----------
+        indices : np.ndarray
+            Array of color indices.
+
+        Returns
+        -------
+        np.ndarray
+            Array of RGBA values corresponding to the indices.
+        """
+        raise NotImplementedError(
+            "This method should be implemented in the derived class."
+        )
 
     def _modify_plot(self):
         """Modify the existing plot with new data or properties."""
