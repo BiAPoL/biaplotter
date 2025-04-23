@@ -331,6 +331,7 @@ class Histogram2D(Artist):
             zorder=1,
             interpolation=self._histogram_interpolation,
             alpha=1,
+            aspect='equal'
         )
 
         self.color_indices = 0  # Set default color index
@@ -363,6 +364,7 @@ class Histogram2D(Artist):
                 zorder=2,
                 interpolation=self._overlay_interpolation,
                 alpha=self._overlay_opacity,
+                aspect='equal'
             )
 
     def color_indices_to_rgba(self, indices, is_overlay: bool = True) -> np.ndarray:
