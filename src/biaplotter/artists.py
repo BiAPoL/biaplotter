@@ -166,7 +166,7 @@ class Scatter(Artist):
     def overlay_visible(self, value: bool):
         """Sets the visibility of the overlay colormap."""
         self._overlay_visible = value
-        self.color_indices = self._color_indices
+        self._colorize(self._color_indices)
 
     @property
     def color_normalization_method(self) -> str:
@@ -183,7 +183,7 @@ class Scatter(Artist):
     def color_normalization_method(self, value: str):
         """Sets the normalization method for the color indices."""
         self._color_normalization_method = value
-        self.color_indices = self._color_indices
+        self._colorize(self._color_indices)
 
     @property
     def alpha(self) -> Union[float, np.ndarray]:
@@ -394,7 +394,7 @@ class Histogram2D(Artist):
         """Sets the normalization method for the overlay histogram."""
         self._overlay_color_normalization_method = value
         # Update overlay histogram image if new color normalization method is set
-        self.color_indices = self._color_indices
+        self._colorize(self._color_indices)
 
     @property
     def bins(self) -> int:
@@ -429,7 +429,7 @@ class Histogram2D(Artist):
     def histogram_colormap(self, value: Colormap):
         """Sets the colormap for the histogram."""
         self._histogram_colormap = BiaColormap(value)
-        self.data = self._data
+        self._refresh(force_redraw=False)
 
     @property
     def histogram_interpolation(self) -> str:
@@ -446,7 +446,7 @@ class Histogram2D(Artist):
     def histogram_interpolation(self, value: str):
         """Sets the interpolation method for the histogram."""
         self._histogram_interpolation = value
-        self.data = self._data
+        self._refresh(force_redraw=False)
 
     @property
     def overlay_interpolation(self) -> str:
