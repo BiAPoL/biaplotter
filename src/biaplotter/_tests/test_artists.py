@@ -229,7 +229,7 @@ def test_histogram2d():
 
     # Don't draw overlay histogram if color_indices are nan
     histogram.color_indices = np.nan
-    assert histogram._mpl_artists['overlay_histogram_image'] is None
+    assert 'overlay_histogram_image' not in histogram._mpl_artists.keys()
 
 
 # Test calculate_statistic_histogram_method for different statistics
