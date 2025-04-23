@@ -354,7 +354,7 @@ class Histogram2D(Artist):
         if not np.all(np.isnan(statistic_histogram)):
             # Draw the overlay
             self.overlay_histogram_rgba = self.color_indices_to_rgba(
-                statistic_histogram, is_overlay=True
+                statistic_histogram.T, is_overlay=True
             )
             self._mpl_artists['overlay_histogram_image'] = self.ax.imshow(
                 self.overlay_histogram_rgba,
