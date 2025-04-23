@@ -353,7 +353,7 @@ class Histogram2D(Artist):
             x = self._data[:, 0],
             y= self._data[:, 1],
             values=indices,
-            statistic="median",
+            statistic=median_np,
             bins=[x_edges, y_edges]
         )
         if not np.all(np.isnan(statistic_histogram)):
@@ -801,3 +801,22 @@ class Histogram2D(Artist):
             # Use the counts from the histogram (returned as the first element by np.histogram2d)
             histogram_data = self._histogram[0]
         return self._select_norm_class(overlay, histogram_data)
+
+def median_np(arr, method='lower') -> float:
+    """Calculate the median of a 1D array.
+
+    Parameters
+    ----------
+    arr : np.ndarray
+        1D array of values.
+    method : str, optional
+        Method to use for calculating the median, by default 'lower'.
+
+    Returns
+    -------
+    float
+        The median of the array.
+    """
+    if len(arr) == 0:
+        return np.nan
+    return np.nanpercentile(arr, 50, method=method)
