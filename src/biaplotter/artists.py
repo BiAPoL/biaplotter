@@ -365,7 +365,7 @@ class Histogram2D(Artist):
                 alpha=self._overlay_opacity,
             )
 
-    def color_indices_to_rgba(self, indices, is_overlay: bool = False) -> np.ndarray:
+    def color_indices_to_rgba(self, indices, is_overlay: bool = True) -> np.ndarray:
         """
         Convert color indices to RGBA colors using the overlay colormap.
         """
