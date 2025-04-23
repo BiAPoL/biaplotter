@@ -360,11 +360,12 @@ class Histogram2D(Artist):
         """
         Convert color indices to RGBA colors using the overlay colormap.
         """
-        norm = self._select_norm_class(is_overlay, indices)
-        colormap = [self.histogram_colormap.cmap,
-                self.overlay_colormap.cmap][
-                is_overlay
-            ]
+        norm = self._get_normalization(indices, is_overlay=is_overlay)
+        
+        if is_overlay:
+            colormap = self.overlay_colormap.cmap
+        else:
+            colormap = self.histogram_colormap.cmap
 
         rgba = colormap(norm(indices))
 
@@ -698,6 +699,44 @@ class Histogram2D(Artist):
                     vmax=np.nanmax(histogram_data),
                 )
         return norm
+    
+    def _get_normalization(
+            self,
+            values: np.ndarray,
+            is_overlay: bool = True) -> Normalize:
+        """
+        Get the normalization class for the histogram data.
+
+        Parameters
+        ----------
+        values : np.ndarray
+            2D histogram data array to be converted to RGBA image.
+
+        Returns
+        -------
+        norm_class : Normalize
+            the normalization class to use for the histogram data.
+        """
+        if is_overlay:
+            colormap = self.overlay_colormap
+            norm_method = self._overlay_color_normalization_method
+        else:
+            colormap = self.histogram_colormap
+            norm_method = self._histogram_color_normalization_method
+
+        is_categorical = self._is_categorical_colormap(colormap)
+
+        # norm_dispatch is to be indexed like this:
+        # norm_dispatch[is_categorical, color_normalization_method]
+        norm_dispatch = {
+            (True, 'linear'): lambda: self._linear_normalization(values, is_categorical),
+            (False, 'linear'): lambda: self._linear_normalization(values),
+            (False, 'log'): lambda: self._log_normalization(values),
+            (False, 'centered'): lambda: self._centered_normalization(values),
+            (False, 'symlog'): lambda: self._symlog_normalization(values),
+        }
+
+        return norm_dispatch.get((is_categorical, norm_method))()
 
     def _get_normalization_class(self, is_overlay=False):
         """
