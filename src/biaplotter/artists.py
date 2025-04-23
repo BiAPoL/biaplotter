@@ -433,7 +433,8 @@ class Histogram2D(Artist):
     def bins(self, value: int):
         """Sets the number of bins for the histogram."""
         self._bins = value
-        self.data = self._data
+        self._create_plot(force_redraw=False)
+        self._draw_selection_on_plot(self._color_indices)
 
     @property
     def histogram_colormap(self) -> Colormap:
