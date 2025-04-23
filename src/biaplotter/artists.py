@@ -597,12 +597,16 @@ class Histogram2D(Artist):
         """
         if is_overlay:
             colormap = self.overlay_colormap
+            is_categorical = self._is_categorical_colormap(colormap)
             norm_method = self._overlay_color_normalization_method
         else:
             colormap = self.histogram_colormap
+            is_categorical = self._is_categorical_colormap(colormap)
             norm_method = self._histogram_color_normalization_method
 
-        is_categorical = self._is_categorical_colormap(colormap)
+        if is_categorical and norm_method != "linear":
+            self.overlay_color_normalization_method = "linear"
+            norm_method = "linear"
 
         # norm_dispatch is to be indexed like this:
         # norm_dispatch[is_categorical, color_normalization_method]
