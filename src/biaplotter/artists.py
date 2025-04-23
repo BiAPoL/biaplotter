@@ -322,7 +322,7 @@ class Histogram2D(Artist):
         )
         counts, x_edges, y_edges = self._histogram
         self._histogram_rgba = self.color_indices_to_rgba(
-            counts, is_overlay=False
+            counts.T, is_overlay=False
         )
         self._mpl_artists['histogram_image'] = self.ax.imshow(
             self._histogram_rgba,
