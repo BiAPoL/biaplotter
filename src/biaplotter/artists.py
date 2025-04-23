@@ -64,15 +64,13 @@ class Scatter(Artist):
         """Initializes the scatter plot artist."""
         super().__init__(ax, data, overlay_colormap, color_indices)
         #: Stores the scatter plot matplotlib object
-        self._overlay_colormap = BiaColormap(overlay_colormap)
-        self._overlay_visible = True
         self._color_normalization_method = "linear"
         self.data = data
         self._alpha = 1  # Default alpha
         self._size = 50  # Default size
         self.draw()  # Initial draw of the scatter plot
 
-    def _create_plot(self, force_redraw: bool = True):
+    def _sync_artist_data(self, force_redraw: bool = True):
         """Creates the scatter plot with the data and default properties."""
 
         if force_redraw or self._mpl_artists['scatter'] is None:
@@ -91,7 +89,7 @@ class Scatter(Artist):
             self.size = self._size
             self.alpha = self._alpha
 
-    def _draw_selection_on_plot(self, indices: np.ndarray):
+    def _colorize_artist(self, indices: np.ndarray):
         """
         Add a color to the drawn scatter points
         """
@@ -314,7 +312,7 @@ class Histogram2D(Artist):
         self.cmin = cmin
         self.draw()  # Initial draw of the histogram
 
-    def _create_plot(self, force_redraw: bool = True):
+    def _sync_artist_data(self, force_redraw: bool = True):
         self._remove_artists()
         # Calculate and draw the new histogram
         self._histogram = np.histogram2d(
@@ -337,7 +335,7 @@ class Histogram2D(Artist):
         if force_redraw:
             self.color_indices = 0  # Set default color index
 
-    def _draw_selection_on_plot(self, indices: np.ndarray):
+    def _colorize_artist(self, indices: np.ndarray):
         """
         Draws the overlay histogram on the plot.
         """
@@ -433,8 +431,8 @@ class Histogram2D(Artist):
     def bins(self, value: int):
         """Sets the number of bins for the histogram."""
         self._bins = value
-        self._create_plot(force_redraw=False)
-        self._draw_selection_on_plot(self._color_indices)
+        self._sync_artist_data(force_redraw=False)
+        self._colorize_artist(self._color_indices)
 
     @property
     def histogram_colormap(self) -> Colormap:
@@ -485,7 +483,7 @@ class Histogram2D(Artist):
     def overlay_interpolation(self, value: str):
         """Sets the interpolation method for the overlay histogram."""
         self._overlay_interpolation = value
-        self._draw_selection_on_plot(self._color_indices)
+        self._colorize_artist(self._color_indices)
 
     @property
     def overlay_opacity(self):
@@ -504,7 +502,7 @@ class Histogram2D(Artist):
     def overlay_opacity(self, value):
         """Sets the opacity of the overlay histogram."""
         self._overlay_opacity = value
-        self._draw_selection_on_plot(self._color_indices)
+        self._colorize_artist(self._color_indices)
 
     @property
     def overlay_visible(self):
