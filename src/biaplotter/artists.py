@@ -169,14 +169,6 @@ class Scatter(Artist):
 
         return norm_class(vmin=min_value, vmax=np.nanmax(indices))
 
-    def _get_rgba_colors(self, indices, norm):
-        """Convert normalized data to RGBA colors."""
-        sm = ScalarMappable(norm=norm, cmap=self.overlay_colormap.cmap)
-        rgba_colors = sm.to_rgba(indices)
-        if not self._overlay_visible:
-            rgba_colors = cat10_mod_cmap(0)  # Set colors to light gray
-        return rgba_colors
-
     @property
     def overlay_visible(self) -> bool:
         """Gets or sets the visibility of the overlay colormap.
