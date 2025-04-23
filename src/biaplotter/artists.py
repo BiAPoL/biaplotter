@@ -151,17 +151,6 @@ class Scatter(Artist):
             )
             self._color_normalization_method = "linear"
 
-    def _log_normalization(self, indices, norm_class):
-        """Apply log normalization to indices."""
-        if np.nanmin(indices) <= 0:
-            warnings.warn(
-                f"Log normalization applied to values <= 0. Values below 0 were set to np.nan"
-            )
-            indices[indices <= 0] = np.nan
-        min_value = np.nanmin(indices)
-
-        return norm_class(vmin=min_value, vmax=np.nanmax(indices))
-
     @property
     def overlay_visible(self) -> bool:
         """Gets or sets the visibility of the overlay colormap.
