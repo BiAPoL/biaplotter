@@ -334,7 +334,8 @@ class Histogram2D(Artist):
             aspect='equal'
         )
 
-        self.color_indices = 0  # Set default color index
+        if force_redraw:
+            self.color_indices = 0  # Set default color index
 
     def _draw_selection_on_plot(self, indices: np.ndarray):
         """
