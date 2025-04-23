@@ -79,7 +79,7 @@ class Artist(ABC):
         )
     
     @abstractmethod
-    def _draw_selection_on_plot(self, indiecs: np.ndarray):
+    def _draw_selection_on_plot(self, indices: np.ndarray):
         raise NotImplementedError(
             "This method should be implemented in the derived class."
         )
