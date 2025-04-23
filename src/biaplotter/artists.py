@@ -99,7 +99,7 @@ class Scatter(Artist):
         self._mpl_artists['scatter'].set_edgecolor("white")
 
         return rgba_colors
-    
+
     def color_indices_to_rgba(
             self,
             indices: np.ndarray,
@@ -113,38 +113,31 @@ class Scatter(Artist):
         rgba = colormap(norm(self._color_indices))
         return rgba
 
-    def _get_normalization(self, indices):
+    def _get_normalization(self, values: np.ndarray) -> Normalize:
         """Determine the normalization method and return the normalization object."""
-        norm_class = self._normalization_methods[
-            self._color_normalization_method
-        ]
-
         if self.overlay_colormap.categorical:
             self._validate_categorical_colormap()
             return Normalize(vmin=0, vmax=self.overlay_colormap.N)
 
+        norm_dispatch = {
+            "log": lambda: self._log_normalization(values),
+            "centered": lambda: self._centered_normalization(values),
+            "symlog": lambda: self._symlog_normalization(values),
+            "linear": lambda: self._linear_normalization(values),
+        }
+
+        normalization_func = norm_dispatch.get(
+            self._color_normalization_method)
+        if normalization_func is None:
+            raise ValueError(
+                f"Unknown color normalization method: {
+                    self._color_normalization_method}.\n"
+                f"Available methods are: {list(norm_dispatch.keys())}."
+            )
+
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", r"All-NaN slice encountered")
-            if self._color_normalization_method == "log":
-                return self._log_normalization(indices, norm_class)
-            elif self._color_normalization_method == "centered":
-                return norm_class(vcenter=np.nanmean(self._color_indices))
-            elif self._color_normalization_method == "symlog":
-                return norm_class(
-                    vmin=np.nanmin(self._color_indices),
-                    vmax=np.nanmax(self._color_indices),
-                    linthresh=0.03,
-                )
-            elif self._color_normalization_method == "linear":
-                return norm_class(
-                    vmin=np.nanmin(self._color_indices),
-                    vmax=np.nanmax(self._color_indices),
-                )
-            else:
-                raise ValueError(
-                    f"Unknown color normalization method: {self._color_normalization_method}.\n"
-                    f"Available methods are: {list(self._normalization_methods.keys())}."
-                )
+            return normalization_func()
 
     def _validate_categorical_colormap(self):
         """Validate settings for a categorical colormap."""

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Union
 from psygnal import Signal
-
+import warnings
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import (CenteredNorm, Colormap, LogNorm, Normalize,
@@ -238,3 +238,37 @@ class Artist(ABC):
     def draw(self):
         """Draws or redraws the artist."""
         self.ax.figure.canvas.draw_idle()
+
+    def _log_normalization(self, values: np.ndarray):
+        """Log normalization."""
+        norm_class = self._normalization_methods["log"]
+        min_value = np.nanmin(values)
+        if min_value <= 0:
+            min_value = 0.01
+        warnings.warn(
+            f"Log normalization applied to color indices with min value {min_value}. Values below 0.01 were set to 0.01."
+        )
+        values[values <= 0] = min_value
+        return norm_class(vmin=min_value, vmax=np.nanmax(values))
+
+    def _centered_normalization(self, values: np.ndarray):
+        """Centered normalization."""
+        norm_class = self._normalization_methods["centered"]
+        return norm_class(vcenter=np.nanmean(values))
+
+    def _symlog_normalization(self, values: np.ndarray):
+        """Symmetric log normalization."""
+        norm_class = self._normalization_methods["symlog"]
+        return norm_class(
+            vmin=np.nanmin(values),
+            vmax=np.nanmax(values),
+            linthresh=0.03,
+        )
+
+    def _linear_normalization(self, values: np.ndarray):
+        """Linear normalization."""
+        norm_class = self._normalization_methods["linear"]
+        return norm_class(
+            vmin=np.nanmin(values),
+            vmax=np.nanmax(values),
+        )
