@@ -265,10 +265,18 @@ class Artist(ABC):
             linthresh=0.03,
         )
 
-    def _linear_normalization(self, values: np.ndarray):
+    def _linear_normalization(self, values: np.ndarray, is_categorical: bool = False):
         """Linear normalization."""
         norm_class = self._normalization_methods["linear"]
-        return norm_class(
-            vmin=np.nanmin(values),
-            vmax=np.nanmax(values),
-        )
+
+        if is_categorical:
+            norm = norm_class(
+                vmin=0,
+                vmax=self.overlay_colormap.cmap.N,
+            )
+        else:
+            norm = norm_class(
+                vmin=np.nanmin(values),
+                vmax=np.nanmax(values),
+            )
+        return norm
