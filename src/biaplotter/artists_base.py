@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Union
 from psygnal import Signal
 
 import numpy as np
@@ -73,13 +73,13 @@ class Artist(ABC):
         )
 
     @abstractmethod
-    def _create_plot(self, force_redraw: bool = True):
+    def _sync_artist_data(self, force_redraw: bool = True):
         raise NotImplementedError(
             "This method should be implemented in the derived class."
         )
     
     @abstractmethod
-    def _draw_selection_on_plot(self, indices: np.ndarray):
+    def _colorize_artist(self, indices: np.ndarray):
         raise NotImplementedError(
             "This method should be implemented in the derived class."
         )
@@ -152,7 +152,7 @@ class Artist(ABC):
 
         # Emit the data changed signal
         self.data_changed_signal.emit(self._data)
-        self._create_plot(force_redraw=data_length_changed)
+        self._sync_artist_data(force_redraw=data_length_changed)
 
         # Redraw the plot
         self._update_axes_limits()
@@ -198,7 +198,7 @@ class Artist(ABC):
         return self._color_indices
 
     @color_indices.setter
-    def color_indices(self, indices: np.ndarray):
+    def color_indices(self, indices: Union[np.ndarray, int]):
         """Sets color indices for the plot and updates colors accordingly."""
         # Check if indices are a scalar
         if np.isscalar(indices):
@@ -206,7 +206,7 @@ class Artist(ABC):
         self._color_indices = indices
 
         if indices is not None and self._mpl_artists:
-            self._draw_selection_on_plot(indices)
+            self._colorize_artist(indices)
 
         # emit signal
         self.color_indices_changed_signal.emit(self._color_indices)
