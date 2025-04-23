@@ -130,8 +130,7 @@ class Scatter(Artist):
             self._color_normalization_method)
         if normalization_func is None:
             raise ValueError(
-                f"Unknown color normalization method: {
-                    self._color_normalization_method}.\n"
+                f"Unknown color normalization method: {self._color_normalization_method}.\n"
                 f"Available methods are: {list(norm_dispatch.keys())}."
             )
 
