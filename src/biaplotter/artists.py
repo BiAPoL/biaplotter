@@ -64,6 +64,7 @@ class Scatter(Artist):
         """Initializes the scatter plot artist."""
         super().__init__(ax, data, overlay_colormap, color_indices)
         #: Stores the scatter plot matplotlib object
+        self._overlay_visible = True
         self._color_normalization_method = "linear"
         self.data = data
         self._alpha = 1  # Default alpha
@@ -134,10 +135,15 @@ class Scatter(Artist):
                     vmax=np.nanmax(self._color_indices),
                     linthresh=0.03,
                 )
-            else:
+            elif self._color_normalization_method == "linear":
                 return norm_class(
                     vmin=np.nanmin(self._color_indices),
                     vmax=np.nanmax(self._color_indices),
+                )
+            else:
+                raise ValueError(
+                    f"Unknown color normalization method: {self._color_normalization_method}.\n"
+                    f"Available methods are: {list(self._normalization_methods.keys())}."
                 )
 
     def _validate_categorical_colormap(self):
@@ -300,7 +306,6 @@ class Histogram2D(Artist):
         self._histogram = None
         self._bins = bins
         self._histogram_colormap = BiaColormap(histogram_colormap)
-        self._overlay_colormap = BiaColormap(overlay_colormap)
         self._histogram_interpolation = "nearest"
         self._overlay_interpolation = "nearest"
         self._overlay_opacity = 1
