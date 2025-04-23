@@ -307,7 +307,7 @@ class Histogram2D(Artist):
             zorder=1,
             interpolation=self._histogram_interpolation,
             alpha=1,
-            aspect='equal'
+            aspect='auto'
         )
 
         if force_redraw:
@@ -341,7 +341,7 @@ class Histogram2D(Artist):
                 zorder=2,
                 interpolation=self._overlay_interpolation,
                 alpha=self._overlay_opacity,
-                aspect='equal'
+                aspect='auto'
             )
 
     def color_indices_to_rgba(self, indices, is_overlay: bool = True) -> np.ndarray:
