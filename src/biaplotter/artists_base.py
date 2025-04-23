@@ -102,10 +102,6 @@ class Artist(ABC):
             "This method should be implemented in the derived class."
         )
 
-    def _modify_plot(self):
-        """Modify the existing plot with new data or properties."""
-        pass
-
     def _remove_artists(self, keys: List[str] = None):
         """
         Remove all contents from the plot.
