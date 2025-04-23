@@ -83,13 +83,13 @@ class Artist(ABC):
         self._margins = 0.05
 
     @abstractmethod
-    def _sync_artist_data(self, force_redraw: bool = True):
+    def _refresh(self, force_redraw: bool = True):
         raise NotImplementedError(
             "This method should be implemented in the derived class."
         )
     
     @abstractmethod
-    def _colorize_artist(self, indices: np.ndarray):
+    def _colorize(self, indices: np.ndarray):
         raise NotImplementedError(
             "This method should be implemented in the derived class."
         )
@@ -158,7 +158,7 @@ class Artist(ABC):
 
         # Emit the data changed signal
         self.data_changed_signal.emit(self._data)
-        self._sync_artist_data(force_redraw=data_length_changed)
+        self._refresh(force_redraw=data_length_changed)
 
         # Redraw the plot
         self._update_axes_limits()
@@ -212,7 +212,7 @@ class Artist(ABC):
         self._color_indices = indices
 
         if indices is not None and self._mpl_artists:
-            self._colorize_artist(indices)
+            self._colorize(indices)
 
         # emit signal
         self.color_indices_changed_signal.emit(self._color_indices)

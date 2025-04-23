@@ -71,7 +71,7 @@ class Scatter(Artist):
         self._size = 50  # Default size
         self.draw()  # Initial draw of the scatter plot
 
-    def _sync_artist_data(self, force_redraw: bool = True):
+    def _refresh(self, force_redraw: bool = True):
         """Creates the scatter plot with the data and default properties."""
 
         if force_redraw or self._mpl_artists['scatter'] is None:
@@ -90,7 +90,7 @@ class Scatter(Artist):
             self.size = self._size
             self.alpha = self._alpha
 
-    def _colorize_artist(self, indices: np.ndarray):
+    def _colorize(self, indices: np.ndarray):
         """
         Add a color to the drawn scatter points
         """
@@ -317,7 +317,7 @@ class Histogram2D(Artist):
         self.cmin = cmin
         self.draw()  # Initial draw of the histogram
 
-    def _sync_artist_data(self, force_redraw: bool = True):
+    def _refresh(self, force_redraw: bool = True):
         self._remove_artists()
         # Calculate and draw the new histogram
         self._histogram = np.histogram2d(
@@ -340,7 +340,7 @@ class Histogram2D(Artist):
         if force_redraw:
             self.color_indices = 0  # Set default color index
 
-    def _colorize_artist(self, indices: np.ndarray):
+    def _colorize(self, indices: np.ndarray):
         """
         Draws the overlay histogram on the plot.
         """
@@ -353,7 +353,7 @@ class Histogram2D(Artist):
             x = self._data[:, 0],
             y= self._data[:, 1],
             values=indices,
-            statistic=median_np,
+            statistic=_median_np,
             bins=[x_edges, y_edges]
         )
         if not np.all(np.isnan(statistic_histogram)):
@@ -436,8 +436,8 @@ class Histogram2D(Artist):
     def bins(self, value: int):
         """Sets the number of bins for the histogram."""
         self._bins = value
-        self._sync_artist_data(force_redraw=False)
-        self._colorize_artist(self._color_indices)
+        self._refresh(force_redraw=False)
+        self._colorize(self._color_indices)
 
     @property
     def histogram_colormap(self) -> Colormap:
@@ -488,7 +488,7 @@ class Histogram2D(Artist):
     def overlay_interpolation(self, value: str):
         """Sets the interpolation method for the overlay histogram."""
         self._overlay_interpolation = value
-        self._colorize_artist(self._color_indices)
+        self._colorize(self._color_indices)
 
     @property
     def overlay_opacity(self):
@@ -507,7 +507,7 @@ class Histogram2D(Artist):
     def overlay_opacity(self, value):
         """Sets the opacity of the overlay histogram."""
         self._overlay_opacity = value
-        self._colorize_artist(self._color_indices)
+        self._colorize(self._color_indices)
 
     @property
     def overlay_visible(self):
@@ -802,7 +802,8 @@ class Histogram2D(Artist):
             histogram_data = self._histogram[0]
         return self._select_norm_class(overlay, histogram_data)
 
-def median_np(arr, method='lower') -> float:
+
+def _median_np(arr, method='lower') -> float:
     """Calculate the median of a 1D array.
 
     Parameters
