@@ -50,7 +50,7 @@ def test_scatter():
     assert scatter.color_indices.shape == (size,)
 
     # Test scatter colors
-    colors = scatter._scatter.get_facecolors()
+    colors = scatter._mpl_artists['scatter'].get_facecolors()
     assert np.all(colors[0] == scatter.overlay_colormap(0))
     assert np.all(colors[50] == scatter.overlay_colormap(2))
 
@@ -69,27 +69,27 @@ def test_scatter():
     # Test size property
     scatter.size = 5.0
     assert scatter.size == 5.0
-    sizes = scatter._scatter.get_sizes()
+    sizes = scatter._mpl_artists['scatter'].get_sizes()
     assert np.all(sizes == 5.0)
 
     scatter.size = np.linspace(1, 10, size)
     assert np.all(scatter.size == np.linspace(1, 10, size))
-    sizes = scatter._scatter.get_sizes()
+    sizes = scatter._mpl_artists['scatter'].get_sizes()
     assert np.all(sizes == np.linspace(1, 10, size))
 
     # Test size reset when new data is set
     scatter.data = np.random.rand(size // 2, 2)
     assert np.all(scatter.size == 50.0)  # that's the default
-    sizes = scatter._scatter.get_sizes()
+    sizes = scatter._mpl_artists['scatter'].get_sizes()
     assert np.all(sizes == 50.0)
 
     # test alpha
     scatter.alpha = 0.5
-    assert np.all(scatter._scatter.get_alpha() == 0.5)
+    assert np.all(scatter._mpl_artists['scatter'].get_alpha() == 0.5)
 
     # test alpha reset when new data is set
     scatter.data = np.random.rand(size, 2)
-    assert np.all(scatter._scatter.get_alpha() == 1.0)
+    assert np.all(scatter._mpl_artists['scatter'].get_alpha() == 1.0)
 
     # Test changing overlay_colormap
     assert scatter.overlay_colormap.name == "cat10_modified"
@@ -98,7 +98,7 @@ def test_scatter():
 
     # Test scatter color indices after continuous overlay_colormap
     scatter.color_indices = np.linspace(0, 1, size)
-    colors = scatter._scatter.get_facecolors()
+    colors = scatter._mpl_artists['scatter'].get_facecolors()
     assert np.all(colors[0] == plt.cm.viridis(0))
 
     # Test scatter color_normalization_method
