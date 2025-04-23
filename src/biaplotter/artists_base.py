@@ -45,7 +45,7 @@ class Artist(ABC):
         #: Stores visibility of the artist
         self._visible: bool = True
         #: Stores the colormap to use for the artist
-        self._overlay_colormap: Colormap = BiaColormap(overlay_colormap)
+        self._overlay_colormap: Colormap = BiaColormap(overlay_colormap, categorical=True)
         #: Stores the array of indices to map to the colormap
         self._color_indices: np.array = color_indices
         # store handles to mpl artists for modifying plots
@@ -71,6 +71,16 @@ class Artist(ABC):
             np.nanmin(self._data[:, 1]) - y_margin,
             np.nanmax(self._data[:, 1]) + y_margin,
         )
+    
+    def reset(self):
+        """Reset the artist to its initial state."""
+        self._remove_artists()
+        self._data = None
+        self._color_indices = None
+        self._visible = True
+        self._overlay_colormap = BiaColormap(cat10_mod_cmap, categorical=True)
+        self._mpl_artists = {}
+        self._margins = 0.05
 
     @abstractmethod
     def _sync_artist_data(self, force_redraw: bool = True):
