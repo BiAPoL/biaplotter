@@ -1,107 +1,17 @@
 import warnings
-from abc import ABC, abstractmethod
-from collections import defaultdict
 from typing import List, Tuple, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.cm import ScalarMappable
-from matplotlib.collections import QuadMesh
 from matplotlib.colors import (CenteredNorm, Colormap, LogNorm, Normalize,
                                SymLogNorm)
 from nap_plot_tools.cmap import (cat10_mod_cmap,
                                  cat10_mod_cmap_first_transparent)
-from psygnal import Signal
 
 from biaplotter.colormap import BiaColormap
-
-
-class Artist(ABC):
-    """Abstract base class for artists in the BiAPlotter.
-
-    Parameters
-    ----------
-    ax : plt.Axes, optional
-        axes to plot on, by default None
-    data : (N, 2) np.ndarray
-        data to be plotted
-    overlay_colormap : Colormap, optional
-        a colormap to use for the artist, by default cat10_mod_cmap from nap-plot-tools
-    color_indices : (N,) np.ndarray, optional
-        array of indices to map to the colormap, by default None
-    """
-
-    def __init__(
-        self,
-        ax: plt.Axes = None,
-        data: np.ndarray = None,
-        overlay_colormap: Colormap = cat10_mod_cmap,
-        color_indices: np.ndarray = None,
-    ):
-        """Initializes the abstract artist."""
-        #: Stores data to be plotted
-        self._data: np.ndarray = data
-        #: Stores axes to plot on
-        self.ax: plt.Axes = ax if ax is not None else plt.gca()
-        #: Stores visibility of the artist
-        self._visible: bool = True
-        #: Stores the colormap to use for the artist
-        self._overlay_colormap: Colormap = BiaColormap(overlay_colormap)
-        #: Stores the array of indices to map to the colormap
-        self._color_indices: np.array = color_indices
-
-    @property
-    @abstractmethod
-    def data(self) -> np.ndarray:
-        """Abstract property for the artist's data."""
-        pass
-
-    @data.setter
-    @abstractmethod
-    def data(self, value: np.ndarray):
-        """Abstract setter for the artist's data."""
-        pass
-
-    @property
-    @abstractmethod
-    def visible(self) -> bool:
-        """Abstract property for the artist's visibility."""
-        pass
-
-    @visible.setter
-    @abstractmethod
-    def visible(self, value: bool):
-        """Abstract setter for the artist's visibility."""
-        pass
-
-    @property
-    @abstractmethod
-    def color_indices(self) -> np.ndarray:
-        """Abstract property for the indices into the colormap."""
-        pass
-
-    @color_indices.setter
-    @abstractmethod
-    def color_indices(self, indices: np.ndarray):
-        """Abstract setter for the indices into the colormap."""
-        pass
-
-    @property
-    @abstractmethod
-    def overlay_colormap(self) -> BiaColormap:
-        """Abstract property for the overlay colormap."""
-        pass
-
-    @overlay_colormap.setter
-    @abstractmethod
-    def overlay_colormap(self, value: Colormap):
-        """Abstract setter for the overlay colormap."""
-        pass
-
-    @abstractmethod
-    def draw(self):
-        """Abstract method to draw or redraw the artist."""
-        pass
+from scipy.stats import binned_statistic_2d
+from .artists_base import Artist
 
 
 class Scatter(Artist):
@@ -142,10 +52,7 @@ class Scatter(Artist):
     >>> plt.show()
     """
 
-    #: Signal emitted when the `data` are changed.
-    data_changed_signal: Signal = Signal(np.ndarray)
-    #: Signal emitted when the `color_indices` are changed.
-    color_indices_changed_signal: Signal = Signal(np.ndarray)
+
 
     def __init__(
         self,
@@ -157,182 +64,79 @@ class Scatter(Artist):
         """Initializes the scatter plot artist."""
         super().__init__(ax, data, overlay_colormap, color_indices)
         #: Stores the scatter plot matplotlib object
-        self._scatter = None
-        self._overlay_colormap = BiaColormap(overlay_colormap)
         self._overlay_visible = True
-        self._normalization_methods = {
-            "linear": Normalize,
-            "log": LogNorm,
-            "symlog": SymLogNorm,
-            "centered": CenteredNorm,
-        }
         self._color_normalization_method = "linear"
         self.data = data
         self._alpha = 1  # Default alpha
         self._size = 50  # Default size
         self.draw()  # Initial draw of the scatter plot
 
-    @property
-    def data(self) -> np.ndarray:
-        """Gets or sets the data associated with the scatter plot.
+    def _refresh(self, force_redraw: bool = True):
+        """Creates the scatter plot with the data and default properties."""
 
-        Updates colors if color_indices are set. Triggers a draw idle command.
-
-        Returns
-        -------
-        data : (N, 2) np.ndarray
-           data for the artist. Does not respond if set to None or empty array.
-
-        Notes
-        -----
-        data_changed_signal : Signal
-            Signal emitted when the data are changed.
-        """
-        return self._data
-
-    @data.setter
-    def data(self, value: np.ndarray):
-        """Sets the data for the scatter plot, resetting other properties to defaults."""
-        if value is None or len(value) == 0:
-            return
-
-        if self._data is not None:
-            data_length_changed = len(value) != len(self._data)
-        else:
-            data_length_changed = True
-        self._data = value
-
-        # Emit the data changed signal
-        self.data_changed_signal.emit(self._data)
-
-        if self._scatter is None or data_length_changed:
-            # Create the scatter plot if it doesn't exist yet
-            if self._scatter is not None:
-                self._scatter.remove()
-
+        if force_redraw or self._mpl_artists['scatter'] is None:
+            self._remove_artists()
             # Create a new scatter plot with the updated data
-            self._scatter = self.ax.scatter(self._data[:, 0], self._data[:, 1])
+            self._mpl_artists['scatter'] = self.ax.scatter(
+                self._data[:, 0], self._data[:, 1])
             self.size = 50  # Default size
             self.alpha = 1  # Default alpha
-            self.color_indices = np.zeros(
-                len(value), dtype=int
-            )  # Default color indices
+            self.color_indices = 0
         else:
-            self._scatter.set_offsets(
-                value
+            self._mpl_artists['scatter'].set_offsets(
+                self._data
             )  #  somehow resets the size and alpha
             self.color_indices = self._color_indices
             self.size = self._size
             self.alpha = self._alpha
 
-        x_margin = 0.05 * (np.nanmax(value[:, 0]) - np.nanmin(value[:, 0]))
-        y_margin = 0.05 * (np.nanmax(value[:, 1]) - np.nanmin(value[:, 1]))
-        self.ax.set_xlim(
-            np.nanmin(value[:, 0]) - x_margin,
-            np.nanmax(value[:, 0]) + x_margin,
-        )
-        self.ax.set_ylim(
-            np.nanmin(value[:, 1]) - y_margin,
-            np.nanmax(value[:, 1]) + y_margin,
-        )
-
-        # Redraw the plot
-        self.draw()
-
-    @property
-    def visible(self) -> bool:
-        """Gets or sets the visibility of the scatter plot.
-
-        Triggers a draw idle command.
-
-        Returns
-        -------
-        visible : bool
-            visibility of the scatter plot.
+    def _colorize(self, indices: np.ndarray):
         """
-        return self._visible
-
-    @visible.setter
-    def visible(self, value: bool):
-        """Sets the visibility of the scatter plot."""
-        self._visible = value
-        if self._scatter is not None:
-            self._scatter.set_visible(value)
-        self.draw()
-
-    @property
-    def color_indices(self) -> np.ndarray:
-        """Gets or sets the current color indices used for the scatter plot.
-
-        Triggers a draw idle command.
-
-        Returns
-        -------
-        color_indices : (N,) np.ndarray[int] or int
-            indices to map to the overlay_colormap. Accepts a scalar or an array of integers.
-
-        Notes
-        -----
-        color_indices_changed_signal : Signal
-            Signal emitted when the color indices are changed.
-
+        Add a color to the drawn scatter points
         """
-        return self._color_indices
+        rgba_colors = self.color_indices_to_rgba(indices)
+        self._mpl_artists['scatter'].set_facecolor(rgba_colors)
+        self._mpl_artists['scatter'].set_edgecolor("white")
 
-    @color_indices.setter
-    def color_indices(self, indices: np.ndarray):
-        """Sets color indices for the scatter plot and updates colors accordingly."""
-        # Check if indices are a scalar
-        if np.isscalar(indices):
-            indices = np.full(len(self._data), indices)
-        self._color_indices = indices
+        return rgba_colors
 
-        if indices is not None and self._scatter is not None:
-            norm = self._get_normalization(indices)
-            rgba_colors = self._get_rgba_colors(indices, norm)
-            self._scatter.set_facecolor(rgba_colors)
-            self._scatter.set_edgecolor("white")
+    def color_indices_to_rgba(
+            self,
+            indices: np.ndarray,
+            is_overlay: bool = True) -> np.ndarray:
+        """
+        Convert color indices to RGBA colors using the colormap.
+        """
+        norm = self._get_normalization(indices)
+        colormap = self.overlay_colormap.cmap
 
-        # emit signal
-        self.color_indices_changed_signal.emit(self._color_indices)
-        self.draw()
+        rgba = colormap(norm(self._color_indices))
+        return rgba
 
-    def _get_normalization(self, indices):
+    def _get_normalization(self, values: np.ndarray) -> Normalize:
         """Determine the normalization method and return the normalization object."""
-        norm_class = self._normalization_methods[
-            self._color_normalization_method
-        ]
-
         if self.overlay_colormap.categorical:
             self._validate_categorical_colormap()
             return Normalize(vmin=0, vmax=self.overlay_colormap.N)
 
+        norm_dispatch = {
+            "log": lambda: self._log_normalization(values),
+            "centered": lambda: self._centered_normalization(values),
+            "symlog": lambda: self._symlog_normalization(values),
+            "linear": lambda: self._linear_normalization(values),
+        }
+
+        normalization_func = norm_dispatch.get(
+            self._color_normalization_method)
+        if normalization_func is None:
+            raise ValueError(
+                f"Unknown color normalization method: {self._color_normalization_method}.\n"
+                f"Available methods are: {list(norm_dispatch.keys())}."
+            )
+
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", r"All-NaN slice encountered")
-            if self._color_normalization_method == "log":
-                return self._log_normalization(indices, norm_class)
-            elif self._color_normalization_method == "centered":
-                return norm_class(vcenter=np.nanmean(self._color_indices))
-            elif self._color_normalization_method == "symlog":
-                return norm_class(
-                    vmin=np.nanmin(self._color_indices),
-                    vmax=np.nanmax(self._color_indices),
-                    linthresh=0.03,
-                )
-            else:
-                return norm_class(
-                    vmin=np.nanmin(self._color_indices),
-                    vmax=np.nanmax(self._color_indices),
-                )
-
-    def _get_normalization_instance(self) -> Normalize:
-        """
-        Returns the normalization instance for the scatter plot
-        based on the current color_indices.
-
-        This method preserves the existing behavior including warnings.
-        """
-        return self._get_normalization(self._color_indices)
+            return normalization_func()
 
     def _validate_categorical_colormap(self):
         """Validate settings for a categorical colormap."""
@@ -345,42 +149,6 @@ class Scatter(Artist):
                 "Categorical colormap detected. Setting color normalization method to linear."
             )
             self._color_normalization_method = "linear"
-
-    def _log_normalization(self, indices, norm_class):
-        """Apply log normalization to indices."""
-        if np.nanmin(indices) <= 0:
-            warnings.warn(
-                f"Log normalization applied to values <= 0. Values below 0 were set to np.nan"
-            )
-            indices[indices <= 0] = np.nan
-        min_value = np.nanmin(indices)
-
-        return norm_class(vmin=min_value, vmax=np.nanmax(indices))
-
-    def _get_rgba_colors(self, indices, norm):
-        """Convert normalized data to RGBA colors."""
-        sm = ScalarMappable(norm=norm, cmap=self.overlay_colormap.cmap)
-        rgba_colors = sm.to_rgba(indices)
-        if not self._overlay_visible:
-            rgba_colors = cat10_mod_cmap(0)  # Set colors to light gray
-        return rgba_colors
-
-    @property
-    def overlay_colormap(self) -> BiaColormap:
-        """Gets or sets the overlay colormap for the scatter plot.
-
-        Returns
-        -------
-        overlay_colormap : BiaColormap
-            colormap for the scatter plot with a `categorical` attribute.
-        """
-        return self._overlay_colormap
-
-    @overlay_colormap.setter
-    def overlay_colormap(self, value: Colormap):
-        """Sets the overlay colormap for the scatter plot."""
-        self._overlay_colormap = BiaColormap(value)
-        self.color_indices = self._color_indices
 
     @property
     def overlay_visible(self) -> bool:
@@ -397,7 +165,7 @@ class Scatter(Artist):
     def overlay_visible(self, value: bool):
         """Sets the visibility of the overlay colormap."""
         self._overlay_visible = value
-        self.color_indices = self._color_indices
+        self._colorize(self._color_indices)
 
     @property
     def color_normalization_method(self) -> str:
@@ -414,7 +182,7 @@ class Scatter(Artist):
     def color_normalization_method(self, value: str):
         """Sets the normalization method for the color indices."""
         self._color_normalization_method = value
-        self.color_indices = self._color_indices
+        self._colorize(self._color_indices)
 
     @property
     def alpha(self) -> Union[float, np.ndarray]:
@@ -425,7 +193,7 @@ class Scatter(Artist):
         alpha : float
             alpha value of the scatter plot.
         """
-        return self._scatter.get_alpha()
+        return self._mpl_artists['scatter'].get_alpha()
 
     @alpha.setter
     def alpha(self, value: Union[float, np.ndarray]):
@@ -434,8 +202,8 @@ class Scatter(Artist):
 
         if np.isscalar(value):
             value = np.ones(len(self._data)) * value
-        if self._scatter is not None:
-            self._scatter.set_alpha(value)
+        if 'scatter' in self._mpl_artists.keys():
+            self._mpl_artists['scatter'].set_alpha(value)
         self.draw()
 
     @property
@@ -455,17 +223,13 @@ class Scatter(Artist):
     def size(self, value: Union[float, np.ndarray]):
         """Sets the size of the points in the scatter plot."""
         self._size = value
-        if self._scatter is not None:
-            self._scatter.set_sizes(
+        if 'scatter' in self._mpl_artists.keys():
+            self._mpl_artists['scatter'].set_sizes(
                 np.full(len(self._data), value)
                 if np.isscalar(value)
                 else value
             )
         self.draw()
-
-    def draw(self):
-        """Draws or redraws the scatter plot."""
-        self.ax.figure.canvas.draw_idle()
 
 
 class Histogram2D(Artist):
@@ -488,6 +252,9 @@ class Histogram2D(Artist):
         number of bins for the histogram, by default 20
     histogram_colormap : Colormap, optional
         colormap for the histogram, by default plt.cm.magma
+    cmin : int, optional
+        minimum count for the histogram, by default 0
+        Values below cmin are set to NaN (to be transparent).
 
     Notes
     -----
@@ -497,11 +264,6 @@ class Histogram2D(Artist):
         * **color_indices_changed_signal** emitted when the color indices are changed.
 
     """
-
-    #: Signal emitted when the `data` are changed.
-    data_changed_signal: Signal = Signal(np.ndarray)
-    #: Signal emitted when the `color_indices` are changed.
-    color_indices_changed_signal: Signal = Signal(np.ndarray)
 
     def __init__(
         self,
@@ -517,189 +279,90 @@ class Histogram2D(Artist):
         """Initializes the 2D histogram artist.
         """
         #: Stores the matplotlib histogram2D object
-        self._histogram_image = None
         self._histogram = None
         self._bins = bins
         self._histogram_colormap = BiaColormap(histogram_colormap)
-        self._overlay_colormap = BiaColormap(overlay_colormap)
         self._histogram_interpolation = "nearest"
         self._overlay_interpolation = "nearest"
         self._overlay_opacity = 1
         self._overlay_visible = True
-        self._overlay_histogram_image = None
-        self._normalization_methods = {
-            "linear": Normalize,
-            "log": LogNorm,
-            "symlog": SymLogNorm,
-            "centered": CenteredNorm,
-        }
+        self._margins = 0
         self._histogram_color_normalization_method = "linear"
         self._overlay_color_normalization_method = "linear"
+        self._cmin = cmin
         self.data = data
-        self.cmin = cmin
         self.draw()  # Initial draw of the histogram
 
-    @property
-    def data(self) -> np.ndarray:
-        """Gets or sets the data associated with the 2D histogram.
-
-        Updates colors if color_indices are set. Triggers a draw idle command.
-
-        Returns
-        -------
-        data : (N, 2) np.ndarray
-            data for the artist. Does not respond if set to None or empty array.
-
-        Notes
-        -----
-        data_changed_signal : Signal
-            Signal emitted when the data are changed.
-        """
-        return self._data
-
-    @data.setter
-    def data(self, value: np.ndarray):
-        """Sets the data for the 2D histogram, updating the display as needed."""
-        if value is None:
-            return
-        if len(value) == 0:
-            return
-        self._data = value
-        # emit signal
-        self.data_changed_signal.emit(self._data)
-        # Remove the existing histogram to redraw
-        if self._histogram_image is not None:
-            self._histogram_image.remove()
+    def _refresh(self, force_redraw: bool = True):
+        self._remove_artists()
         # Calculate and draw the new histogram
         self._histogram = np.histogram2d(
-            value[:, 0], value[:, 1], bins=self._bins
+            self._data[:, 0], self._data[:, 1], bins=self._bins
         )
         counts, x_edges, y_edges = self._histogram
-        self._histogram_rgba = self._histogram2D_array_to_rgba(
-            self.ax, counts, x_edges, y_edges, is_overlay=False
+        # Replace values below cmin with NaN (to have them transparent)
+        counts[counts < self._cmin] = np.nan
+        self._histogram_rgba = self.color_indices_to_rgba(
+            counts.T, is_overlay=False
         )
-        self._histogram_image = self.ax.imshow(
+        self._mpl_artists['histogram_image'] = self.ax.imshow(
             self._histogram_rgba,
             extent=[x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]],
             origin="lower",
             zorder=1,
             interpolation=self._histogram_interpolation,
             alpha=1,
+            aspect='auto'
         )
 
-        if self._color_indices is None:
+        if force_redraw:
             self.color_indices = 0  # Set default color index
-        else:
-            # Update colors if color indices are set, resize if data shape has changed
-            color_indices_size = len(self._color_indices)
-            color_indices = np.resize(self._color_indices, self._data.shape[0])
-            if len(color_indices) > color_indices_size:
-                # Fill with zeros where new data is larger
-                color_indices[color_indices_size:] = 0
-            self.color_indices = color_indices
-        self.draw()
 
-    @property
-    def visible(self) -> bool:
-        """Gets or sets the visibility of the 2D histogram.
-
-        Triggers a draw idle command.
-
-        Returns
-        -------
-        visible : bool
-            visibility of the 2D histogram.
+    def _colorize(self, indices: np.ndarray):
         """
-        return self._visible
-
-    @visible.setter
-    def visible(self, value: bool):
-        """Sets the visibility of the 2D histogram."""
-        self._visible = value
-        if self._histogram_image is not None:
-            artist = self._histogram_image
-            artist.set_visible(value)
-            if self._overlay_histogram_image is not None:
-                self._overlay_histogram_image.set_visible(value)
-        self.draw()
-
-    @property
-    def color_indices(self) -> np.ndarray:
-        """Gets or sets the current color indices used for the 2D histogram underlying data.
-
-        Triggers a draw idle command.
-
-        Returns
-        -------
-        color_indices : (N,) np.ndarray[int] or int
-            indices to map to the overlay colormap. Accepts a scalar or an array.
-
-        Notes
-        -----
-        color_indices_changed_signal : Signal
-            Signal emitted when the color indices are changed.
-
+        Draws the overlay histogram on the plot.
         """
-        return self._color_indices
-
-    @color_indices.setter
-    def color_indices(self, indices: np.ndarray):
-        """Sets color indices for the 2D histogram underlying data and updates colors accordingly."""
-        # Check if indices are a scalar
-        if np.isscalar(indices):
-            indices = np.full(len(self._data), indices)
-        self._color_indices = indices
         # Remove the existing overlay to redraw
-        if self._overlay_histogram_image is not None:
-            self._overlay_histogram_image.remove()
-            self._overlay_histogram_image = None
-        counts, x_edges, y_edges = self._histogram
-        # Get the bin index for each x value ( -1 to start from index 0 and clip to handle edge cases)
-        x_bin_indices = (
-            np.digitize(self._data[:, 0], x_edges, right=False) - 1
-        ).clip(0, len(x_edges) - 2)
-        # Get the bin index for each y value ( -1 to start from index 0 and clip to handle edge cases)
-        y_bin_indices = (
-            np.digitize(self._data[:, 1], y_edges, right=False) - 1
-        ).clip(0, len(y_edges) - 2)
+        self._remove_artists(["overlay_histogram_image"])
+
+        _, x_edges, y_edges = self._histogram
         # Assign median values to the bins (fill with NaNs if no data in the bin)
-        statistic_histogram = self._calculate_statistic_histogram(
-            x_bin_indices, y_bin_indices, indices, statistic="median"
+        statistic_histogram, _, _, _ = binned_statistic_2d(
+            x = self._data[:, 0],
+            y= self._data[:, 1],
+            values=indices,
+            statistic=_median_np,
+            bins=[x_edges, y_edges]
         )
         if not np.all(np.isnan(statistic_histogram)):
             # Draw the overlay
-            self.overlay_histogram_rgba = self._histogram2D_array_to_rgba(
-                self.ax, statistic_histogram, x_edges, y_edges, is_overlay=True
+            self.overlay_histogram_rgba = self.color_indices_to_rgba(
+                statistic_histogram.T, is_overlay=True
             )
-            self._overlay_histogram_image = self.ax.imshow(
+            self._mpl_artists['overlay_histogram_image'] = self.ax.imshow(
                 self.overlay_histogram_rgba,
                 extent=[x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]],
                 origin="lower",
                 zorder=2,
                 interpolation=self._overlay_interpolation,
                 alpha=self._overlay_opacity,
+                aspect='auto'
             )
 
-        # emit signal
-        self.color_indices_changed_signal.emit(self._color_indices)
-        self.draw()
-
-    @property
-    def overlay_colormap(self) -> BiaColormap:
-        """Gets or sets the overlay colormap for the 2D histogram.
-
-        Returns
-        -------
-        overlay_colormap : BiaColormap
-            colormap for the overlay histogram with a `categorical` attribute.
+    def color_indices_to_rgba(self, indices, is_overlay: bool = True) -> np.ndarray:
         """
-        return self._overlay_colormap
+        Convert color indices to RGBA colors using the overlay colormap.
+        """
+        norm = self._get_normalization(indices, is_overlay=is_overlay)
+        
+        if is_overlay:
+            colormap = self.overlay_colormap.cmap
+        else:
+            colormap = self.histogram_colormap.cmap
 
-    @overlay_colormap.setter
-    def overlay_colormap(self, value: Colormap):
-        """Sets the overlay colormap for the 2D histogram."""
-        self._overlay_colormap = BiaColormap(value)
-        self.color_indices = self._color_indices
+        rgba = colormap(norm(indices))
+
+        return rgba
 
     @property
     def histogram_color_normalization_method(self) -> str:
@@ -735,7 +398,7 @@ class Histogram2D(Artist):
         """Sets the normalization method for the overlay histogram."""
         self._overlay_color_normalization_method = value
         # Update overlay histogram image if new color normalization method is set
-        self.color_indices = self._color_indices
+        self._colorize(self._color_indices)
 
     @property
     def bins(self) -> int:
@@ -752,7 +415,27 @@ class Histogram2D(Artist):
     def bins(self, value: int):
         """Sets the number of bins for the histogram."""
         self._bins = value
-        self.data = self._data
+        self._refresh(force_redraw=False)
+        self._colorize(self._color_indices)
+
+    @property
+    def cmin(self) -> int:
+        """Gets or sets the minimum count for the histogram.
+
+        Values below cmin are set to NaN (to be transparent).
+
+        Returns
+        -------
+        cmin : int
+            minimum count for the histogram.
+        """
+        return self._cmin
+    
+    @cmin.setter
+    def cmin(self, value: int):
+        """Sets the minimum count for the histogram."""
+        self._cmin = value
+        self._refresh(force_redraw=False)
 
     @property
     def histogram_colormap(self) -> Colormap:
@@ -769,7 +452,7 @@ class Histogram2D(Artist):
     def histogram_colormap(self, value: Colormap):
         """Sets the colormap for the histogram."""
         self._histogram_colormap = BiaColormap(value)
-        self.data = self._data
+        self._refresh(force_redraw=False)
 
     @property
     def histogram_interpolation(self) -> str:
@@ -786,7 +469,7 @@ class Histogram2D(Artist):
     def histogram_interpolation(self, value: str):
         """Sets the interpolation method for the histogram."""
         self._histogram_interpolation = value
-        self.data = self._data
+        self._refresh(force_redraw=False)
 
     @property
     def overlay_interpolation(self) -> str:
@@ -803,7 +486,7 @@ class Histogram2D(Artist):
     def overlay_interpolation(self, value: str):
         """Sets the interpolation method for the overlay histogram."""
         self._overlay_interpolation = value
-        self.data = self._data
+        self._colorize(self._color_indices)
 
     @property
     def overlay_opacity(self):
@@ -822,7 +505,7 @@ class Histogram2D(Artist):
     def overlay_opacity(self, value):
         """Sets the opacity of the overlay histogram."""
         self._overlay_opacity = value
-        self.data = self._data
+        self._colorize(self._color_indices)
 
     @property
     def overlay_visible(self):
@@ -841,8 +524,8 @@ class Histogram2D(Artist):
     def overlay_visible(self, value):
         """Sets the visibility of the overlay histogram."""
         self._overlay_visible = value
-        if self._overlay_histogram_image is not None:
-            self._overlay_histogram_image.set_visible(value)
+        if 'overlay_histogram_image' in self._mpl_artists:
+            self._mpl_artists['overlay_histogram_image'].set_visible(value)
         self.draw()
 
     @property
@@ -896,82 +579,6 @@ class Histogram2D(Artist):
 
         return indices
 
-    def _calculate_statistic_histogram(
-        self,
-        x_indices,
-        y_indices,
-        features,
-        statistic="median",
-        use_lower_median=True,
-    ):
-        """
-        Calculate either a mean, median or sum "histogram" for provided indices and features.
-
-        This means that in each patch, instead of portraying the count of points, we portray the mean, median or sum of those values.
-
-        Parameters
-        ----------
-        x_indices : np.ndarray
-            indices of the x bins
-        y_indices : np.ndarray
-            indices of the y bins
-        features : np.ndarray
-            features to calculate the statistic
-        statistic : str
-            the statistic to calculate, 'sum', 'mean', or 'median'.
-        use_lower_median : bool, optional
-            whether to use lower median or upper median for even number of elements, by default True.
-
-        Returns
-        -------
-        statistic_histogram : np.ndarray
-            the calculated statistic histogram
-        """
-        height = max(x_indices) + 1
-        width = max(y_indices) + 1
-        statistic_histogram = np.full(
-            (height, width), np.nan
-        )  # Initialize with NaNs
-
-        if statistic == "mean":
-            sums = np.zeros((height, width))
-            counts = np.zeros((height, width))
-            for x, y, feature in zip(x_indices, y_indices, features):
-                sums[x, y] += feature
-                counts[x, y] += 1
-            np.divide(sums, counts, out=statistic_histogram, where=counts != 0)
-        elif statistic == "median":
-            feature_lists = defaultdict(list)
-            for x, y, feature in zip(x_indices, y_indices, features):
-                feature_lists[(x, y)].append(feature)
-            for (x, y), feats in feature_lists.items():
-                if feats:
-                    # If length of features is even, use lower or upper median based on the flag
-                    # This is done to ensure that the median returns an actual element from the array
-                    if len(feats) % 2 == 0:
-                        if use_lower_median:
-                            statistic_histogram[x, y] = np.median(
-                                np.sort(feats)[:-1]
-                            )
-                        else:
-                            statistic_histogram[x, y] = np.median(
-                                np.sort(feats)[1:]
-                            )
-                    else:
-                        statistic_histogram[x, y] = np.median(feats)
-        elif statistic == "sum":
-            sums = np.zeros((height, width))
-            sums_flags = np.zeros((height, width)).astype(bool)
-            for x, y, feature in zip(x_indices, y_indices, features):
-                if np.isnan(sums[x, y]):
-                    # Initialize sum as 0 when first feature is added
-                    sums[x, y] = 0
-                sums[x, y] += feature
-                sums_flags[x, y] = True
-            statistic_histogram[sums_flags] = sums[sums_flags]
-
-        return statistic_histogram
-
     def _is_categorical_colormap(self, colormap):
         """
         Check if the colormap is categorical.
@@ -994,74 +601,17 @@ class Histogram2D(Artist):
         except ValueError:
             return False
 
-    def _handle_norm_method_for_categorical_colormap(
-        self, is_overlay, colormap, dtype
-    ):
+    def _get_normalization(
+            self,
+            values: np.ndarray,
+            is_overlay: bool = True) -> Normalize:
         """
-        Set the normalization method for the histogram data when the colormap is categorical.
+        Get the normalization class for the histogram data.
 
         Parameters
         ----------
-        is_overlay : bool
-            whether the histogram is an overlay or not.
-        colormap : BiaColormap
-            colormap to use for the image with `categorical` attribute
-        dtype : type
-            data type of the histogram data, can be int or float. A categorical colormap expects positive integer color indices.
-
-        Returns
-        -------
-        norm_class : Normalize
-            the normalization class to use for the histogram data (linear normalization for categorical colormap).
-        """
-        if is_overlay:
-            color_normalization_method = (
-                self._overlay_color_normalization_method
-            )
-        else:
-            color_normalization_method = (
-                self._histogram_color_normalization_method
-            )
-
-        if dtype != int:
-            # Warn user that categorical colormap expects integer color indices
-            warnings.warn(
-                f'Color indices must be integers for categorical colormap. Change `{"overlay_" if is_overlay else "histogram_"}colormap` to a continuous colormap or set `color_indices` to integers.'
-            )
-        if color_normalization_method != "linear":
-            # Warn user that categorical colormap employs linear normalization
-            warnings.warn(
-                f'Categorical colormap detected in `{"overlay_" if is_overlay else "histogram_"}colormap`. Setting color normalization method to linear.'
-            )
-            if is_overlay:
-                self._overlay_color_normalization_method = "linear"
-            else:
-                self._histogram_color_normalization_method = "linear"
-        return Normalize(vmin=0, vmax=colormap.N)
-
-    def _handle_norm_method_for_continuous_colormap(
-        self,
-        is_overlay,
-        norm_class,
-        histogram_data,
-        lintresh_for_symlog=0.03,
-        min_value_for_log=0.01,
-    ):
-        """
-        Set the normalization method for the histogram data when the colormap is continuous.
-
-        Parameters
-        ----------
-        is_overlay : bool
-            whether the histogram is an overlay or not.
-        norm_class : Normalize
-            normalization class to use for the histogram data.
-        histogram_data : np.ndarray
+        values : np.ndarray
             2D histogram data array to be converted to RGBA image.
-        lintresh_for_symlog : float, optional
-            linear threshold for SymLogNorm, by default 0.03
-        min_value_for_log : float, optional
-            minimum value for log normalization, by default 0.01
 
         Returns
         -------
@@ -1069,178 +619,46 @@ class Histogram2D(Artist):
             the normalization class to use for the histogram data.
         """
         if is_overlay:
-            color_normalization_method = (
-                self._overlay_color_normalization_method
-            )
-        else:
-            color_normalization_method = (
-                self._histogram_color_normalization_method
-            )
-
-        with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", r"All-NaN slice encountered")
-            if color_normalization_method == "log":
-                min_value = np.nanmin(histogram_data)
-                if min_value <= 0:
-                    min_value = min_value_for_log
-                norm = norm_class(
-                    vmin=min_value, vmax=np.nanmax(histogram_data)
-                )
-                warnings.warn(
-                    f"Log normalization applied to color indices with min value {min_value}. Values below 0.01 were set to 0.01."
-                )
-                histogram_data[histogram_data <= 0] = min_value
-            elif color_normalization_method == "centered":
-                norm = norm_class(vcenter=np.nanmean(histogram_data))
-            elif color_normalization_method == "symlog":
-                norm = norm_class(
-                    vmin=np.nanmin(histogram_data),
-                    vmax=np.nanmax(histogram_data),
-                    linthresh=lintresh_for_symlog,
-                )
-            else:
-                norm = norm_class(
-                    vmin=np.nanmin(histogram_data),
-                    vmax=np.nanmax(histogram_data),
-                )
-        return norm
-
-    def _get_normalization_class(self, is_overlay=False):
-        """
-        Get the normalization class
-
-        Parameters
-        ----------
-        is_overlay : bool
-            whether the histogram is an overlay or not. By default False.
-
-        Returns
-        -------
-        norm_class : Normalize
-            the normalization class to use for the histogram data or overlay data.
-        """
-        if is_overlay:
-            return self._normalization_methods[
-                self._overlay_color_normalization_method
-            ]
-        else:
-            return self._normalization_methods[
-                self._histogram_color_normalization_method
-            ]
-
-    def _select_norm_class(self, is_overlay, histogram_data):
-        """
-        Select the normalization class for the histogram or overlay histogram data.
-
-        Parameters
-        ----------
-        is_overlay : bool
-            whether the histogram is an overlay or not.
-        histogram_data : np.ndarray
-            2D histogram data array to be converted to RGBA image.
-
-        Returns
-        -------
-        norm_class : Normalize
-            the normalization class to use for the histogram or overlay histogram data.
-        """
-        if is_overlay:
             colormap = self.overlay_colormap
-            dtype = self._color_indices.dtype
+            is_categorical = self._is_categorical_colormap(colormap)
+            norm_method = self._overlay_color_normalization_method
         else:
             colormap = self.histogram_colormap
-            dtype = float
-        norm_class = self._get_normalization_class(is_overlay)
-        if self._is_categorical_colormap(colormap):
-            return self._handle_norm_method_for_categorical_colormap(
-                is_overlay, colormap, dtype
-            )
-        else:
-            return self._handle_norm_method_for_continuous_colormap(
-                is_overlay, norm_class, histogram_data
-            )
+            is_categorical = self._is_categorical_colormap(colormap)
+            norm_method = self._histogram_color_normalization_method
 
-    def _get_normalization_instance(
-        self, histogram_data: np.ndarray = None, overlay: bool = False
-    ) -> Normalize:
-        """
-        Returns the normalization instance for the histogram.
+        if is_categorical and norm_method != "linear":
+            self.overlay_color_normalization_method = "linear"
+            norm_method = "linear"
 
-        Parameters
-        ----------
-        histogram_data : np.ndarray, optional
-            The 2D data array used for normalization. If not provided, the method uses the histogram
-            counts computed during the latest data update.
-        overlay : bool, default False
-            If True, the normalization is determined using the overlay color settings.
+        # norm_dispatch is to be indexed like this:
+        # norm_dispatch[is_categorical, color_normalization_method]
+        norm_dispatch = {
+            (True, 'linear'): lambda: self._linear_normalization(values, is_categorical),
+            (False, 'linear'): lambda: self._linear_normalization(values),
+            (False, 'log'): lambda: self._log_normalization(values),
+            (False, 'centered'): lambda: self._centered_normalization(values),
+            (False, 'symlog'): lambda: self._symlog_normalization(values),
+        }
 
-        Returns
-        -------
-        norm : Normalize
-            The normalization instance with the appropriate settings.
+        return norm_dispatch.get((is_categorical, norm_method))()
 
-        Raises
-        ------
-        ValueError
-            If no histogram data is provided and the histogram has not yet been computed.
-        """
-        if histogram_data is None:
-            if self._histogram is None:
-                raise ValueError(
-                    "Histogram has not been computed; please set the data first."
-                )
-            # Use the counts from the histogram (returned as the first element by np.histogram2d)
-            histogram_data = self._histogram[0]
-        return self._select_norm_class(overlay, histogram_data)
 
-    def _histogram2D_array_to_rgba(
-        self, ax, histogram_data, x_edges, y_edges, is_overlay=False
-    ):
-        """
-        Convert a 2D data array to a RGBA image object via pcolormesh using a matplotlib colormap.
+def _median_np(arr, method='lower') -> float:
+    """Calculate the median of a 1D array.
 
-        Parameters
-        ----------
-        ax : plt.Axes
-            axes to plot on
-        histogram_data : np.ndarray
-            2D data array to be converted to RGBA image
-        x_edges : np.ndarray
-            x bin edges
-        y_edges : np.ndarray
-            y bin edges
-        is_overlay : bool, optional
-            whether the histogram is an overlay or not, by default False
+    Parameters
+    ----------
+    arr : np.ndarray
+        1D array of values.
+    method : str, optional
+        Method to use for calculating the median, by default 'lower'.
 
-        Returns
-        -------
-        rgba_array : np.ndarray
-            RGBA image array
-        """
-        norm = self._select_norm_class(is_overlay, histogram_data)
-        histogram_data = histogram_data.T
-        xcenters = (x_edges[:-1] + x_edges[1:]) / 2
-        ycenters = (y_edges[:-1] + y_edges[1:]) / 2
-        qm = ax.pcolormesh(
-            xcenters,
-            ycenters,
-            histogram_data,
-            shading="nearest",
-            alpha=1,
-            visible=True,
-            norm=norm,
-            cmap=[self.histogram_colormap.cmap, self.overlay_colormap.cmap][
-                is_overlay
-            ],
-        )
-        rgba_array = qm.to_rgba(
-            qm.get_array().reshape(histogram_data.shape), norm=True
-        )
-        qm.remove()
-        # Set NaN values to transparent
-        rgba_array[np.isnan(histogram_data)] = [0, 0, 0, 0]
-        return rgba_array
-
-    def draw(self):
-        """Draws or redraws the 2D histogram."""
-        self.ax.figure.canvas.draw_idle()
+    Returns
+    -------
+    float
+        The median of the array.
+    """
+    if len(arr) == 0:
+        return np.nan
+    return np.nanpercentile(arr, 50, method=method)

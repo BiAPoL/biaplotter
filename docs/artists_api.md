@@ -111,6 +111,7 @@
       ~Histogram2D.visible
       ~Histogram2D.color_indices
       ~Histogram2D.bins
+      ~Histogram2D.cmin
       ~Histogram2D.histogram
       ~Histogram2D.histogram_colormap
       ~Histogram2D.histogram_interpolation
@@ -148,6 +149,7 @@
    .. autoattribute:: visible
    .. autoattribute:: color_indices
    .. autoattribute:: bins
+   .. autoattribute:: cmin
    .. autoattribute:: histogram
    .. autoattribute:: histogram_colormap
    .. autoattribute:: histogram_interpolation
