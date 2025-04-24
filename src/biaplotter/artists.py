@@ -252,6 +252,9 @@ class Histogram2D(Artist):
         number of bins for the histogram, by default 20
     histogram_colormap : Colormap, optional
         colormap for the histogram, by default plt.cm.magma
+    cmin : int, optional
+        minimum count for the histogram, by default 0
+        Values below cmin are set to NaN (to be transparent).
 
     Notes
     -----
@@ -286,8 +289,8 @@ class Histogram2D(Artist):
         self._margins = 0
         self._histogram_color_normalization_method = "linear"
         self._overlay_color_normalization_method = "linear"
+        self._cmin = cmin
         self.data = data
-        self.cmin = cmin
         self.draw()  # Initial draw of the histogram
 
     def _refresh(self, force_redraw: bool = True):
@@ -298,7 +301,7 @@ class Histogram2D(Artist):
         )
         counts, x_edges, y_edges = self._histogram
         # Replace values below cmin with NaN (to have them transparent)
-        counts[counts < self.cmin] = np.nan
+        counts[counts < self._cmin] = np.nan
         self._histogram_rgba = self.color_indices_to_rgba(
             counts.T, is_overlay=False
         )
@@ -414,6 +417,25 @@ class Histogram2D(Artist):
         self._bins = value
         self._refresh(force_redraw=False)
         self._colorize(self._color_indices)
+
+    @property
+    def cmin(self) -> int:
+        """Gets or sets the minimum count for the histogram.
+
+        Values below cmin are set to NaN (to be transparent).
+
+        Returns
+        -------
+        cmin : int
+            minimum count for the histogram.
+        """
+        return self._cmin
+    
+    @cmin.setter
+    def cmin(self, value: int):
+        """Sets the minimum count for the histogram."""
+        self._cmin = value
+        self._refresh(force_redraw=False)
 
     @property
     def histogram_colormap(self) -> Colormap:
