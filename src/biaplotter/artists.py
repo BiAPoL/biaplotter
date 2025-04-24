@@ -297,6 +297,8 @@ class Histogram2D(Artist):
             self._data[:, 0], self._data[:, 1], bins=self._bins
         )
         counts, x_edges, y_edges = self._histogram
+        # Replace values below cmin with NaN (to have them transparent)
+        counts[counts < self.cmin] = np.nan
         self._histogram_rgba = self.color_indices_to_rgba(
             counts.T, is_overlay=False
         )
