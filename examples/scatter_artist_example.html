@@ -410,6 +410,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-point-properties">Setting point properties</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scatter-color-normalization">Scatter Color Normalization</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scatter-visibility">Scatter Visibility</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resetting-the-scatter-artist">Resetting the Scatter Artist</a></li>
 </ul>
             </nav>
         </div>
@@ -447,10 +448,6 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\colormap.py:25: UserWarning: Categorical colormap detected. Setting categorical=True. If the colormap is continuous, set categorical=False explicitly.
-  warnings.warn(&#39;Categorical colormap detected. Setting categorical=True. If the colormap is continuous, set categorical=False explicitly.&#39;)
-</pre></div>
-</div>
 <img alt="../_images/0cbf1359a7a70fab4cc16a8c1e9c6fe1bc989234a4665de6aff9e1106c6b267b.png" src="../_images/0cbf1359a7a70fab4cc16a8c1e9c6fe1bc989234a4665de6aff9e1106c6b267b.png" />
 </div>
 </div>
@@ -468,7 +465,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/28bbb938c6979ab19c791dedc626c75de95135fa0bd16f0dfbb68de1de096f51.png" src="../_images/28bbb938c6979ab19c791dedc626c75de95135fa0bd16f0dfbb68de1de096f51.png" />
+<img alt="../_images/5288d9b96cc8f656c7abaf96c6a5f426e238255c493fe657b7a9af6df21a96bc.png" src="../_images/5288d9b96cc8f656c7abaf96c6a5f426e238255c493fe657b7a9af6df21a96bc.png" />
 </div>
 </div>
 </section>
@@ -496,7 +493,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/8faf1493295a9b8f2fa7c4cf1b76a8bcf4fce47ac1ddb7580bcd7c47714702f0.png" src="../_images/8faf1493295a9b8f2fa7c4cf1b76a8bcf4fce47ac1ddb7580bcd7c47714702f0.png" />
+<img alt="../_images/efc858a5a6b51ba825dcb419211da64bfcc258ddb9cc8cbb824375f44bf8f190.png" src="../_images/efc858a5a6b51ba825dcb419211da64bfcc258ddb9cc8cbb824375f44bf8f190.png" />
 </div>
 </div>
 <p>Changing the data - i.e., adding new data of the <em>same size</em> will keep the point properties (e.g., the <code class="docutils literal notranslate"><span class="pre">color_indices</span></code>) as they are:</p>
@@ -509,7 +506,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/fbd17243c3aa0f977cd84f09e5ef26ba776ab94dd86bf93612ef6a2ec2b863fa.png" src="../_images/fbd17243c3aa0f977cd84f09e5ef26ba776ab94dd86bf93612ef6a2ec2b863fa.png" />
+<img alt="../_images/f009eca1bd4d59f3aa7038618851e414dacd9f7317ea4466e61ff3d22efa9667.png" src="../_images/f009eca1bd4d59f3aa7038618851e414dacd9f7317ea4466e61ff3d22efa9667.png" />
 </div>
 </div>
 <p>Adding new data of a different size resets the coloring:</p>
@@ -524,7 +521,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ae36dba0eeb7f6bd1f5aa05398019dbfa7210dc6e21596f70811164efba6168a.png" src="../_images/ae36dba0eeb7f6bd1f5aa05398019dbfa7210dc6e21596f70811164efba6168a.png" />
+<img alt="../_images/53513089b04d629a4829033bc80a64a44a7380aa24389e03534f0e084d2bbdcd.png" src="../_images/53513089b04d629a4829033bc80a64a44a7380aa24389e03534f0e084d2bbdcd.png" />
 </div>
 </div>
 </section>
@@ -541,7 +538,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/7326ecdb14aa446301e54a17b3ea575ec6d5626869275321aa806e9cab9fb08f.png" src="../_images/7326ecdb14aa446301e54a17b3ea575ec6d5626869275321aa806e9cab9fb08f.png" />
+<img alt="../_images/2bb48a2ba81d79af47c57c8cf0ac9942c82cce115b7033d7f6a927965b35f5f4.png" src="../_images/2bb48a2ba81d79af47c57c8cf0ac9942c82cce115b7033d7f6a927965b35f5f4.png" />
 </div>
 </div>
 <p>Again, changing the data will keep the point properties as they are:</p>
@@ -554,7 +551,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/b0785f4fae30ad2a5e810a22f7b297c4a613fae3418043b52d38729b791e82af.png" src="../_images/b0785f4fae30ad2a5e810a22f7b297c4a613fae3418043b52d38729b791e82af.png" />
+<img alt="../_images/4230d45450fc278bd21a22fcefb5953efe16603258d41077b7aea1a89fe75998.png" src="../_images/4230d45450fc278bd21a22fcefb5953efe16603258d41077b7aea1a89fe75998.png" />
 </div>
 </div>
 <p>You can undo this by simply setting all alpha values to 1:</p>
@@ -566,7 +563,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/7a7b7c694536618005ff5597211b810439cac6f22b68972f20b9abe9d36f4f1c.png" src="../_images/7a7b7c694536618005ff5597211b810439cac6f22b68972f20b9abe9d36f4f1c.png" />
+<img alt="../_images/eb752765524b8640a7e50b98da0b05d251f908635add8be3cb569760564ae7b3.png" src="../_images/eb752765524b8640a7e50b98da0b05d251f908635add8be3cb569760564ae7b3.png" />
 </div>
 </div>
 <p>You can also set the sizes of the points (values around ~50 are typically a good starting point):</p>
@@ -579,7 +576,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/a0c619ab593a89570e265a076baf0228046b01143fff8d2b064032877566705f.png" src="../_images/a0c619ab593a89570e265a076baf0228046b01143fff8d2b064032877566705f.png" />
+<img alt="../_images/db54be708937d84ab72056e82459609fff77903a6fd7028f1832cab706cd3408.png" src="../_images/db54be708937d84ab72056e82459609fff77903a6fd7028f1832cab706cd3408.png" />
 </div>
 </div>
 <p>If you change to a continuous <code class="docutils literal notranslate"><span class="pre">overlay_colormap</span></code>, you can use the <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> property to represent a feature of the data with colors, like the size example above.</p>
@@ -592,7 +589,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/cca2c78b47e85fc9fe87c9804e02ccbee05e0716bf40eea9d609281f43e44ee4.png" src="../_images/cca2c78b47e85fc9fe87c9804e02ccbee05e0716bf40eea9d609281f43e44ee4.png" />
+<img alt="../_images/c8675c6b73dd31be02d463087e0d92deee0aefc3a69cce57bfdec29fb02137f2.png" src="../_images/c8675c6b73dd31be02d463087e0d92deee0aefc3a69cce57bfdec29fb02137f2.png" />
 </div>
 </div>
 </section>
@@ -615,7 +612,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/0116402b7f66d94fb34eda465ff538907d643b426deaf035d805ea700cee1add.png" src="../_images/0116402b7f66d94fb34eda465ff538907d643b426deaf035d805ea700cee1add.png" />
+<img alt="../_images/1d42be61dce7d47ed5926fa2b50faac7df65b330d4c4cae3d140c2d8b199102f.png" src="../_images/1d42be61dce7d47ed5926fa2b50faac7df65b330d4c4cae3d140c2d8b199102f.png" />
 </div>
 </div>
 <p>Most of the points are colored in the same color, because the feature has a non-linear distribution.</p>
@@ -628,7 +625,11 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/cca2c78b47e85fc9fe87c9804e02ccbee05e0716bf40eea9d609281f43e44ee4.png" src="../_images/cca2c78b47e85fc9fe87c9804e02ccbee05e0716bf40eea9d609281f43e44ee4.png" />
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists_base.py:248: UserWarning: Log normalization applied to color indices with min value 1.0058329223650035. Values below 0.01 were set to 0.01.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="../_images/c8675c6b73dd31be02d463087e0d92deee0aefc3a69cce57bfdec29fb02137f2.png" src="../_images/c8675c6b73dd31be02d463087e0d92deee0aefc3a69cce57bfdec29fb02137f2.png" />
 </div>
 </div>
 <p>Of course this only makes sense if the colormap is continuous and the <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> represent a feature. If we set the colormap back to categorical, the normalization is set back to ‘linear’ and you should replace the <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> back the class numbers.</p>
@@ -640,15 +641,15 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\colormap.py:25: UserWarning: Categorical colormap detected. Setting categorical=True. If the colormap is continuous, set categorical=False explicitly.
-  warnings.warn(&#39;Categorical colormap detected. Setting categorical=True. If the colormap is continuous, set categorical=False explicitly.&#39;)
-C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:284: UserWarning: Color indices must be integers for categorical colormap. Change `overlay_colormap` to a continuous colormap or set `color_indices` to integers.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\colormap.py:34: UserWarning: Categorical colormap detected. Setting categorical=True. If the colormap is continuous, set categorical=False explicitly.
   warnings.warn(
-C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:287: UserWarning: Categorical colormap detected. Setting color normalization method to linear.
+C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:144: UserWarning: Color indices must be integers for categorical colormap. Change `overlay_colormap` to a continuous colormap or set `color_indices` to integers.
+  warnings.warn(
+C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:148: UserWarning: Categorical colormap detected. Setting color normalization method to linear.
   warnings.warn(
 </pre></div>
 </div>
-<img alt="../_images/07a396be4594bf011546c10db4d89c01569b12c62742174e589b9ca122405505.png" src="../_images/07a396be4594bf011546c10db4d89c01569b12c62742174e589b9ca122405505.png" />
+<img alt="../_images/9448f3bf6857e4c8ddfe5a0095d4126b8e7aba6c2447d66c75b5fc69018a318f.png" src="../_images/9448f3bf6857e4c8ddfe5a0095d4126b8e7aba6c2447d66c75b5fc69018a318f.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -660,7 +661,7 @@ C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:287: Use
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/e56e9036b2bb2de4f6a852cefc8d4404456df0a8d40ec7474008661dd0d11f77.png" src="../_images/e56e9036b2bb2de4f6a852cefc8d4404456df0a8d40ec7474008661dd0d11f77.png" />
+<img alt="../_images/6545cf0ee501fc702dae8e054bea3224f7b70ae397e53a9c4c0c4a19aa170d93.png" src="../_images/6545cf0ee501fc702dae8e054bea3224f7b70ae397e53a9c4c0c4a19aa170d93.png" />
 </div>
 </div>
 </section>
@@ -675,7 +676,7 @@ C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:287: Use
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/4775f7593d222a7e934400a4055b96a87620aadb9ddbdf22de7810bb42561535.png" src="../_images/4775f7593d222a7e934400a4055b96a87620aadb9ddbdf22de7810bb42561535.png" />
+<img alt="../_images/69cd59a626b7c5f6056f26a8216083e43bbcf74732c85fb79663ac13b1f194b9.png" src="../_images/69cd59a626b7c5f6056f26a8216083e43bbcf74732c85fb79663ac13b1f194b9.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -686,7 +687,22 @@ C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:287: Use
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/e56e9036b2bb2de4f6a852cefc8d4404456df0a8d40ec7474008661dd0d11f77.png" src="../_images/e56e9036b2bb2de4f6a852cefc8d4404456df0a8d40ec7474008661dd0d11f77.png" />
+<img alt="../_images/6545cf0ee501fc702dae8e054bea3224f7b70ae397e53a9c4c0c4a19aa170d93.png" src="../_images/6545cf0ee501fc702dae8e054bea3224f7b70ae397e53a9c4c0c4a19aa170d93.png" />
+</div>
+</div>
+</section>
+<section id="resetting-the-scatter-artist">
+<h2>Resetting the Scatter Artist<a class="headerlink" href="#resetting-the-scatter-artist" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">Scatter</span></code> artist can be reset to its default state by calling the <code class="docutils literal notranslate"><span class="pre">reset()</span></code> method. This will remove all data and properties set on the artist, and it will be ready to accept new data.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scatter</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/69cd59a626b7c5f6056f26a8216083e43bbcf74732c85fb79663ac13b1f194b9.png" src="../_images/69cd59a626b7c5f6056f26a8216083e43bbcf74732c85fb79663ac13b1f194b9.png" />
 </div>
 </div>
 </section>
@@ -762,6 +778,7 @@ C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:287: Use
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-point-properties">Setting point properties</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scatter-color-normalization">Scatter Color Normalization</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scatter-visibility">Scatter Visibility</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resetting-the-scatter-artist">Resetting the Scatter Artist</a></li>
 </ul>
   </nav></div>
 

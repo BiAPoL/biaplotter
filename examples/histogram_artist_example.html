@@ -414,8 +414,10 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#histogram-bins">Histogram Bins</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#histogram-minimum-count">Histogram Minimum Count</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assigning-a-feature-as-an-overlay">Assigning a Feature as an Overlay</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#histogram-visibility">Histogram Visibility</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resetting-the-histogram2d-artist">Resetting the Histogram2D Artist</a></li>
 </ul>
             </nav>
         </div>
@@ -429,8 +431,7 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="histogram2d-artist">
 <h1>Histogram2D Artist<a class="headerlink" href="#histogram2d-artist" title="Link to this heading">#</a></h1>
-<p>In this example notebook, we show how to create a histogram 2D plot using the <code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code> class. The <code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code> class is a subclass of the <code class="docutils literal notranslate"><span class="pre">Artist</span></code> class.</p>
-<p>It has a simplified interface for creating histogram 2D plots and updating some of its properties, like assigning different classes to underlying points and displaying bins/patches with different colors based on a overlay colormap.</p>
+<p>In this example notebook, we show how to create a histogram 2D plot using the <code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code> class. The <code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code> class is a subclass of the <code class="docutils literal notranslate"><span class="pre">Artist</span></code> class. It has a simplified interface for creating histogram 2D plots and updating some of its properties, like assigning different classes to underlying points and displaying bins/patches with different colors based on a overlay colormap.</p>
 <p>It can be imported like shown below:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -454,18 +455,13 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\colormap.py:25: UserWarning: Categorical colormap detected. Setting categorical=True. If the colormap is continuous, set categorical=False explicitly.
-  warnings.warn(&#39;Categorical colormap detected. Setting categorical=True. If the colormap is continuous, set categorical=False explicitly.&#39;)
-</pre></div>
-</div>
 <img alt="../_images/0cbf1359a7a70fab4cc16a8c1e9c6fe1bc989234a4665de6aff9e1106c6b267b.png" src="../_images/0cbf1359a7a70fab4cc16a8c1e9c6fe1bc989234a4665de6aff9e1106c6b267b.png" />
 </div>
 </div>
 </section>
 <section id="adding-data-to-the-histogram-2d-artist">
 <h2>Adding Data to the Histogram 2D Artist<a class="headerlink" href="#adding-data-to-the-histogram-2d-artist" title="Link to this heading">#</a></h2>
-<p>To add data to the histogram 2D plot, just feed the property <code class="docutils literal notranslate"><span class="pre">data</span></code> with a (N, 2) shaped numpy array. The plot gets updated automatically every time one of its properties is changed.</p>
-<p>Below, we have a small function to generate 2 gaussian distributions with different means and standard deviations.</p>
+<p>To add data to the histogram 2D plot, just feed the property <code class="docutils literal notranslate"><span class="pre">data</span></code> with a (N, 2) shaped numpy array. The plot gets updated automatically every time one of its properties is changed. Below, we have a small function to generate 2 gaussian distributions with different means and standard deviations.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_samples</span> <span class="o">=</span> <span class="mi">100</span>
@@ -489,14 +485,13 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/2f1fa2ad4e39a41d4d3b341537f2619a172bd03fd1a2c711a49102fb24a1930d.png" src="../_images/2f1fa2ad4e39a41d4d3b341537f2619a172bd03fd1a2c711a49102fb24a1930d.png" />
+<img alt="../_images/db9b33e1c011ada53326ea1f7ff8c6b8c8895b48abd7910a793d488f261440f7.png" src="../_images/db9b33e1c011ada53326ea1f7ff8c6b8c8895b48abd7910a793d488f261440f7.png" />
 </div>
 </div>
 </section>
 <section id="assigning-classes-to-data-points">
 <h2>Assigning Classes to Data Points<a class="headerlink" href="#assigning-classes-to-data-points" title="Link to this heading">#</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code> artist comes with a custom categorical overlay colormap, which can be used to assign different classes to underlying points and display the bins/patches with the corresponding class color as an overlay.</p>
-<p>You can access the histogram current categorical colormap via <code class="docutils literal notranslate"><span class="pre">overlay_colormap</span></code> attribute.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code> artist comes with a custom categorical overlay colormap, which can be used to assign different classes to underlying points and display the bins/patches with the corresponding class color as an overlay. You can access the histogram current categorical colormap via <code class="docutils literal notranslate"><span class="pre">overlay_colormap</span></code> attribute.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">overlay_colormap</span>
@@ -522,13 +517,14 @@ document.write(`
 <span class="n">color_indices</span><span class="p">[</span><span class="n">indices_in_patches_above_threshold_1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">color_indices</span><span class="p">[</span><span class="n">indices_in_patches_above_threshold_2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
 
+
 <span class="n">histogram</span><span class="o">.</span><span class="n">color_indices</span> <span class="o">=</span> <span class="n">color_indices</span>
 <span class="n">fig</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ed0246794f382c5faec501e1694d128e0fdf32b2cd1014a058f5ac4898d2384d.png" src="../_images/ed0246794f382c5faec501e1694d128e0fdf32b2cd1014a058f5ac4898d2384d.png" />
+<img alt="../_images/c5a8d53322808821619ca669affe9f0e36d818e57a288cf82c640bcc95f81931.png" src="../_images/c5a8d53322808821619ca669affe9f0e36d818e57a288cf82c640bcc95f81931.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -546,8 +542,7 @@ document.write(`
 </div>
 </div>
 </div>
-<p>Colors are kept if new data is added, but they may not make sense anymore.</p>
-<p>For example, below, patches where data was previously colored received more data (with ‘unlabelled’ colors, <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> being <code class="docutils literal notranslate"><span class="pre">0</span></code>), thus many patches turn transparent again (because dominant color index becomes <code class="docutils literal notranslate"><span class="pre">0</span></code> in those).</p>
+<p>If new data of a different size is added, the previous data values are overwritten and the respective <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> are reset to all zeros. This makes sure that the <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> are always in snc with the amount of data in the plot.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Adding 400 more samples</span>
@@ -560,7 +555,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/d00b5bb9cf7a44a075aef2981679d5c148a441f846be91e8aa0e2d33313ff11d.png" src="../_images/d00b5bb9cf7a44a075aef2981679d5c148a441f846be91e8aa0e2d33313ff11d.png" />
+<img alt="../_images/101504949d057af01b8b48a2dab89d5cddaa4327f5b790ff06f8cf25dee5fdab.png" src="../_images/101504949d057af01b8b48a2dab89d5cddaa4327f5b790ff06f8cf25dee5fdab.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -571,14 +566,14 @@ document.write(`
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Histogram color_indices (up to 100th index):
- [0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0
- 0 0 1 0 1 0 0 0 0 1 1 0 0 0 1 1 0 2 0 0 1 0 0 0 2 1 0 1 2 0 0 0 1 0 0 1 1
- 1 0 1 1 0 1 0 1 1 1 2 0 0 1 1 1 1 2 0 0 0 0 0 1 1 1]
+ [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
 </pre></div>
 </div>
 </div>
 </div>
-<p>For the default overlay colormap (<code class="docutils literal notranslate"><span class="pre">cat10_modified_first_transparent</span></code>), we can reset colors by setting <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> to <code class="docutils literal notranslate"><span class="pre">0</span></code> (default) or <code class="docutils literal notranslate"><span class="pre">np.nan</span></code>.</p>
+<p>If you want to clear an existing, non-zero array of <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> (i.e., an histogram overlay) we can reset colors by setting <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> to <code class="docutils literal notranslate"><span class="pre">0</span></code> (default) or <code class="docutils literal notranslate"><span class="pre">np.nan</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">color_indices</span> <span class="o">=</span> <span class="mi">0</span>
@@ -587,7 +582,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/761682ac9471d7742173fd5d452880c5704048f6d4c8d597f9ec17e6c5a279bc.png" src="../_images/761682ac9471d7742173fd5d452880c5704048f6d4c8d597f9ec17e6c5a279bc.png" />
+<img alt="../_images/101504949d057af01b8b48a2dab89d5cddaa4327f5b790ff06f8cf25dee5fdab.png" src="../_images/101504949d057af01b8b48a2dab89d5cddaa4327f5b790ff06f8cf25dee5fdab.png" />
 </div>
 </div>
 </section>
@@ -623,7 +618,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/e2ca7ef97174db79aa3ea71568a7ef380329b45d770b8b6c22a8a8e65a224c6b.png" src="../_images/e2ca7ef97174db79aa3ea71568a7ef380329b45d770b8b6c22a8a8e65a224c6b.png" />
+<img alt="../_images/13f5aefd2922445dc9e3810dadfe1b9b194fefa60017ab8fb9d3b564ce65fda5.png" src="../_images/13f5aefd2922445dc9e3810dadfe1b9b194fefa60017ab8fb9d3b564ce65fda5.png" />
 </div>
 </div>
 </section>
@@ -638,11 +633,11 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:943: UserWarning: Log normalization applied to color indices with min value 0.01. Values below 0.01 were set to 0.01.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists_base.py:248: UserWarning: Log normalization applied to color indices with min value 0.01. Values below 0.01 were set to 0.01.
   warnings.warn(
 </pre></div>
 </div>
-<img alt="../_images/6c5589206e9329bf260a7379282535476a0ea9431fcce34e078df97ab942a74c.png" src="../_images/6c5589206e9329bf260a7379282535476a0ea9431fcce34e078df97ab942a74c.png" />
+<img alt="../_images/6348975d95d573b1837cd42e4be9c193525bdd24bd381686de1e59d60cce819b.png" src="../_images/6348975d95d573b1837cd42e4be9c193525bdd24bd381686de1e59d60cce819b.png" />
 </div>
 </div>
 </section>
@@ -657,11 +652,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:943: UserWarning: Log normalization applied to color indices with min value 0.01. Values below 0.01 were set to 0.01.
-  warnings.warn(
-</pre></div>
-</div>
-<img alt="../_images/39d29eab177b12b6b032148358c347304afee8b0255f38dfb756d9b7487051bb.png" src="../_images/39d29eab177b12b6b032148358c347304afee8b0255f38dfb756d9b7487051bb.png" />
+<img alt="../_images/783c7bc716cda819090c968772570642ae35ec6fdc5f3cb01e6e52791ee1bb26.png" src="../_images/783c7bc716cda819090c968772570642ae35ec6fdc5f3cb01e6e52791ee1bb26.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -672,11 +663,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:943: UserWarning: Log normalization applied to color indices with min value 0.01. Values below 0.01 were set to 0.01.
-  warnings.warn(
-</pre></div>
-</div>
-<img alt="../_images/6c5589206e9329bf260a7379282535476a0ea9431fcce34e078df97ab942a74c.png" src="../_images/6c5589206e9329bf260a7379282535476a0ea9431fcce34e078df97ab942a74c.png" />
+<img alt="../_images/6348975d95d573b1837cd42e4be9c193525bdd24bd381686de1e59d60cce819b.png" src="../_images/6348975d95d573b1837cd42e4be9c193525bdd24bd381686de1e59d60cce819b.png" />
 </div>
 </div>
 </section>
@@ -691,14 +678,44 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:943: UserWarning: Log normalization applied to color indices with min value 0.01. Values below 0.01 were set to 0.01.
-  warnings.warn(
-</pre></div>
-</div>
-<img alt="../_images/1954fbfe15002e51486014d2daa3f8970db0629576fef6b1ceab214fb13f5a70.png" src="../_images/1954fbfe15002e51486014d2daa3f8970db0629576fef6b1ceab214fb13f5a70.png" />
+<img alt="../_images/d3081bd10c0103b96e055f9695100014ae65cff5187583c363367ccf36002763.png" src="../_images/d3081bd10c0103b96e055f9695100014ae65cff5187583c363367ccf36002763.png" />
 </div>
 </div>
 </section>
+</section>
+<section id="histogram-minimum-count">
+<h2>Histogram Minimum Count<a class="headerlink" href="#histogram-minimum-count" title="Link to this heading">#</a></h2>
+<p>You can choose a minimum count value for the histogram by setting the <code class="docutils literal notranslate"><span class="pre">cmin</span></code> attribute. The default value is 0. This will make patches with counts below this value transparent and shift the histogram colormap visualization accordingly.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">cmin</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists_base.py:248: UserWarning: Log normalization applied to color indices with min value 1.0. Values below 0.01 were set to 0.01.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="../_images/29780bb3fe3a29dee0084b689dc72e5a302388fd25e2d5581e9b53bed8bcb15f.png" src="../_images/29780bb3fe3a29dee0084b689dc72e5a302388fd25e2d5581e9b53bed8bcb15f.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">cmin</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists_base.py:248: UserWarning: Log normalization applied to color indices with min value 0.01. Values below 0.01 were set to 0.01.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="../_images/d3081bd10c0103b96e055f9695100014ae65cff5187583c363367ccf36002763.png" src="../_images/d3081bd10c0103b96e055f9695100014ae65cff5187583c363367ccf36002763.png" />
+</div>
+</div>
 </section>
 <section id="assigning-a-feature-as-an-overlay">
 <h2>Assigning a Feature as an Overlay<a class="headerlink" href="#assigning-a-feature-as-an-overlay" title="Link to this heading">#</a></h2>
@@ -723,7 +740,7 @@ Let’s assign the x coordinate as an overlay and use a different colormap (‘j
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/6223d108da081a396f979507a75403d1d899f7a55d3d06abff843f46561b500b.png" src="../_images/6223d108da081a396f979507a75403d1d899f7a55d3d06abff843f46561b500b.png" />
+<img alt="../_images/0dbf76e56134cdccafc2c543dca4591f6277bf7bc15438dbd8ad2edc4d393b02.png" src="../_images/0dbf76e56134cdccafc2c543dca4591f6277bf7bc15438dbd8ad2edc4d393b02.png" />
 </div>
 </div>
 <p>Of course now we lose the histogram count information, but we can edit the overlay opacity or visibility to better see the original histogram again.</p>
@@ -735,11 +752,7 @@ Let’s assign the x coordinate as an overlay and use a different colormap (‘j
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:943: UserWarning: Log normalization applied to color indices with min value 0.01. Values below 0.01 were set to 0.01.
-  warnings.warn(
-</pre></div>
-</div>
-<img alt="../_images/a5b4f62c9ec178ce26d655681ad0f9c693aafb9c4f4a95cd7184ded8e5e0f35e.png" src="../_images/a5b4f62c9ec178ce26d655681ad0f9c693aafb9c4f4a95cd7184ded8e5e0f35e.png" />
+<img alt="../_images/a629ee6119b17b52ecf02d2a471e4a6e89b13f3fad8132e25abc5b31850fa12b.png" src="../_images/a629ee6119b17b52ecf02d2a471e4a6e89b13f3fad8132e25abc5b31850fa12b.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -750,7 +763,7 @@ Let’s assign the x coordinate as an overlay and use a different colormap (‘j
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/1954fbfe15002e51486014d2daa3f8970db0629576fef6b1ceab214fb13f5a70.png" src="../_images/1954fbfe15002e51486014d2daa3f8970db0629576fef6b1ceab214fb13f5a70.png" />
+<img alt="../_images/d3081bd10c0103b96e055f9695100014ae65cff5187583c363367ccf36002763.png" src="../_images/d3081bd10c0103b96e055f9695100014ae65cff5187583c363367ccf36002763.png" />
 </div>
 </div>
 <p>Here we restore the defualt overlay opacity and visibility.</p>
@@ -763,11 +776,7 @@ Let’s assign the x coordinate as an overlay and use a different colormap (‘j
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:943: UserWarning: Log normalization applied to color indices with min value 0.01. Values below 0.01 were set to 0.01.
-  warnings.warn(
-</pre></div>
-</div>
-<img alt="../_images/6223d108da081a396f979507a75403d1d899f7a55d3d06abff843f46561b500b.png" src="../_images/6223d108da081a396f979507a75403d1d899f7a55d3d06abff843f46561b500b.png" />
+<img alt="../_images/0dbf76e56134cdccafc2c543dca4591f6277bf7bc15438dbd8ad2edc4d393b02.png" src="../_images/0dbf76e56134cdccafc2c543dca4591f6277bf7bc15438dbd8ad2edc4d393b02.png" />
 </div>
 </div>
 <p>We can also apply other color normalization method and interpolation to the overlay. Below, we change the overlay normalization to <code class="docutils literal notranslate"><span class="pre">symlog</span></code> and the interpolation to <code class="docutils literal notranslate"><span class="pre">bilinear</span></code>.</p>
@@ -780,15 +789,10 @@ Let’s assign the x coordinate as an overlay and use a different colormap (‘j
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\mazo260d\Documents\GitHub\biaplotter\src\biaplotter\artists.py:943: UserWarning: Log normalization applied to color indices with min value 0.01. Values below 0.01 were set to 0.01.
-  warnings.warn(
-</pre></div>
-</div>
-<img alt="../_images/4ba77e9f64bc3b42a90c135df7d846c67ee25f5ebab6363dcdec88b4067c9c72.png" src="../_images/4ba77e9f64bc3b42a90c135df7d846c67ee25f5ebab6363dcdec88b4067c9c72.png" />
+<img alt="../_images/e6a9b48c1da13bb333e5432cd3ddbb3089efbe424bd41b960953ecd26099fb86.png" src="../_images/e6a9b48c1da13bb333e5432cd3ddbb3089efbe424bd41b960953ecd26099fb86.png" />
 </div>
 </div>
-<p>We can clear the overlay again by setting <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> to <code class="docutils literal notranslate"><span class="pre">np.nan</span></code>.</p>
-<p><em>Note that setting <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> to <code class="docutils literal notranslate"><span class="pre">0</span></code> here will not clear the overlay because we changed the overlay colormap above and the first color (index <code class="docutils literal notranslate"><span class="pre">0</span></code>) of the new colormap is not transparent.</em></p>
+<p>Again, we can clear the overlay again by setting <code class="docutils literal notranslate"><span class="pre">color_indices</span></code> to <code class="docutils literal notranslate"><span class="pre">np.nan</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">color_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
@@ -797,7 +801,11 @@ Let’s assign the x coordinate as an overlay and use a different colormap (‘j
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/1954fbfe15002e51486014d2daa3f8970db0629576fef6b1ceab214fb13f5a70.png" src="../_images/1954fbfe15002e51486014d2daa3f8970db0629576fef6b1ceab214fb13f5a70.png" />
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\Users\mazo260d\miniforge3\envs\biaplotter\Lib\site-packages\numpy\lib\_nanfunctions_impl.py:1437: RuntimeWarning: All-NaN slice encountered
+  return _nanquantile_unchecked(
+</pre></div>
+</div>
+<img alt="../_images/d3081bd10c0103b96e055f9695100014ae65cff5187583c363367ccf36002763.png" src="../_images/d3081bd10c0103b96e055f9695100014ae65cff5187583c363367ccf36002763.png" />
 </div>
 </div>
 </section>
@@ -812,7 +820,7 @@ Let’s assign the x coordinate as an overlay and use a different colormap (‘j
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/99eb50bff7659c4d233d63750deb8f6d29ebd48b741f0350c24c1e9e1d0dc07a.png" src="../_images/99eb50bff7659c4d233d63750deb8f6d29ebd48b741f0350c24c1e9e1d0dc07a.png" />
+<img alt="../_images/fcd0e2237e125f35ebc13c0d27bf85ef182487570655f7bae0bd9cbfad00ec3c.png" src="../_images/fcd0e2237e125f35ebc13c0d27bf85ef182487570655f7bae0bd9cbfad00ec3c.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -823,7 +831,22 @@ Let’s assign the x coordinate as an overlay and use a different colormap (‘j
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/1954fbfe15002e51486014d2daa3f8970db0629576fef6b1ceab214fb13f5a70.png" src="../_images/1954fbfe15002e51486014d2daa3f8970db0629576fef6b1ceab214fb13f5a70.png" />
+<img alt="../_images/d3081bd10c0103b96e055f9695100014ae65cff5187583c363367ccf36002763.png" src="../_images/d3081bd10c0103b96e055f9695100014ae65cff5187583c363367ccf36002763.png" />
+</div>
+</div>
+</section>
+<section id="resetting-the-histogram2d-artist">
+<h2>Resetting the Histogram2D Artist<a class="headerlink" href="#resetting-the-histogram2d-artist" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">Histogram2D</span></code> artist can be reset to its default state by calling the <code class="docutils literal notranslate"><span class="pre">reset()</span></code> method. This will remove all data and properties set on the artist, and it will be ready to accept new data.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">histogram</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/fcd0e2237e125f35ebc13c0d27bf85ef182487570655f7bae0bd9cbfad00ec3c.png" src="../_images/fcd0e2237e125f35ebc13c0d27bf85ef182487570655f7bae0bd9cbfad00ec3c.png" />
 </div>
 </div>
 </section>
@@ -903,8 +926,10 @@ Let’s assign the x coordinate as an overlay and use a different colormap (‘j
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#histogram-bins">Histogram Bins</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#histogram-minimum-count">Histogram Minimum Count</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assigning-a-feature-as-an-overlay">Assigning a Feature as an Overlay</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#histogram-visibility">Histogram Visibility</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resetting-the-histogram2d-artist">Resetting the Histogram2D Artist</a></li>
 </ul>
   </nav></div>
 
