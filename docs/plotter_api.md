@@ -12,16 +12,6 @@
       ~CanvasWidget.active_artist
       ~CanvasWidget.active_selector
 
-   .. rubric:: Attributes Summary
-
-   .. autosummary::
-
-      ~CanvasWidget.selection_tools_layout
-      ~CanvasWidget.selection_toolbar
-      ~CanvasWidget.class_spinbox
-      ~CanvasWidget.artists
-      ~CanvasWidget.selectors
-
    .. rubric:: Methods Summary
 
    .. autosummary::
@@ -44,14 +34,6 @@
 
    .. autoattribute:: active_artist
    .. autoattribute:: active_selector
-
-   .. rubric:: Attributes Documentation
-
-   .. autoattribute:: selection_tools_layout
-   .. autoattribute:: selection_toolbar
-   .. autoattribute:: class_spinbox
-   .. autoattribute:: artists
-   .. autoattribute:: selectors
 
    .. rubric:: Methods Documentation
 
