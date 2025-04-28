@@ -4,7 +4,7 @@ from enum import Enum, auto
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional, Union
 
-from nap_plot_tools import CustomToolbarWidget, QtColorSpinBox
+from nap_plot_tools import CustomToolbarWidget, QtColorSpinBox, CustomToolButton
 from napari_matplotlib.base import BaseNapariMPLWidget
 from psygnal import Signal
 from qtpy.QtWidgets import QHBoxLayout, QLabel, QWidget
@@ -43,6 +43,7 @@ class CanvasWidget(BaseNapariMPLWidget):
 
         * **artist_changed_signal** emitted when the current artist changes.
         * **selector_changed_signal** emitted when the current selector changes.
+        * **show_overlay_signal** emitted when the plot overlay is shown or hidden.
 
     Signals and Slots:
 
@@ -55,6 +56,8 @@ class CanvasWidget(BaseNapariMPLWidget):
     artist_changed_signal: Signal = Signal(str)
     #: Signal emitted when the current `active_selector` changes
     selector_changed_signal: Signal = Signal(str)
+    #: Signal emitted when the plot overlay is shown or hidden
+    show_overlay_signal: Signal = Signal(bool)
 
     # Constructor and Initialization
     def __init__(
@@ -109,14 +112,6 @@ class CanvasWidget(BaseNapariMPLWidget):
             checkable=True,
             checked_icon_path=icon_folder_path / "rectangle_checked.png",
             callback=self.on_enable_selector,
-        )
-        self.selection_toolbar.add_custom_button(
-            name="Hide/Show Plot Overlay",
-            tooltip="Click to hide/show the plot colors overlay",
-            default_icon_path=icon_folder_path / "hide_overlay.png",
-            checkable=True,
-            checked_icon_path=icon_folder_path / "hide_overlay_checked.png",
-            callback=self.hide_color_overlay,
         )
 
         # Add selection tools layout to the main layout
@@ -194,6 +189,17 @@ class CanvasWidget(BaseNapariMPLWidget):
         # Add color class spinbox
         class_spinbox = QtColorSpinBox(first_color_transparent=False)
         selection_tools_layout.addWidget(class_spinbox)
+        # Add customtoolbutton to show/hide overlay
+        show_overlay_button = CustomToolButton(
+            default_icon_path=str(icon_folder_path / "show_overlay.png"),
+            checked_icon_path=str(icon_folder_path / "show_overlay_checked.png"),
+        )
+        show_overlay_button.setIconSize(32)
+        show_overlay_button.setText("SHOW_OVERLAY")
+        show_overlay_button.setToolTip("Click to show/hide the plot colors overlay")
+        selection_tools_layout.addWidget(show_overlay_button)
+        show_overlay_button.setChecked(True) # Start checked (overlay visible)
+        show_overlay_button.toggled.connect(self.show_color_overlay)
         # Add stretch to the right to push buttons to the left
         selection_tools_layout.addStretch(1)
         return selection_tools_layout, selection_toolbar, class_spinbox
@@ -391,7 +397,7 @@ class CanvasWidget(BaseNapariMPLWidget):
             # If the button is unchecked, disable all selectors
             self._disable_all_selectors()
 
-    def hide_color_overlay(self, checked: bool):
+    def show_color_overlay(self, checked: bool):
         """Show or hide the plot overlay.
 
         Parameters
@@ -399,4 +405,5 @@ class CanvasWidget(BaseNapariMPLWidget):
         checked : bool
             Whether the button is checked or not.
         """
-        self.active_artist.overlay_visible = not checked
+        self.active_artist.overlay_visible = checked
+        self.show_overlay_signal.emit(checked)
