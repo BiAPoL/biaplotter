@@ -81,12 +81,13 @@ class CanvasWidget(BaseNapariMPLWidget):
         """
         Initializes the selection toolbar and layout.
         """
-        selection_tools_layout, selection_toolbar, class_spinbox = (
+        selection_tools_layout, selection_toolbar, class_spinbox, show_overlay_button = (
             self._build_selection_toolbar_layout(label_text=label_text)
         )
         self.selection_tools_layout: QHBoxLayout = selection_tools_layout
         self.selection_toolbar: CustomToolbarWidget = selection_toolbar
         self.class_spinbox: QtColorSpinBox = class_spinbox
+        self.show_overlay_button: CustomToolButton = show_overlay_button
 
         # Add buttons to the toolbar
         self.selection_toolbar.add_custom_button(
@@ -178,6 +179,8 @@ class CanvasWidget(BaseNapariMPLWidget):
             The toolbar widget
         class_spinbox : QtColorSpinBox
             The color class spinbox.
+        show_overlay_button : CustomToolButton
+            The button to show/hide the plot overlay.
         """
         # Add selection tools layout below canvas
         selection_tools_layout = QHBoxLayout()
@@ -202,7 +205,7 @@ class CanvasWidget(BaseNapariMPLWidget):
         show_overlay_button.toggled.connect(self.show_color_overlay)
         # Add stretch to the right to push buttons to the left
         selection_tools_layout.addStretch(1)
-        return selection_tools_layout, selection_toolbar, class_spinbox
+        return selection_tools_layout, selection_toolbar, class_spinbox, show_overlay_button
 
     def _set_active_artist(self, artist_name: str):
         """
