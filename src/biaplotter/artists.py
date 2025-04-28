@@ -165,7 +165,11 @@ class Scatter(Artist):
     def overlay_visible(self, value: bool):
         """Sets the visibility of the overlay colormap."""
         self._overlay_visible = value
-        self._colorize(self._color_indices)
+                if value:
+            self._colorize(self._color_indices)
+        else:
+            self._colorize(np.zeros_like(self._color_indices))
+        self.draw()
 
     @property
     def color_normalization_method(self) -> str:
