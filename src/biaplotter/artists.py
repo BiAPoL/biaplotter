@@ -110,7 +110,7 @@ class Scatter(Artist):
         norm = self._get_normalization(indices)
         colormap = self.overlay_colormap.cmap
 
-        rgba = colormap(norm(self._color_indices))
+        rgba = colormap(norm(indices))
         return rgba
 
     def _get_normalization(self, values: np.ndarray) -> Normalize:
