@@ -162,6 +162,19 @@ class CanvasWidget(BaseNapariMPLWidget):
         for artist in self.artists.values():
             for selector in self.selectors.values():
                 artist.data_changed_signal.connect(selector.update_data)
+        
+        for selector in self.selectors.values():
+            selector.selection_applied_signal.connect(
+                self._on_finish_drawing
+            )
+
+    def _on_finish_drawing(self, *args):
+        """
+        Slot to handle the finish drawing signal from selectors.
+        """
+        self.show_overlay_button.setChecked(True)
+        self.active_artist.overlay_visible = True
+
 
     # Private Helper Methods
     def _build_selection_toolbar_layout(self, label_text: str = "Class:"):
@@ -209,7 +222,6 @@ class CanvasWidget(BaseNapariMPLWidget):
             "Click to show/hide the plot colors overlay"
         )
         selection_tools_layout.addWidget(show_overlay_button)
-        show_overlay_button.setChecked(True)  # Start checked (overlay visible)
         show_overlay_button.toggled.connect(self.show_color_overlay)
         # Add stretch to the right to push buttons to the left
         selection_tools_layout.addStretch(1)
