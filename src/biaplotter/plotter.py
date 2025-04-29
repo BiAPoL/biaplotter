@@ -222,7 +222,7 @@ class CanvasWidget(BaseNapariMPLWidget):
             "Click to show/hide the plot colors overlay"
         )
         selection_tools_layout.addWidget(show_overlay_button)
-        show_overlay_button.toggled.connect(self.show_color_overlay)
+        show_overlay_button.toggled.connect(self._toggle_show_color_overlay)
         # Add stretch to the right to push buttons to the left
         selection_tools_layout.addStretch(1)
         return (
@@ -332,6 +332,31 @@ class CanvasWidget(BaseNapariMPLWidget):
         """
         self._set_active_selector(value)
 
+    @property
+    def show_color_overlay(self) -> bool:
+        """
+        Gets or sets the visibility of the plot overlay.
+
+        Returns
+        -------
+        bool
+            True if the overlay is visible, False otherwise.
+        """
+        return self.show_overlay_button.isChecked()
+    
+    @show_color_overlay.setter
+    def show_color_overlay(self, value: bool):
+        """
+        Sets the visibility of the plot overlay.
+
+        Parameters
+        ----------
+        value : bool
+            True to show the overlay, False to hide it.
+        """
+        self.show_overlay_button.setChecked(value)
+        self._toggle_show_color_overlay(value)
+
     # Public Methods
     def add_artist(
         self,
@@ -425,7 +450,7 @@ class CanvasWidget(BaseNapariMPLWidget):
             # If the button is unchecked, disable all selectors
             self._disable_all_selectors()
 
-    def show_color_overlay(self, checked: bool):
+    def _toggle_show_color_overlay(self, checked: bool):
         """Show or hide the plot overlay.
 
         Parameters
