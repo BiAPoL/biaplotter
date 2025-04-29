@@ -4,7 +4,8 @@ from enum import Enum, auto
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional, Union
 
-from nap_plot_tools import CustomToolbarWidget, QtColorSpinBox, CustomToolButton
+from nap_plot_tools import (CustomToolbarWidget, CustomToolButton,
+                            QtColorSpinBox)
 from napari_matplotlib.base import BaseNapariMPLWidget
 from psygnal import Signal
 from qtpy.QtWidgets import QHBoxLayout, QLabel, QWidget
@@ -81,9 +82,12 @@ class CanvasWidget(BaseNapariMPLWidget):
         """
         Initializes the selection toolbar and layout.
         """
-        selection_tools_layout, selection_toolbar, class_spinbox, show_overlay_button = (
-            self._build_selection_toolbar_layout(label_text=label_text)
-        )
+        (
+            selection_tools_layout,
+            selection_toolbar,
+            class_spinbox,
+            show_overlay_button,
+        ) = self._build_selection_toolbar_layout(label_text=label_text)
         self.selection_tools_layout: QHBoxLayout = selection_tools_layout
         self.selection_toolbar: CustomToolbarWidget = selection_toolbar
         self.class_spinbox: QtColorSpinBox = class_spinbox
@@ -195,17 +199,26 @@ class CanvasWidget(BaseNapariMPLWidget):
         # Add customtoolbutton to show/hide overlay
         show_overlay_button = CustomToolButton(
             default_icon_path=str(icon_folder_path / "show_overlay.png"),
-            checked_icon_path=str(icon_folder_path / "show_overlay_checked.png"),
+            checked_icon_path=str(
+                icon_folder_path / "show_overlay_checked.png"
+            ),
         )
         show_overlay_button.setIconSize(32)
         show_overlay_button.setText("SHOW_OVERLAY")
-        show_overlay_button.setToolTip("Click to show/hide the plot colors overlay")
+        show_overlay_button.setToolTip(
+            "Click to show/hide the plot colors overlay"
+        )
         selection_tools_layout.addWidget(show_overlay_button)
-        show_overlay_button.setChecked(True) # Start checked (overlay visible)
+        show_overlay_button.setChecked(True)  # Start checked (overlay visible)
         show_overlay_button.toggled.connect(self.show_color_overlay)
         # Add stretch to the right to push buttons to the left
         selection_tools_layout.addStretch(1)
-        return selection_tools_layout, selection_toolbar, class_spinbox, show_overlay_button
+        return (
+            selection_tools_layout,
+            selection_toolbar,
+            class_spinbox,
+            show_overlay_button,
+        )
 
     def _set_active_artist(self, artist_name: str):
         """
