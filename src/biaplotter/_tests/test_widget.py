@@ -84,12 +84,12 @@ def test_disable_all_selectors(canvas_widget):
         assert selector._selector is None
 
 
-def test_hide_color_overlay(canvas_widget):
-    """Test the hide_color_overlay method."""
-    canvas_widget.hide_color_overlay(True)
+def test_show_color_overlay(canvas_widget):
+    """Test the show_color_overlay method."""
+    canvas_widget.show_color_overlay(False)
     assert not canvas_widget.active_artist.overlay_visible
 
-    canvas_widget.hide_color_overlay(False)
+    canvas_widget.show_color_overlay(True)
     assert canvas_widget.active_artist.overlay_visible
 
 
