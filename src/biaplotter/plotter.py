@@ -208,6 +208,7 @@ class CanvasWidget(BaseNapariMPLWidget):
         selection_tools_layout.addWidget(QLabel(label_text))
         # Add color class spinbox
         class_spinbox = QtColorSpinBox(first_color_transparent=False)
+        class_spinbox.value = 1
         selection_tools_layout.addWidget(class_spinbox)
         # Add customtoolbutton to show/hide overlay
         show_overlay_button = CustomToolButton(
