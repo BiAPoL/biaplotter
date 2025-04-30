@@ -467,5 +467,6 @@ class CanvasWidget(BaseNapariMPLWidget):
         warnings.warn(
             "hide_color_overlay is deprecated after 0.3.0. Use show_color_overlay setter instead.",
             DeprecationWarning,
+            stacklevel=2,
         )
         
