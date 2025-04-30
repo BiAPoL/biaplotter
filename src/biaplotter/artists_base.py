@@ -1,12 +1,14 @@
+import warnings
 from abc import ABC, abstractmethod
 from typing import List, Union
-from psygnal import Signal
-import warnings
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.colors import (CenteredNorm, Colormap, LogNorm, Normalize,
                                SymLogNorm)
 from nap_plot_tools.cmap import cat10_mod_cmap
+from psygnal import Signal
+
 from biaplotter.colormap import BiaColormap
 
 
@@ -45,7 +47,9 @@ class Artist(ABC):
         #: Stores visibility of the artist
         self._visible: bool = True
         #: Stores the colormap to use for the artist
-        self._overlay_colormap: Colormap = BiaColormap(overlay_colormap, categorical=True)
+        self._overlay_colormap: Colormap = BiaColormap(
+            overlay_colormap, categorical=True
+        )
         #: Stores the array of indices to map to the colormap
         self._color_indices: np.array = color_indices
         # store handles to mpl artists for modifying plots
@@ -61,8 +65,12 @@ class Artist(ABC):
 
     def _update_axes_limits(self):
         """Update the axes limits based on the data range with a margin."""
-        x_margin = self._margins * (np.nanmax(self._data[:, 0]) - np.nanmin(self._data[:, 0]))
-        y_margin = self._margins * (np.nanmax(self._data[:, 1]) - np.nanmin(self._data[:, 1]))
+        x_margin = self._margins * (
+            np.nanmax(self._data[:, 0]) - np.nanmin(self._data[:, 0])
+        )
+        y_margin = self._margins * (
+            np.nanmax(self._data[:, 1]) - np.nanmin(self._data[:, 1])
+        )
         self.ax.set_xlim(
             np.nanmin(self._data[:, 0]) - x_margin,
             np.nanmax(self._data[:, 0]) + x_margin,
@@ -71,7 +79,7 @@ class Artist(ABC):
             np.nanmin(self._data[:, 1]) - y_margin,
             np.nanmax(self._data[:, 1]) + y_margin,
         )
-    
+
     def reset(self):
         """Reset the artist to its initial state."""
         self._remove_artists()
@@ -87,13 +95,13 @@ class Artist(ABC):
         raise NotImplementedError(
             "This method should be implemented in the derived class."
         )
-    
+
     @abstractmethod
     def _colorize(self, indices: np.ndarray):
         raise NotImplementedError(
             "This method should be implemented in the derived class."
         )
-    
+
     @abstractmethod
     def color_indices_to_rgba(self, indices: np.ndarray) -> np.ndarray:
         """Convert color indices to RGBA values using the overlay colormap.
@@ -265,7 +273,9 @@ class Artist(ABC):
             linthresh=0.03,
         )
 
-    def _linear_normalization(self, values: np.ndarray, is_categorical: bool = False):
+    def _linear_normalization(
+        self, values: np.ndarray, is_categorical: bool = False
+    ):
         """Linear normalization."""
         norm_class = self._normalization_methods["linear"]
 
