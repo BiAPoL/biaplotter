@@ -407,12 +407,12 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget"><code class="docutils literal notranslate"><span class="pre">CanvasWidget</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.active_artist"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.active_artist</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.active_selector"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.active_selector</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.show_color_overlay"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.show_color_overlay</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.add_artist"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.add_artist()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.remove_artist"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.remove_artist()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.add_selector"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.add_selector()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.remove_selector"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.remove_selector()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.on_enable_selector"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.on_enable_selector()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.hide_color_overlay"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.hide_color_overlay()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.artist_changed_signal"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.artist_changed_signal</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.selector_changed_signal"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.selector_changed_signal</span></code></a></li>
 </ul>
@@ -453,6 +453,7 @@ The widget includes artists and selectors to plot data and select points.</p>
 <div><ul class="simple">
 <li><p><strong>artist_changed_signal</strong> emitted when the current artist changes.</p></li>
 <li><p><strong>selector_changed_signal</strong> emitted when the current selector changes.</p></li>
+<li><p><strong>show_color_overlay_signal</strong> emitted when the plot overlay is shown or hidden.</p></li>
 </ul>
 </div></blockquote>
 <p>Signals and Slots:</p>
@@ -470,6 +471,9 @@ The widget includes artists and selectors to plot data and select points.</p>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#biaplotter.plotter.CanvasWidget.active_selector" title="biaplotter.plotter.CanvasWidget.active_selector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">active_selector</span></code></a></p></td>
 <td><p>Gets or sets the active selector.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#biaplotter.plotter.CanvasWidget.show_color_overlay" title="biaplotter.plotter.CanvasWidget.show_color_overlay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show_color_overlay</span></code></a></p></td>
+<td><p>Gets or sets the visibility of the plot overlay.</p></td>
 </tr>
 </tbody>
 </table>
@@ -491,9 +495,6 @@ The widget includes artists and selectors to plot data and select points.</p>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#biaplotter.plotter.CanvasWidget.on_enable_selector" title="biaplotter.plotter.CanvasWidget.on_enable_selector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_enable_selector</span></code></a>(checked)</p></td>
 <td><p>Enables or disables the selected selector.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#biaplotter.plotter.CanvasWidget.hide_color_overlay" title="biaplotter.plotter.CanvasWidget.hide_color_overlay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hide_color_overlay</span></code></a>(checked)</p></td>
-<td><p>Show or hide the plot overlay.</p></td>
 </tr>
 </tbody>
 </table>
@@ -536,6 +537,20 @@ The widget includes artists and selectors to plot data and select points.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="selectors_api.html#biaplotter.selectors.InteractiveRectangleSelector" title="biaplotter.selectors.InteractiveRectangleSelector">InteractiveRectangleSelector</a> or <a class="reference internal" href="selectors_api.html#biaplotter.selectors.InteractiveEllipseSelector" title="biaplotter.selectors.InteractiveEllipseSelector">InteractiveEllipseSelector</a> or <a class="reference internal" href="selectors_api.html#biaplotter.selectors.InteractiveLassoSelector" title="biaplotter.selectors.InteractiveLassoSelector">InteractiveLassoSelector</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biaplotter.plotter.CanvasWidget.show_color_overlay">
+<span class="sig-name descname"><span class="pre">show_color_overlay</span></span><a class="headerlink" href="#biaplotter.plotter.CanvasWidget.show_color_overlay" title="Link to this definition">#</a></dt>
+<dd><p>Gets or sets the visibility of the plot overlay.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the overlay is visible, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -597,17 +612,6 @@ The widget includes artists and selectors to plot data and select points.</p>
 <span class="sig-name descname"><span class="pre">on_enable_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">checked</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#biaplotter.plotter.CanvasWidget.on_enable_selector" title="Link to this definition">#</a></dt>
 <dd><p>Enables or disables the selected selector.</p>
 <p>Enabling a selector disables all other selectors.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>checked</strong> (<em>bool</em>) – Whether the button is checked or not.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="biaplotter.plotter.CanvasWidget.hide_color_overlay">
-<span class="sig-name descname"><span class="pre">hide_color_overlay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">checked</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#biaplotter.plotter.CanvasWidget.hide_color_overlay" title="Link to this definition">#</a></dt>
-<dd><p>Show or hide the plot overlay.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>checked</strong> (<em>bool</em>) – Whether the button is checked or not.</p>
@@ -699,12 +703,12 @@ The widget includes artists and selectors to plot data and select points.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget"><code class="docutils literal notranslate"><span class="pre">CanvasWidget</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.active_artist"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.active_artist</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.active_selector"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.active_selector</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.show_color_overlay"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.show_color_overlay</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.add_artist"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.add_artist()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.remove_artist"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.remove_artist()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.add_selector"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.add_selector()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.remove_selector"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.remove_selector()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.on_enable_selector"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.on_enable_selector()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.hide_color_overlay"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.hide_color_overlay()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.artist_changed_signal"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.artist_changed_signal</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.plotter.CanvasWidget.selector_changed_signal"><code class="docutils literal notranslate"><span class="pre">CanvasWidget.selector_changed_signal</span></code></a></li>
 </ul>
