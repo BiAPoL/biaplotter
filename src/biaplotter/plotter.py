@@ -461,3 +461,12 @@ class CanvasWidget(BaseNapariMPLWidget):
         """
         self.active_artist.overlay_visible = checked
         self.show_overlay_signal.emit(checked)
+
+    def hide_color_overlay(self, checked: bool):
+        """Deprecated method to hide the color overlay.
+        """
+        warnings.warn(
+            "hide_color_overlay is deprecated after 0.3.0. Use show_color_overlay setter instead.",
+            DeprecationWarning,
+        )
+        
