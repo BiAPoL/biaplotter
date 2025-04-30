@@ -43,7 +43,7 @@ class CanvasWidget(BaseNapariMPLWidget):
 
         * **artist_changed_signal** emitted when the current artist changes.
         * **selector_changed_signal** emitted when the current selector changes.
-        * **show_overlay_signal** emitted when the plot overlay is shown or hidden.
+        * **show_color_overlay_signal** emitted when the plot overlay is shown or hidden.
 
     Signals and Slots:
 
@@ -57,7 +57,7 @@ class CanvasWidget(BaseNapariMPLWidget):
     #: Signal emitted when the current `active_selector` changes
     selector_changed_signal: Signal = Signal(str)
     #: Signal emitted when the plot overlay is shown or hidden
-    show_overlay_signal: Signal = Signal(bool)
+    show_color_overlay_signal: Signal = Signal(bool)
 
     # Constructor and Initialization
     def __init__(
@@ -459,7 +459,7 @@ class CanvasWidget(BaseNapariMPLWidget):
             Whether the button is checked or not.
         """
         self.active_artist.overlay_visible = checked
-        self.show_overlay_signal.emit(checked)
+        self.show_color_overlay_signal.emit(checked)
 
     def hide_color_overlay(self, checked: bool):
         """Deprecated method to hide the color overlay.
