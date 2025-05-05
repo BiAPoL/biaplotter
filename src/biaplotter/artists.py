@@ -215,17 +215,19 @@ class Scatter(Artist):
         Update the visibility of the scatter overlay based on `overlay_visible`.
         """
         if self._overlay_visible:
-            self._mpl_artists["scatter"].set_facecolor(
-                self._scatter_overlay_rgba
-            )
+            if self._scatter_overlay_rgba is not None:
+                self._mpl_artists["scatter"].set_facecolor(
+                    self._scatter_overlay_rgba
+                )
+                self._mpl_artists["scatter"].set_edgecolor("white")
         else:
-            # Set colors to the first color of the colormap (index 0)
-            default_rgba = self.color_indices_to_rgba(
-                np.zeros_like(self._color_indices)
-            )
-            self._mpl_artists["scatter"].set_facecolor(default_rgba)
-
-        self._mpl_artists["scatter"].set_edgecolor("white")
+            if self._color_indices is not None:
+                # Set colors to the first color of the colormap (index 0)
+                default_rgba = self.color_indices_to_rgba(
+                    np.zeros_like(self._color_indices)
+                )
+                self._mpl_artists["scatter"].set_facecolor(default_rgba)
+                self._mpl_artists["scatter"].set_edgecolor("white")
 
     def _validate_categorical_colormap(self):
         """Validate settings for a categorical colormap."""
