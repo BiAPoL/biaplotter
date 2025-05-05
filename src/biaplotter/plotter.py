@@ -244,6 +244,10 @@ class CanvasWidget(BaseNapariMPLWidget):
         self._active_artist = self.artists[normalized_name]
         for artist in self.artists.values():
             artist.visible = artist == self._active_artist
+            # Only show overlay of active artist if show_color_overlay is True
+            artist.overlay_visible = (
+                artist == self._active_artist
+                ) and self.show_color_overlay
         # Emit signal to notify that the current artist has changed
         self.artist_changed_signal.emit(normalized_name)
 
