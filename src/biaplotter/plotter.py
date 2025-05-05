@@ -161,11 +161,9 @@ class CanvasWidget(BaseNapariMPLWidget):
         for artist in self.artists.values():
             for selector in self.selectors.values():
                 artist.data_changed_signal.connect(selector.update_data)
-        
+
         for selector in self.selectors.values():
-            selector.selection_applied_signal.connect(
-                self._on_finish_drawing
-            )
+            selector.selection_applied_signal.connect(self._on_finish_drawing)
 
     def _on_finish_drawing(self, *args):
         """
@@ -173,7 +171,6 @@ class CanvasWidget(BaseNapariMPLWidget):
         """
         self.show_overlay_button.setChecked(True)
         self.active_artist.overlay_visible = True
-
 
     # Private Helper Methods
     def _build_selection_toolbar_layout(self, label_text: str = "Class:"):
@@ -343,7 +340,7 @@ class CanvasWidget(BaseNapariMPLWidget):
             True if the overlay is visible, False otherwise.
         """
         return self.show_overlay_button.isChecked()
-    
+
     @show_color_overlay.setter
     def show_color_overlay(self, value: bool):
         """
@@ -462,11 +459,9 @@ class CanvasWidget(BaseNapariMPLWidget):
         self.show_color_overlay_signal.emit(checked)
 
     def hide_color_overlay(self, checked: bool):
-        """Deprecated method to hide the color overlay.
-        """
+        """Deprecated method to hide the color overlay."""
         warnings.warn(
             "hide_color_overlay is deprecated after 0.3.0. Use show_color_overlay setter instead.",
             DeprecationWarning,
             stacklevel=2,
         )
-        
