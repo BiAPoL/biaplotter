@@ -63,6 +63,7 @@ class Scatter(Artist):
         """Initializes the scatter plot artist."""
         super().__init__(ax, data, overlay_colormap, color_indices)
         #: Stores the scatter plot matplotlib object
+        self._scatter_overlay_rgba = None  # Store precomputed overlay colors
         self._overlay_visible = True
         self._color_normalization_method = "linear"
         self.data = data
@@ -72,8 +73,7 @@ class Scatter(Artist):
 
     def _refresh(self, force_redraw: bool = True):
         """Creates the scatter plot with the data and default properties."""
-
-        if force_redraw or self._mpl_artists["scatter"] is None:
+        if force_redraw or self._mpl_artists.get("scatter") is None:
             self._remove_artists()
             # Create a new scatter plot with the updated data
             self._mpl_artists["scatter"] = self.ax.scatter(
@@ -85,20 +85,43 @@ class Scatter(Artist):
         else:
             self._mpl_artists["scatter"].set_offsets(
                 self._data
-            )  #  somehow resets the size and alpha
+            )  # Somehow resets the size and alpha
             self.color_indices = self._color_indices
             self.size = self._size
             self.alpha = self._alpha
 
     def _colorize(self, indices: np.ndarray):
         """
-        Add a color to the drawn scatter points
+        Calculate and optionally render the scatter overlay.
         """
-        rgba_colors = self.color_indices_to_rgba(indices)
-        self._mpl_artists["scatter"].set_facecolor(rgba_colors)
+        # Always calculate and store the overlay colors
+        self._scatter_overlay_rgba = self.color_indices_to_rgba(indices)
+
+        # Update the overlay visibility
+        self._update_overlay_visibility()
+
+    def _update_overlay_visibility(self):
+        """
+        Update the visibility of the scatter overlay based on `overlay_visible`.
+        """
+        if self._overlay_visible:
+            self._mpl_artists["scatter"].set_facecolor(self._scatter_overlay_rgba)
+        else:
+            # Set colors to the first color of the colormap (index 0)
+            default_rgba = self.color_indices_to_rgba(np.zeros_like(self._color_indices))
+            self._mpl_artists["scatter"].set_facecolor(default_rgba)
+
         self._mpl_artists["scatter"].set_edgecolor("white")
 
-        return rgba_colors
+    @property
+    def overlay_visible(self) -> bool:
+        return self._overlay_visible
+
+    @overlay_visible.setter
+    def overlay_visible(self, value: bool):
+        self._overlay_visible = value
+        self._update_overlay_visibility()
+        self.draw()
 
     def color_indices_to_rgba(
         self, indices: np.ndarray, is_overlay: bool = True
@@ -149,27 +172,6 @@ class Scatter(Artist):
                 "Categorical colormap detected. Setting color normalization method to linear."
             )
             self._color_normalization_method = "linear"
-
-    @property
-    def overlay_visible(self) -> bool:
-        """Gets or sets the visibility of the overlay colormap.
-
-        Returns
-        -------
-        overlay_visible : bool
-           visibility of the overlay colormap.
-        """
-        return self._overlay_visible
-
-    @overlay_visible.setter
-    def overlay_visible(self, value: bool):
-        """Sets the visibility of the overlay colormap."""
-        self._overlay_visible = value
-        if value:
-            self._colorize(self._color_indices)
-        else:
-            self._colorize(np.zeros_like(self._color_indices))
-        self.draw()
 
     @property
     def color_normalization_method(self) -> str:
@@ -279,11 +281,10 @@ class Histogram2D(Artist):
         histogram_colormap: Colormap = plt.cm.magma,
         cmin=0,
     ):
+        """Initializes the 2D histogram artist."""
         super().__init__(ax, data, overlay_colormap, color_indices)
-        """Initializes the 2D histogram artist.
-        """
-        #: Stores the matplotlib histogram2D object
         self._histogram = None
+        self._overlay_histogram_rgba = None  # Store precomputed overlay image
         self._bins = bins
         self._histogram_colormap = BiaColormap(histogram_colormap)
         self._histogram_interpolation = "nearest"
@@ -295,9 +296,10 @@ class Histogram2D(Artist):
         self._overlay_color_normalization_method = "linear"
         self._cmin = cmin
         self.data = data
-        self.draw()  # Initial draw of the histogram
+        self.draw()
 
     def _refresh(self, force_redraw: bool = True):
+        """Recalculate and redraw the histogram."""
         self._remove_artists()
         # Calculate and draw the new histogram
         self._histogram = np.histogram2d(
@@ -324,13 +326,10 @@ class Histogram2D(Artist):
 
     def _colorize(self, indices: np.ndarray):
         """
-        Draws the overlay histogram on the plot.
+        Calculate and optionally render the overlay histogram.
         """
-        # Remove the existing overlay to redraw
-        self._remove_artists(["overlay_histogram_image"])
-
+        # Always calculate and store the overlay image
         _, x_edges, y_edges = self._histogram
-        # Assign median values to the bins (fill with NaNs if no data in the bin)
         statistic_histogram, _, _, _ = binned_statistic_2d(
             x=self._data[:, 0],
             y=self._data[:, 1],
@@ -339,19 +338,29 @@ class Histogram2D(Artist):
             bins=[x_edges, y_edges],
         )
         if not np.all(np.isnan(statistic_histogram)):
-            # Draw the overlay
-            self.overlay_histogram_rgba = self.color_indices_to_rgba(
+            self._overlay_histogram_rgba = self.color_indices_to_rgba(
                 statistic_histogram.T, is_overlay=True
             )
+
+        # Update the overlay visibility
+        self._update_overlay_visibility()
+
+    def _update_overlay_visibility(self):
+        """
+        Update the visibility of the histogram overlay based on `overlay_visible`.
+        """
+        self._remove_artists(["overlay_histogram_image"])
+        if self._overlay_visible and self._overlay_histogram_rgba is not None:
+            _, x_edges, y_edges = self._histogram
             self._mpl_artists["overlay_histogram_image"] = self.ax.imshow(
-                self.overlay_histogram_rgba,
+                self._overlay_histogram_rgba,
                 extent=[x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]],
                 origin="lower",
                 zorder=2,
                 interpolation=self._overlay_interpolation,
                 alpha=self._overlay_opacity,
                 aspect="auto",
-            )
+            )            
 
     def color_indices_to_rgba(
         self, indices, is_overlay: bool = True
@@ -530,8 +539,7 @@ class Histogram2D(Artist):
     def overlay_visible(self, value):
         """Sets the visibility of the overlay histogram."""
         self._overlay_visible = value
-        if "overlay_histogram_image" in self._mpl_artists:
-            self._mpl_artists["overlay_histogram_image"].set_visible(value)
+        self._update_overlay_visibility()
         self.draw()
 
     @property
