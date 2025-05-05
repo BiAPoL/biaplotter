@@ -633,7 +633,7 @@ class Histogram2D(Artist):
             norm_method = self._histogram_color_normalization_method
 
         if is_categorical and norm_method != "linear":
-            self.overlay_color_normalization_method = "linear"
+            self._overlay_color_normalization_method = "linear"
             norm_method = "linear"
 
         # norm_dispatch is to be indexed like this:
