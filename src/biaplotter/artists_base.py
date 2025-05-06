@@ -154,7 +154,7 @@ class Artist(ABC):
 
     @data.setter
     def data(self, value: np.ndarray):
-        """Sets the data for the scatter plot, resetting other properties to defaults."""
+        """Sets the data for the artist, resetting other properties to defaults."""
         if value is None or len(value) == 0:
             return
 
@@ -187,7 +187,7 @@ class Artist(ABC):
 
     @visible.setter
     def visible(self, value: bool):
-        """Sets the visibility of the scatter plot."""
+        """Sets the visibility of the artists."""
         self._visible = value
         [a.set_visible(value) for a in self._mpl_artists.values()]
         self.draw()
