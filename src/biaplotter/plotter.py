@@ -460,6 +460,7 @@ class CanvasWidget(BaseNapariMPLWidget):
             Whether the button is checked or not.
         """
         self.active_artist.overlay_visible = checked
+        self.active_artist.draw()
         self.show_color_overlay_signal.emit(checked)
 
     def hide_color_overlay(self, checked: bool):
