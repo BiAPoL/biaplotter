@@ -110,6 +110,19 @@ def test_scatter():
     data_with_nans[0, 0] = np.nan
     scatter.data = data_with_nans
 
+    # test changing axes labels
+    scatter.x_label_text = "X-axis"
+    scatter.y_label_text = "Y-axis"
+    assert scatter.x_label_text == "X-axis"
+    assert scatter.y_label_text == "Y-axis"
+
+    # test changing axes labels colors
+    scatter.x_label_color = "red"
+    scatter.y_label_color = (0, 0, 1, 1)
+    assert scatter.x_label_color == "red"
+    assert scatter.y_label_color == (0, 0, 1, 1)
+
+
 
 def test_histogram2d():
     # Inputs

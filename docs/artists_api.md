@@ -13,6 +13,10 @@
       ~Artist.visible
       ~Artist.color_indices
       ~Artist.overlay_colormap
+      ~Artist.x_label_text
+      ~Artist.y_label_text
+      ~Artist.x_label_color
+      ~Artist.y_label_color
 
    .. rubric:: Attributes Summary
 
@@ -32,6 +36,10 @@
    .. autoattribute:: visible
    .. autoattribute:: color_indices
    .. autoattribute:: overlay_colormap
+   .. autoattribute:: x_label_text
+   .. autoattribute:: y_label_text
+   .. autoattribute:: x_label_color
+   .. autoattribute:: y_label_color
 
    .. rubric:: Attributes Documentation
 

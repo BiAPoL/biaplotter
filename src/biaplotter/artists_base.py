@@ -243,6 +243,62 @@ class Artist(ABC):
         self._overlay_colormap = BiaColormap(value)
         self.color_indices = self._color_indices
 
+    @property
+    def x_label_text(self) -> str:
+        """Gets or sets the x-axis label."""
+        return self.ax.xaxis.label.get_text()
+    
+    @x_label_text.setter
+    def x_label_text(self, value: str):
+        """Sets the x-axis label."""
+        self.ax.xaxis.label.set_text(value)
+
+    @property
+    def y_label_text(self) -> str:
+        """Gets or sets the y-axis label."""
+        return self.ax.yaxis.label.get_text()
+    
+    @y_label_text.setter
+    def y_label_text(self, value: str):
+        """Sets the y-axis label."""
+        self.ax.yaxis.label.set_text(value)
+
+    @property
+    def x_label_color(self) -> Union[str, tuple]:
+        """Gets or sets the x-axis label color."""
+        return self.ax.xaxis.label.get_color()
+
+    @x_label_color.setter
+    def x_label_color(self, value: Union[str, tuple]):
+        """Sets the x-axis label color.
+        
+        Parameters
+        ----------
+        value : str or tuple
+            Color value for the x-axis label.
+            Can be anything accepted by matplotlib, e.g., 'red', (1, 0, 0), etc.
+            Check more at https://matplotlib.org/stable/users/explain/colors/colors.html#colors-def
+        """
+        self.ax.xaxis.label.set_color(value)
+
+    @property
+    def y_label_color(self) -> Union[str, tuple]:
+        """Gets or sets the y-axis label color."""
+        return self.ax.yaxis.label.get_color()
+    
+    @y_label_color.setter
+    def y_label_color(self, value: Union[str, tuple]):
+        """Sets the y-axis label color.
+        
+        Parameters
+        ----------
+        value : str or tuple
+            Color value for the y-axis label.
+            Can be anything accepted by matplotlib, e.g., 'red', (1, 0, 0), etc.
+            Check more at https://matplotlib.org/stable/users/explain/colors/colors.html#colors-def
+        """
+        self.ax.yaxis.label.set_color(value)
+    
     def draw(self):
         """Draws or redraws the artist."""
         self.ax.figure.canvas.draw_idle()
