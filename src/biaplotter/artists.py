@@ -128,6 +128,10 @@ class Scatter(Artist):
     @highlighted.setter
     def highlighted(self, mask: Union[np.ndarray, None]):
         """Sets the highlight mask and applies the highlighting effects."""
+        if self._data is None or len(self._data) == 0:
+            self._highlighted = None
+            return
+        
         if mask is None or len(mask) == 0:
             self.alpha = self.ALPHA
             self.size = self.SIZE
@@ -601,6 +605,10 @@ class Histogram2D(Artist):
     @highlighted.setter
     def highlighted(self, mask: Union[np.ndarray, None]):
         """Sets the highlight mask and applies the highlighting effects."""
+        if self._data is None or len(self._data) == 0:
+            self._highlighted = None
+            return
+        
         if mask is None or len(mask) == 0:
             # Reset all bins to fully opaque
             self.bin_alpha = np.ones_like(self._histogram[0])
