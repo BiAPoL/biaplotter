@@ -169,6 +169,8 @@ class CanvasWidget(BaseNapariMPLWidget):
 
         # Connect pick event to on_pick method
         self.canvas.mpl_connect("pick_event", self._on_pick)
+        # Connect mouse click event to on_click method
+        self.canvas.mpl_connect("button_press_event", self._on_click)
 
     def _on_pick(self, event):
         """
@@ -211,6 +213,96 @@ class CanvasWidget(BaseNapariMPLWidget):
         highlighted = scatter.highlighted
         highlighted[ind[0]] = not highlighted[ind[0]]
         scatter.highlighted = highlighted
+
+    def _on_click(self, event):
+        """
+        Handles mouse click events for the active artist.
+
+        If the active artist is a Histogram2D and no selectors are active:
+        - Toggles highlighting for the clicked bin.
+
+        Parameters
+        ----------
+        event : matplotlib.backend_bases.MouseEvent
+            The mouse click event triggered by the user.
+        """
+        # Ensure the active artist is a Histogram2D instance
+        if not isinstance(self.active_artist, Histogram2D):
+            return
+
+        # Ensure no selectors are active
+        if self.active_selector is not None:
+            return
+
+        # Ensure the click is inside the plot
+        if not self._is_click_inside_axes(event):
+            return
+
+        # Print the xdata and ydata of the mouse click
+        print(f"xdata: {event.xdata}, ydata: {event.ydata}")
+
+        # Toggle the highlight state of the clicked bin
+        self._toggle_bin_highlight(event.xdata, event.ydata)
+
+    def _is_click_inside_axes(self, event):
+        """
+        Checks if a mouse click occurred inside the plot axes.
+
+        Parameters
+        ----------
+        event : matplotlib.backend_bases.MouseEvent
+            The mouse event triggered by the user.
+
+        Returns
+        -------
+        bool
+            True if the click is inside the axes, False otherwise.
+        """
+        return (
+            self.axes.get_xlim()[0] <= event.xdata <= self.axes.get_xlim()[1]
+            and self.axes.get_ylim()[0] <= event.ydata <= self.axes.get_ylim()[1]
+        )
+
+    def _toggle_bin_highlight(self, xdata, ydata):
+        """
+        Toggles the highlight state of a histogram bin based on the clicked coordinates.
+
+        Parameters
+        ----------
+        xdata : float
+            The x-coordinate of the mouse click.
+        ydata : float
+            The y-coordinate of the mouse click.
+        """
+        histogram = self.active_artist
+
+        # Identify the bin corresponding to the clicked coordinates
+        x_edges, y_edges = histogram.histogram[1], histogram.histogram[2]
+        bin_x = np.digitize(xdata, x_edges) - 1
+        bin_y = np.digitize(ydata, y_edges) - 1
+
+        # Ensure the bin indices are valid
+        if 0 <= bin_x < len(x_edges) - 1 and 0 <= bin_y < len(y_edges) - 1:
+            # Get the current highlight mask
+            if histogram.highlighted is None:
+                histogram.highlighted = np.zeros(len(histogram.data), dtype=bool)
+
+            # Find the indices of points in the clicked bin
+            mask = (
+                (histogram.data[:, 0] >= x_edges[bin_x])
+                & (histogram.data[:, 0] < x_edges[bin_x + 1])
+                & (histogram.data[:, 1] >= y_edges[bin_y])
+                & (histogram.data[:, 1] < y_edges[bin_y + 1])
+            )
+            indices = np.where(mask)[0]
+            print(f"Indices in bin: {indices}")
+            # Toggle the highlight state for the bin
+            highlighted = histogram.highlighted
+            if np.any(highlighted[indices]):
+                highlighted[indices] = False  # Unhighlight the bin
+            else:
+                highlighted[indices] = True  # Highlight the bin
+            histogram.highlighted = highlighted
 
     def _on_finish_drawing(self, *args):
         """

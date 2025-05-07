@@ -377,6 +377,7 @@ class Histogram2D(Artist):
         self._overlay_histogram_rgba = None  # Store precomputed overlay image
         self._bin_alpha = None
         self._bins = bins
+        self._highlighted = None  # Initialize highlight mask
         self._histogram_colormap = BiaColormap(histogram_colormap)
         self._histogram_interpolation = "nearest"
         self._overlay_interpolation = "nearest"
@@ -626,6 +627,9 @@ class Histogram2D(Artist):
         alphas = np.full_like(self._histogram[0], 0.25)
         alphas[highlighted_bins] = 1  # Fully opaque for highlighted bins
         self.bin_alpha = alphas
+        self._refresh(force_redraw=False)
+        self._colorize(self._color_indices)
+        self.draw()
 
     def color_indices_to_rgba(
         self, indices, is_overlay: bool = True
