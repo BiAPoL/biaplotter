@@ -684,7 +684,9 @@ class Histogram2D(Artist):
             self._overlay_histogram_rgba = self.color_indices_to_rgba(
                 statistic_histogram.T, is_overlay=True
             )
-        
+        # Apply bin alpha values to the RGBA array
+        if self._bin_alpha is not None:
+            self._overlay_histogram_rgba[..., -1] *= self.bin_alpha.T
         # Update the overlay visibility
         self._remove_artists(["overlay_histogram_image"])
         if self._overlay_visible and self._overlay_histogram_rgba is not None:
