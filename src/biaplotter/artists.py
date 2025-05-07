@@ -70,7 +70,7 @@ class Scatter(Artist):
         self._size = self.SIZE  # Default size
         self._edgecolor = "white"  # Default edge color
         self._highlight_edgecolor = "black"  # Default highlight edge color
-        self._highlight_mask = None  # Initialize highlight mask
+        self._highlighted = None  # Initialize highlight mask
         self.draw()  # Initial draw of the scatter plot
 
     @property
@@ -113,32 +113,32 @@ class Scatter(Artist):
         self._colorize(self._color_indices)
 
     @property
-    def highlight_mask(self) -> Union[np.ndarray, None]:
+    def highlighted(self) -> Union[np.ndarray, None]:
         """Gets or sets the highlight mask for the scatter plot.
 
         The mask is a boolean array where `True` indicates points to highlight.
 
         Returns
         -------
-        highlight_mask : np.ndarray or None
+        highlighted : np.ndarray or None
             The current highlight mask.
         """
-        return self._highlight_mask
+        return self._highlighted
 
-    @highlight_mask.setter
-    def highlight_mask(self, mask: Union[np.ndarray, None]):
+    @highlighted.setter
+    def highlighted(self, mask: Union[np.ndarray, None]):
         """Sets the highlight mask and applies the highlighting effects."""
         if mask is None or len(mask) == 0:
             self.alpha = self.ALPHA
             self.size = self.SIZE
             self._mpl_artists["scatter"].set_edgecolor(self._edgecolor)
-            self._highlight_mask = None
+            self._highlighted = None
             return
 
         if mask.shape != (len(self._data),):
             raise ValueError("Highlight mask must be a 1D boolean array of the same length as the data.")
 
-        self._highlight_mask = mask
+        self._highlighted = mask
 
         # Update alpha: make non-highlighted points more transparent
         alphas = np.full(len(self._data), self.ALPHA, dtype=float)
@@ -150,7 +150,7 @@ class Scatter(Artist):
 
         # Update edge colors: use highlight edge color for highlighted points
         edge_colors = np.array([self._edgecolor] * len(self._data), dtype=object)
-        edge_colors[self._highlight_mask] = self._highlight_edgecolor
+        edge_colors[self._highlighted] = self._highlight_edgecolor
 
         # Apply the updated alpha and size to the scatter plot
         self.alpha = alphas
@@ -219,7 +219,7 @@ class Scatter(Artist):
             self._highlight_edgecolor = color
 
         if ids is None or len(ids) == 0:
-            self.highlight_mask = None
+            self.highlighted = None
             return
 
         if isinstance(ids, int):
@@ -227,7 +227,7 @@ class Scatter(Artist):
 
         # Find the indices of the points corresponding to the given IDs
         highlight_indices = np.isin(self.ids, ids)
-        self.highlight_mask = highlight_indices
+        self.highlighted = highlight_indices
 
     def _colorize(self, indices: np.ndarray):
         """
@@ -251,8 +251,8 @@ class Scatter(Artist):
             )
             self._mpl_artists["scatter"].set_facecolor(default_rgba)
             self._mpl_artists["scatter"].set_edgecolor(self._edgecolor)
-        if self._highlight_mask is not None:
-            self.highlight_mask = self._highlight_mask
+        if self._highlighted is not None:
+            self.highlighted = self._highlighted
 
     def _get_normalization(self, values: np.ndarray) -> Normalize:
         """Determine the normalization method and return the normalization object."""
@@ -290,7 +290,7 @@ class Scatter(Artist):
             )
             self.size = self.SIZE  # Default size
             self.alpha = self.ALPHA  # Default alpha
-            self.highlight_mask = None  # Reset highlight mask
+            self.highlighted = None  # Reset highlight mask
             self.color_indices = 0
         else:
             self._mpl_artists["scatter"].set_offsets(
@@ -298,7 +298,7 @@ class Scatter(Artist):
             )  # Somehow resets the size and alpha
             self.size = self._size
             self.alpha = self._alpha
-            self.highlight_mask = self._highlight_mask
+            self.highlighted = self._highlighted
             self.color_indices = self._color_indices
 
     def _validate_categorical_colormap(self):
