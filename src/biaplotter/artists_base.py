@@ -40,6 +40,7 @@ class Artist(ABC):
         color_indices: np.ndarray = None,
     ):
         """Initializes the abstract artist."""
+        self._ids = None
         #: Stores data to be plotted
         self._data: np.ndarray = data
         #: Stores axes to plot on
@@ -85,6 +86,7 @@ class Artist(ABC):
         self._remove_artists()
         self._data = None
         self._color_indices = None
+        self._ids = None
         self._visible = True
         self._overlay_colormap = BiaColormap(cat10_mod_cmap, categorical=True)
         self._mpl_artists = {}
@@ -164,6 +166,10 @@ class Artist(ABC):
             data_length_changed = True
         self._data = value
 
+        if self._ids is None or len(self._ids) != len(value):
+            # If ids are not set or have a different length, create a new array
+            self._ids = np.arange(1, len(value) + 1)
+
         # Emit the data changed signal
         self.data_changed_signal.emit(self._data)
         self._refresh(force_redraw=data_length_changed)
@@ -171,6 +177,30 @@ class Artist(ABC):
         # Redraw the plot
         self._update_axes_limits()
         self.draw()
+
+    @property
+    def ids(self) -> np.ndarray:
+        """Gets or sets the IDs associated with the data.
+
+        Returns
+        -------
+        ids : (N,) np.ndarray[int]
+            Array of IDs corresponding to the data points.
+        """
+        return self._ids
+
+    @ids.setter
+    def ids(self, value: np.ndarray):
+        """Sets the IDs for the data points.
+
+        Parameters
+        ----------
+        value : (N,) np.ndarray[int]
+            Array of IDs. Must have the same length as the data.
+        """
+        if value is not None and len(value) != len(self._data):
+            raise ValueError("Length of ids must match the length of data.")
+        self._ids = value
 
     @property
     def visible(self) -> bool:
@@ -217,6 +247,10 @@ class Artist(ABC):
         # Check if indices are a scalar
         if np.isscalar(indices):
             indices = np.full(len(self._data), indices)
+        elif len(indices) != len(self._data):
+            raise ValueError(
+                f"Length of indices ({len(indices)}) must match length of data ({len(self._data)})"
+            )
         self._color_indices = indices
 
         if indices is not None and self._mpl_artists:
