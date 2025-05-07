@@ -584,6 +584,49 @@ class Histogram2D(Artist):
         self._overlay_visible = value
         self._colorize(self._color_indices)
 
+    @property
+    def highlighted(self) -> Union[np.ndarray, None]:
+        """Gets or sets the highlight mask for the histogram.
+
+        The mask is a boolean array where `True` indicates points to highlight.
+
+        Returns
+        -------
+        highlighted : np.ndarray or None
+            The current highlight mask.
+        """
+        return self._highlighted
+
+    @highlighted.setter
+    def highlighted(self, mask: Union[np.ndarray, None]):
+        """Sets the highlight mask and applies the highlighting effects."""
+        if mask is None or len(mask) == 0:
+            # Reset all bins to fully opaque
+            self.bin_alpha = np.ones_like(self._histogram[0])
+            self._highlighted = None
+            return
+
+        if mask.shape != (len(self._data),):
+            raise ValueError("Highlight mask must be a 1D boolean array of the same length as the data.")
+
+        self._highlighted = mask
+
+        # Identify bins containing the highlighted points
+        x_edges, y_edges = self._histogram[1], self._histogram[2]
+        highlighted_bins = np.zeros_like(self._histogram[0], dtype=bool)
+
+        for idx in np.where(mask)[0]:
+            x, y = self._data[idx]
+            bin_x = np.digitize(x, x_edges) - 1
+            bin_y = np.digitize(y, y_edges) - 1
+            if 0 <= bin_x < highlighted_bins.shape[0] and 0 <= bin_y < highlighted_bins.shape[1]:
+                highlighted_bins[bin_x, bin_y] = True
+
+        # Update alpha values: half transparent for bins without highlighted points
+        alphas = np.full_like(self._histogram[0], 0.25)
+        alphas[highlighted_bins] = 1  # Fully opaque for highlighted bins
+        self.bin_alpha = alphas
+
     def color_indices_to_rgba(
         self, indices, is_overlay: bool = True
     ) -> np.ndarray:
