@@ -153,6 +153,39 @@ class Scatter(Artist):
 
         rgba = colormap(norm(indices))
         return rgba
+    
+    def highlight_points_by_ids(self, ids: Union[int, List[int], None] = None):
+        """
+        Highlights points in the scatter plot based on their IDs or resets all points if no IDs are provided.
+
+        Parameters
+        ----------
+        ids : int, List[int], or None, optional
+            A single ID, a list of IDs to highlight, or None to reset all points.
+        """
+        if ids is None or len(ids) == 0:
+            # Reset all points to default size and alpha
+            self.size = self._size  # Reset to default size
+            self.alpha = self._alpha  # Reset to default alpha
+            return
+
+        if isinstance(ids, int):
+            ids = [ids]
+
+        # Find the indices of the points corresponding to the given IDs
+        highlight_indices = np.isin(self.ids, ids)
+
+        # Update sizes: double the size for highlighted points, keep others the same
+        sizes = np.full(len(self._data), self._size)
+        sizes[highlight_indices] *= 2
+
+        # Update alpha: make non-highlighted points half transparent
+        alphas = np.full(len(self._data), self._alpha, dtype=float)
+        alphas[~highlight_indices] *= 0.5
+
+        # Apply the updated sizes and alphas to the scatter plot
+        self.size = sizes
+        self.alpha = alphas
 
     def _colorize(self, indices: np.ndarray):
         """
