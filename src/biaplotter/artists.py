@@ -68,6 +68,8 @@ class Scatter(Artist):
         self._alpha = 1  # Default alpha
         self._size = 50  # Default size
         self._edgecolor = "white"  # Default edge color
+        self._highlight_edgecolor = "blue" # Default highlight edge color
+        self._highlight_mask = None  # Initialize highlight mask
         self.draw()  # Initial draw of the scatter plot
 
     @property
@@ -108,6 +110,50 @@ class Scatter(Artist):
         """Sets the normalization method for the color indices."""
         self._color_normalization_method = value
         self._colorize(self._color_indices)
+
+    @property
+    def highlight_mask(self) -> Union[np.ndarray, None]:
+        """Gets or sets the highlight mask for the scatter plot.
+
+        The mask is a boolean array where `True` indicates points to highlight.
+
+        Returns
+        -------
+        highlight_mask : np.ndarray or None
+            The current highlight mask.
+        """
+        return self._highlight_mask
+
+    @highlight_mask.setter
+    def highlight_mask(self, mask: Union[np.ndarray, None]):
+        """Sets the highlight mask and applies the highlighting effects."""
+        if mask is None or len(mask) == 0:
+            # Reset all points to default size, alpha, and edge color
+            self.size = 50
+            self.alpha = 1
+            self._mpl_artists["scatter"].set_edgecolor(self._edgecolor)
+            self._highlight_mask = None
+            return
+
+        if mask.shape != (len(self._data),):
+            raise ValueError("Highlight mask must be a 1D boolean array of the same length as the data.")
+
+        self._highlight_mask = mask
+
+        # Update sizes: double the size for highlighted points, keep others the same
+        sizes = np.full(len(self._data), 50)
+        sizes[mask] *= 2
+
+        # Update alpha: make non-highlighted points half transparent
+        alphas = np.full(len(self._data), 1, dtype=float)
+        alphas[~mask] *= 0.5
+
+        # Apply the updated sizes, alphas, and edge color to the scatter plot
+        self.size = sizes
+        self.alpha = alphas
+        edgecolors = np.full(len(self._data), self._edgecolor, dtype=object)
+        edgecolors[mask] = self._highlight_edgecolor
+        self._mpl_artists["scatter"].set_edgecolor(edgecolors)
 
     @property
     def overlay_visible(self) -> bool:
@@ -155,7 +201,7 @@ class Scatter(Artist):
         rgba = colormap(norm(indices))
         return rgba
     
-    def highlight_points_by_ids(self, ids: Union[int, List[int], None] = None):
+    def highlight_points_by_ids(self, ids: Union[int, List[int], None] = None, color: str = None):
         """
         Highlights points in the scatter plot based on their IDs or resets all points if no IDs are provided.
 
@@ -163,11 +209,14 @@ class Scatter(Artist):
         ----------
         ids : int, List[int], or None, optional
             A single ID, a list of IDs to highlight, or None to reset all points.
+        color : str, optional
+            The edge color to use for highlighted points.
         """
+        if color is not None:
+            self._highlight_edgecolor = color
+
         if ids is None or len(ids) == 0:
-            # Reset all points to default size and alpha
-            self.size = self._size  # Reset to default size
-            self.alpha = self._alpha  # Reset to default alpha
+            self.highlight_mask = None
             return
 
         if isinstance(ids, int):
@@ -175,18 +224,7 @@ class Scatter(Artist):
 
         # Find the indices of the points corresponding to the given IDs
         highlight_indices = np.isin(self.ids, ids)
-
-        # Update sizes: double the size for highlighted points, keep others the same
-        sizes = np.full(len(self._data), self._size)
-        sizes[highlight_indices] *= 2
-
-        # Update alpha: make non-highlighted points half transparent
-        alphas = np.full(len(self._data), self._alpha, dtype=float)
-        alphas[~highlight_indices] *= 0.5
-
-        # Apply the updated sizes and alphas to the scatter plot
-        self.size = sizes
-        self.alpha = alphas
+        self.highlight_mask = highlight_indices
 
     def _colorize(self, indices: np.ndarray):
         """
@@ -210,6 +248,8 @@ class Scatter(Artist):
             )
             self._mpl_artists["scatter"].set_facecolor(default_rgba)
             self._mpl_artists["scatter"].set_edgecolor(self._edgecolor)
+        if self._highlight_mask is not None:
+            self.highlight_mask = self._highlight_mask
 
     def _get_normalization(self, values: np.ndarray) -> Normalize:
         """Determine the normalization method and return the normalization object."""
@@ -247,14 +287,17 @@ class Scatter(Artist):
             )
             self.size = 50  # Default size
             self.alpha = 1  # Default alpha
+            self.highlight_mask = None  # Reset highlight mask
             self.color_indices = 0
         else:
             self._mpl_artists["scatter"].set_offsets(
                 self._data
             )  # Somehow resets the size and alpha
+            self.highlight_mask = self._highlight_mask
             self.color_indices = self._color_indices
             self.size = self._size
             self.alpha = self._alpha
+            
 
     def _validate_categorical_colormap(self):
         """Validate settings for a categorical colormap."""
