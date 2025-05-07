@@ -313,7 +313,6 @@ class Scatter(Artist):
             )  # Somehow resets the size and alpha
             self.size = self._size
             self.alpha = self._alpha
-            self.highlighted = self._highlighted
             self.color_indices = self._color_indices
 
     def _validate_categorical_colormap(self):
