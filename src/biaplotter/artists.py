@@ -69,7 +69,7 @@ class Scatter(Artist):
         self._alpha = self.ALPHA  # Default alpha
         self._size = self.SIZE  # Default size
         self._edgecolor = "white"  # Default edge color
-        self._highlight_edgecolor = "blue" # Default highlight edge color
+        self._highlight_edgecolor = "black"  # Default highlight edge color
         self._highlight_mask = None  # Initialize highlight mask
         self.draw()  # Initial draw of the scatter plot
 
@@ -148,13 +148,15 @@ class Scatter(Artist):
         sizes = np.full(len(self._data), self.SIZE, dtype=float)
         sizes[mask] *= 2
 
+        # Update edge colors: use highlight edge color for highlighted points
+        edge_colors = np.array([self._edgecolor] * len(self._data), dtype=object)
+        edge_colors[self._highlight_mask] = self._highlight_edgecolor
 
-        # Apply the updated sizes, alphas, and edge color to the scatter plot
-        self.size = sizes
+        # Apply the updated alpha and size to the scatter plot
         self.alpha = alphas
-        edgecolors = np.full(len(self._data), self._edgecolor, dtype=object)
-        edgecolors[mask] = self._highlight_edgecolor
-        self._mpl_artists["scatter"].set_edgecolor(edgecolors)
+        self.size = sizes
+        if "scatter" in self._mpl_artists.keys():
+            self._mpl_artists["scatter"].set_edgecolor(edge_colors)
 
     @property
     def overlay_visible(self) -> bool:
