@@ -129,8 +129,6 @@ class Scatter(Artist):
     def highlight_mask(self, mask: Union[np.ndarray, None]):
         """Sets the highlight mask and applies the highlighting effects."""
         if mask is None or len(mask) == 0:
-            # Reset all points to default size, alpha, and edge color
-            self.size = 50
             self.alpha = self.ALPHA
             self.size = self.SIZE
             self._mpl_artists["scatter"].set_edgecolor(self._edgecolor)
