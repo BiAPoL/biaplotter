@@ -301,7 +301,6 @@ class Scatter(Artist):
             self._remove_artists()
             # Create a new scatter plot with the updated data
             self._mpl_artists["scatter"] = self.ax.scatter(
-                self._data[:, 0], self._data[:, 1]
             )
             self.size = self.SIZE  # Default size
             self.alpha = self.ALPHA  # Default alpha
