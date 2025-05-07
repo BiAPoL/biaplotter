@@ -67,6 +67,7 @@ class Scatter(Artist):
         self.data = data
         self._alpha = 1  # Default alpha
         self._size = 50  # Default size
+        self._edgecolor = "white"  # Default edge color
         self.draw()  # Initial draw of the scatter plot
 
     @property
@@ -201,14 +202,14 @@ class Scatter(Artist):
             self._mpl_artists["scatter"].set_facecolor(
                 self._scatter_overlay_rgba
             )
-            self._mpl_artists["scatter"].set_edgecolor("white")
+            self._mpl_artists["scatter"].set_edgecolor(self._edgecolor)
         else:
             # Set colors to the first color of the colormap (index 0)
             default_rgba = self.color_indices_to_rgba(
                 np.zeros_like(indices)
             )
             self._mpl_artists["scatter"].set_facecolor(default_rgba)
-            self._mpl_artists["scatter"].set_edgecolor("white")
+            self._mpl_artists["scatter"].set_edgecolor(self._edgecolor)
 
     def _get_normalization(self, values: np.ndarray) -> Normalize:
         """Determine the normalization method and return the normalization object."""
