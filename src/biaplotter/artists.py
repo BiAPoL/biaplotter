@@ -315,6 +315,7 @@ class Histogram2D(Artist):
         super().__init__(ax, data, overlay_colormap, color_indices)
         self._histogram = None
         self._overlay_histogram_rgba = None  # Store precomputed overlay image
+        self._bin_alpha = None
         self._bins = bins
         self._histogram_colormap = BiaColormap(histogram_colormap)
         self._histogram_interpolation = "nearest"
