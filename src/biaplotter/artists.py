@@ -296,11 +296,10 @@ class Scatter(Artist):
             self._mpl_artists["scatter"].set_offsets(
                 self._data
             )  # Somehow resets the size and alpha
-            self.highlight_mask = self._highlight_mask
-            self.color_indices = self._color_indices
             self.size = self._size
             self.alpha = self._alpha
-            
+            self.highlight_mask = self._highlight_mask
+            self.color_indices = self._color_indices
 
     def _validate_categorical_colormap(self):
         """Validate settings for a categorical colormap."""
