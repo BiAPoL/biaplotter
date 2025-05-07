@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import numpy as np
+
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional, Union
 
@@ -164,6 +166,51 @@ class CanvasWidget(BaseNapariMPLWidget):
 
         for selector in self.selectors.values():
             selector.selection_applied_signal.connect(self._on_finish_drawing)
+
+        # Connect pick event to on_pick method
+        self.canvas.mpl_connect("pick_event", self._on_pick)
+
+    def _on_pick(self, event):
+        """
+        Handles pick events for the scatter artist.
+
+        If the scatter artist is the active artist and no selectors are active:
+        - Toggles highlighting for the picked point.
+
+        Parameters
+        ----------
+        event : matplotlib.backend_bases.PickEvent
+            The pick event triggered by the user.
+        """
+        # Ensure the active artist is a Scatter instance
+        if not isinstance(self.active_artist, Scatter):
+            return
+
+        # Ensure no selectors are active
+        if self.active_selector is not None:
+            return
+
+        # Ensure the event is for the scatter artist
+        if event.artist != self.active_artist._mpl_artists["scatter"]:
+            return
+
+        mouse_event = event.mouseevent
+        scatter = self.active_artist
+
+        # Single click: Toggle highlight for the picked point
+        print(f"xdata: {mouse_event.xdata}, ydata: {mouse_event.ydata}")
+        ind = event.ind
+        if ind is None or len(ind) == 0:
+            return
+
+        point_id = scatter.ids[ind[0]]  # Get the ID of the picked point
+        if scatter.highlighted is None:
+            scatter.highlighted = np.zeros(len(scatter.data), dtype=bool)
+
+        # Toggle highlight for the picked point
+        highlighted = scatter.highlighted
+        highlighted[ind[0]] = not highlighted[ind[0]]
+        scatter.highlighted = highlighted
 
     def _on_finish_drawing(self, *args):
         """
