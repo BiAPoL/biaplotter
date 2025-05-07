@@ -329,6 +329,28 @@ class Histogram2D(Artist):
         self.draw()
 
     @property
+    def bin_alpha(self) -> np.ndarray:
+        """Gets or sets the alpha values for the bins.
+
+        Returns
+        -------
+        bin_alpha : np.ndarray
+            Alpha values for each bin.
+        """
+        if self._bin_alpha is None:
+            # Default to fully opaque if not set
+            self._bin_alpha = np.ones_like(self._histogram[0])
+        return self._bin_alpha
+
+    @bin_alpha.setter
+    def bin_alpha(self, value: np.ndarray):
+        """Sets the alpha values for the bins."""
+        if value.shape != self._histogram[0].shape:
+            raise ValueError("Alpha array must match the shape of the histogram.")
+        self._bin_alpha = value
+        self._refresh(force_redraw=False)
+
+    @property
     def bins(self) -> int:
         """Gets or sets the number of bins for the histogram.
 
