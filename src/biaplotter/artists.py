@@ -204,16 +204,20 @@ class Scatter(Artist):
         rgba = colormap(norm(indices))
         return rgba
     
-    def highlight_points_by_ids(self, ids: Union[int, List[int], None] = None, color: str = None):
+    def highlight_points_by_ids(
+        self, ids: Union[int, List[int], None] = None, color: str = None, unhighlight: bool = False
+    ):
         """
-        Highlights points in the scatter plot based on their IDs or resets all points if no IDs are provided.
+        Highlights or unhighlights points in the scatter plot based on their IDs.
 
         Parameters
         ----------
         ids : int, List[int], or None, optional
-            A single ID, a list of IDs to highlight, or None to reset all points.
+            A single ID, a list of IDs to highlight/unhighlight, or None to reset all points.
         color : str or tuple, optional
             The color to use for the highlighted points. If None, the default highlight edge color is used.
+        unhighlight : bool, optional
+            If True, removes the specified IDs from the highlighted points. Default is False.
         """
         if color is not None:
             self._highlight_edgecolor = color
@@ -227,7 +231,18 @@ class Scatter(Artist):
 
         # Find the indices of the points corresponding to the given IDs
         highlight_indices = np.isin(self.ids, ids)
-        self.highlighted = highlight_indices
+
+        if unhighlight:
+            # Remove the specified IDs from the highlighted points
+            if self._highlighted is not None:
+                self._highlighted[highlight_indices] = False
+        else:
+            # Add the specified IDs to the highlighted points
+            if self._highlighted is None:
+                self._highlighted = np.zeros(len(self._data), dtype=bool)
+            self._highlighted[highlight_indices] = True
+
+        self.highlighted = self._highlighted
 
     def _colorize(self, indices: np.ndarray):
         """
