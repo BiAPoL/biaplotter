@@ -692,6 +692,9 @@ class Histogram2D(Artist):
         self._histogram_rgba = self.color_indices_to_rgba(
             counts.T, is_overlay=False
         )
+        # Apply bin alpha values to the RGBA array
+        if self._bin_alpha is not None:
+            self._histogram_rgba[..., -1] *= self.bin_alpha.T
         self._mpl_artists["histogram_image"] = self.ax.imshow(
             self._histogram_rgba,
             extent=[x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]],
