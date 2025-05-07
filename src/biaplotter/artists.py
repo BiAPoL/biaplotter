@@ -621,7 +621,7 @@ class Histogram2D(Artist):
                 highlighted_bins[bin_x, bin_y] = True
 
         # Update alpha values: half transparent for bins without highlighted points
-        alphas = np.full_like(self._histogram[0], 0.5)
+        alphas = np.full_like(self._histogram[0], 0.25)
         alphas[highlighted_bins] = 1  # Fully opaque for highlighted bins
         self.bin_alpha = alphas
 
