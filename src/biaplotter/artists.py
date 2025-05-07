@@ -50,7 +50,8 @@ class Scatter(Artist):
     >>> scatter.color_indices = np.linspace(start=0, stop=5, num=100, endpoint=False, dtype=int)
     >>> plt.show()
     """
-
+    SIZE = 50  #: Default size of the scatter points
+    ALPHA = 1  #: Default alpha of the scatter points
     def __init__(
         self,
         ax: plt.Axes = None,
@@ -65,8 +66,8 @@ class Scatter(Artist):
         self._overlay_visible = True
         self._color_normalization_method = "linear"
         self.data = data
-        self._alpha = 1  # Default alpha
-        self._size = 50  # Default size
+        self._alpha = self.ALPHA  # Default alpha
+        self._size = self.SIZE  # Default size
         self._edgecolor = "white"  # Default edge color
         self._highlight_edgecolor = "blue" # Default highlight edge color
         self._highlight_mask = None  # Initialize highlight mask
@@ -130,7 +131,8 @@ class Scatter(Artist):
         if mask is None or len(mask) == 0:
             # Reset all points to default size, alpha, and edge color
             self.size = 50
-            self.alpha = 1
+            self.alpha = self.ALPHA
+            self.size = self.SIZE
             self._mpl_artists["scatter"].set_edgecolor(self._edgecolor)
             self._highlight_mask = None
             return
@@ -140,13 +142,14 @@ class Scatter(Artist):
 
         self._highlight_mask = mask
 
-        # Update sizes: double the size for highlighted points, keep others the same
-        sizes = np.full(len(self._data), 50)
+        # Update alpha: make non-highlighted points more transparent
+        alphas = np.full(len(self._data), self.ALPHA, dtype=float)
+        alphas[~mask] *= 0.25
+
+        # Update sizes: double the size for highlighted points
+        sizes = np.full(len(self._data), self.SIZE, dtype=float)
         sizes[mask] *= 2
 
-        # Update alpha: make non-highlighted points half transparent
-        alphas = np.full(len(self._data), 1, dtype=float)
-        alphas[~mask] *= 0.5
 
         # Apply the updated sizes, alphas, and edge color to the scatter plot
         self.size = sizes
@@ -285,8 +288,8 @@ class Scatter(Artist):
             self._mpl_artists["scatter"] = self.ax.scatter(
                 self._data[:, 0], self._data[:, 1]
             )
-            self.size = 50  # Default size
-            self.alpha = 1  # Default alpha
+            self.size = self.SIZE  # Default size
+            self.alpha = self.ALPHA  # Default alpha
             self.highlight_mask = None  # Reset highlight mask
             self.color_indices = 0
         else:
