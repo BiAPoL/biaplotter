@@ -212,8 +212,8 @@ class Scatter(Artist):
         ----------
         ids : int, List[int], or None, optional
             A single ID, a list of IDs to highlight, or None to reset all points.
-        color : str, optional
-            The edge color to use for highlighted points.
+        color : str or tuple, optional
+            The color to use for the highlighted points. If None, the default highlight edge color is used.
         """
         if color is not None:
             self._highlight_edgecolor = color
