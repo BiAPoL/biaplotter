@@ -200,7 +200,6 @@ class CanvasWidget(BaseNapariMPLWidget):
             return
 
         mouse_event = event.mouseevent
-        scatter = self.active_artist
 
         # Single click: Toggle highlight for the picked point
         self._xdata_clicked = mouse_event.xdata
