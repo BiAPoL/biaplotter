@@ -639,6 +639,7 @@ class CanvasWidget(BaseNapariMPLWidget):
 
     def hide_color_overlay(self, checked: bool):
         """Deprecated method to hide the color overlay."""
+        import warnings
         warnings.warn(
             "hide_color_overlay is deprecated after 0.3.0. Use show_color_overlay setter instead.",
             DeprecationWarning,
