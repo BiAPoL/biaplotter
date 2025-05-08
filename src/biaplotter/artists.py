@@ -113,56 +113,6 @@ class Scatter(Artist):
         self._colorize(self._color_indices)
 
     @property
-    def highlighted(self) -> Union[np.ndarray, None]:
-        """Gets or sets the highlight mask for the scatter plot.
-
-        The mask is a boolean array where `True` indicates points to highlight.
-
-        Returns
-        -------
-        highlighted : np.ndarray or None
-            The current highlight mask.
-        """
-        return self._highlighted
-
-    @highlighted.setter
-    def highlighted(self, mask: Union[np.ndarray, None]):
-        """Sets the highlight mask and applies the highlighting effects."""
-        if self._data is None or len(self._data) == 0:
-            self._highlighted = None
-            return
-        
-        if mask is None or len(mask) == 0:
-            self.alpha = self.ALPHA
-            self.size = self.SIZE
-            self._mpl_artists["scatter"].set_edgecolor(self._edgecolor)
-            self._highlighted = None
-            return
-
-        if mask.shape != (len(self._data),):
-            raise ValueError("Highlight mask must be a 1D boolean array of the same length as the data.")
-
-        self._highlighted = mask
-
-        # Update alpha: make non-highlighted points more transparent
-        alphas = np.full(len(self._data), self.ALPHA, dtype=float)
-        alphas[~mask] *= 0.25
-
-        # Update sizes: double the size for highlighted points
-        sizes = np.full(len(self._data), self.SIZE, dtype=float)
-        sizes[mask] *= 2
-
-        # Update edge colors: use highlight edge color for highlighted points
-        edge_colors = np.array([self._edgecolor] * len(self._data), dtype=object)
-        edge_colors[self._highlighted] = self._highlight_edgecolor
-
-        # Apply the updated alpha and size to the scatter plot
-        self.alpha = alphas
-        self.size = sizes
-        if "scatter" in self._mpl_artists.keys():
-            self._mpl_artists["scatter"].set_edgecolor(edge_colors)
-
-    @property
     def overlay_visible(self) -> bool:
         return self._overlay_visible
 
@@ -207,46 +157,6 @@ class Scatter(Artist):
 
         rgba = colormap(norm(indices))
         return rgba
-    
-    def highlight_data_by_ids(
-        self, ids: Union[int, List[int], None] = None, color: str = None, unhighlight: bool = False
-    ):
-        """
-        Highlights or unhighlights points in the scatter plot based on their IDs.
-
-        Parameters
-        ----------
-        ids : int, List[int], or None, optional
-            A single ID, a list of IDs to highlight/unhighlight, or None to reset all points.
-        color : str or tuple, optional
-            The color to use for the highlighted points. If None, the default highlight edge color is used.
-        unhighlight : bool, optional
-            If True, removes the specified IDs from the highlighted points. Default is False.
-        """
-        if color is not None:
-            self._highlight_edgecolor = color
-
-        if ids is None or len(ids) == 0:
-            self.highlighted = None
-            return
-
-        if isinstance(ids, int):
-            ids = [ids]
-
-        # Find the indices of the points corresponding to the given IDs
-        highlight_indices = np.isin(self.ids, ids)
-
-        if unhighlight:
-            # Remove the specified IDs from the highlighted points
-            if self._highlighted is not None:
-                self._highlighted[highlight_indices] = False
-        else:
-            # Add the specified IDs to the highlighted points
-            if self._highlighted is None:
-                self._highlighted = np.zeros(len(self._data), dtype=bool)
-            self._highlighted[highlight_indices] = True
-
-        self.highlighted = self._highlighted
 
     def _colorize(self, indices: np.ndarray):
         """
@@ -298,6 +208,36 @@ class Scatter(Artist):
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", r"All-NaN slice encountered")
             return normalization_func()
+
+    def _highlight_data(self, indices: np.ndarray):
+        """Highlight data points based on the provided indices."""
+        if indices is None or len(indices) == 0:
+            self.alpha = self.ALPHA
+            self.size = self.SIZE
+            self._mpl_artists["scatter"].set_edgecolor(self._edgecolor)
+            self._highlighted = None
+            return
+
+        if indices.shape != (len(self._data),):
+            raise ValueError("Highlight indices must be a 1D boolean array of the same length as the data.")
+
+        # Update alpha: make non-highlighted points more transparent
+        alphas = np.full(len(self._data), self.ALPHA, dtype=float)
+        alphas[~indices] *= 0.25
+
+        # Update sizes: double the size for highlighted points
+        sizes = np.full(len(self._data), self.SIZE, dtype=float)
+        sizes[indices] *= 2
+
+        # Update edge colors: use highlight edge color for highlighted points
+        edge_colors = np.array([self._edgecolor] * len(self._data), dtype=object)
+        edge_colors[self._highlighted] = self._highlight_edgecolor
+
+        # Apply the updated alpha and size to the scatter plot
+        self.alpha = alphas
+        self.size = sizes
+        if "scatter" in self._mpl_artists.keys():
+            self._mpl_artists["scatter"].set_edgecolor(edge_colors)
 
     def _refresh(self, force_redraw: bool = True):
         """Creates the scatter plot with the data and default properties."""
@@ -455,54 +395,6 @@ class Histogram2D(Artist):
         self._refresh(force_redraw=False)
 
     @property
-    def highlighted(self) -> Union[np.ndarray, None]:
-        """Gets or sets the highlight mask for the histogram.
-
-        The mask is a boolean array where `True` indicates points to highlight.
-
-        Returns
-        -------
-        highlighted : np.ndarray or None
-            The current highlight mask.
-        """
-        return self._highlighted
-
-    @highlighted.setter
-    def highlighted(self, mask: Union[np.ndarray, None]):
-        """Sets the highlight mask and applies the highlighting effects."""
-        if self._data is None or len(self._data) == 0:
-            self._highlighted = None
-            return
-        
-        if mask is None or len(mask) == 0:
-            # Reset all bins to fully opaque
-            self.bin_alpha = np.ones_like(self._histogram[0])
-            self._highlighted = None
-            return
-
-        if mask.shape != (len(self._data),):
-            raise ValueError("Highlight mask must be a 1D boolean array of the same length as the data.")
-
-        self._highlighted = mask
-
-        # Identify bins containing the highlighted points
-        x_edges, y_edges = self._histogram[1], self._histogram[2]
-        highlighted_bins = np.zeros_like(self._histogram[0], dtype=bool)
-
-        for idx in np.where(mask)[0]:
-            x, y = self._data[idx]
-            bin_x = np.digitize(x, x_edges) - 1
-            bin_y = np.digitize(y, y_edges) - 1
-            if 0 <= bin_x < highlighted_bins.shape[0] and 0 <= bin_y < highlighted_bins.shape[1]:
-                highlighted_bins[bin_x, bin_y] = True
-
-        # Update alpha values: half transparent for bins without highlighted points
-        alphas = np.full_like(self._histogram[0], 0.25)
-        alphas[highlighted_bins] = 1  # Fully opaque for highlighted bins
-        self.bin_alpha = alphas
-        self.draw()
-
-    @property
     def histogram(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Returns the 2D histogram array and edges.
 
@@ -655,40 +547,6 @@ class Histogram2D(Artist):
 
         return rgba
 
-    def highlight_data_by_ids(self, ids: Union[int, List[int], None] = None, unhighlight: bool = False):
-        """
-        Highlights bins in the histogram that contain points with the specified IDs.
-        Bins without the desired points are made half transparent.
-
-        Parameters
-        ----------
-        ids : int, List[int], or None, optional
-            A single ID, a list of IDs to highlight, or None to reset all bins.
-        unhighlight : bool, optional
-            If True, removes the specified IDs from the highlighted bins. Default is False.
-        """
-        if ids is None or len(ids) == 0:
-            self.highlighted = None
-            return
-
-        if isinstance(ids, int):
-            ids = [ids]
-
-        # Find the indices of the points corresponding to the given IDs
-        highlight_indices = np.isin(self.ids, ids)
-
-        if unhighlight:
-            # Remove the specified IDs from the highlighted bins
-            if self._highlighted is not None:
-                self._highlighted[highlight_indices] = False
-        else:
-            # Add the specified IDs to the highlighted bins
-            if self._highlighted is None:
-                self._highlighted = np.zeros(len(self._data), dtype=bool)
-            self._highlighted[highlight_indices] = True
-        
-        self.highlighted = self._highlighted
-
     def indices_in_patches_above_threshold(self, threshold: int) -> List[int]:
         """
         Returns the indices of the points that fall into the bins
@@ -807,6 +665,34 @@ class Histogram2D(Artist):
         }
 
         return norm_dispatch.get((is_categorical, norm_method))()
+
+    def _highlight_data(self, indices: np.ndarray):
+        """Highlight data points based on the provided indices."""
+        if indices is None or len(indices) == 0:
+            # Reset all bins to fully opaque
+            self.bin_alpha = np.ones_like(self._histogram[0])
+            self._highlighted = None
+            return
+
+        if indices.shape != (len(self._data),):
+            raise ValueError("Highlight mask must be a 1D boolean array of the same length as the data.")
+
+        # Identify bins containing the highlighted points
+        x_edges, y_edges = self._histogram[1], self._histogram[2]
+        highlighted_bins = np.zeros_like(self._histogram[0], dtype=bool)
+
+        for idx in np.where(indices)[0]:
+            x, y = self._data[idx]
+            bin_x = np.digitize(x, x_edges) - 1
+            bin_y = np.digitize(y, y_edges) - 1
+            if 0 <= bin_x < highlighted_bins.shape[0] and 0 <= bin_y < highlighted_bins.shape[1]:
+                highlighted_bins[bin_x, bin_y] = True
+
+        # Update alpha values: half transparent for bins without highlighted points
+        alphas = np.full_like(self._histogram[0], 0.25)
+        alphas[highlighted_bins] = 1  # Fully opaque for highlighted bins
+        self.bin_alpha = alphas
+        self.draw()
 
     def _is_categorical_colormap(self, colormap):
         """

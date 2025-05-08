@@ -103,6 +103,13 @@ class Artist(ABC):
         raise NotImplementedError(
             "This method should be implemented in the derived class."
         )
+    
+    @abstractmethod
+    def _highlight_data(self, indices: np.ndarray):
+        """Highlight data points based on the provided indices."""
+        raise NotImplementedError(
+            "This method should be implemented in the derived class."
+        )
 
     @abstractmethod
     def color_indices_to_rgba(self, indices: np.ndarray) -> np.ndarray:
@@ -333,6 +340,62 @@ class Artist(ABC):
         """
         self.ax.yaxis.label.set_color(value)
     
+    @property
+    def highlighted(self) -> np.ndarray:
+        """Gets or sets the highlighted data points."""
+        return self._highlighted
+    
+    @highlighted.setter
+    def highlighted(self, value: np.ndarray):
+        """Sets the highlighted data points."""
+        if self._data is None or len(self._data) == 0:
+            self._highlighted = None
+            return
+        self._highlight_data(value)
+        self._highlighted = value
+
+    def highlight_data_by_ids(
+        self, ids: Union[int, List[int], None] = None, color: Union[str, tuple] = None, unhighlight: bool = False
+    ):
+        """
+        Highlights or unhighlights data (points/bins) based on their IDs.
+
+        Parameters
+        ----------
+        ids : int, List[int], or None, optional
+            A single ID, a list of IDs to highlight/unhighlight, or None to reset all highlighted data.
+        color : str or tuple, optional
+            The color to use for the highlighted data (points/bins).
+            Not used if histogram artist.
+        unhighlight : bool, optional
+            If True, removes the specified IDs from the highlighted data.
+            Default is False.
+        """
+        if color is not None and hasattr(self, "_highlight_edgecolor"):
+            self._highlight_edgecolor = color
+
+        if ids is None or len(ids) == 0:
+            self.highlighted = None
+            return
+
+        if isinstance(ids, int):
+            ids = [ids]
+
+        # Find the indices of the points corresponding to the given IDs
+        highlight_indices = np.isin(self.ids, ids)
+
+        if unhighlight:
+            # Remove the specified IDs from the highlighted bins
+            if self._highlighted is not None:
+                self._highlighted[highlight_indices] = False
+        else:
+            # Add the specified IDs to the highlighted bins
+            if self._highlighted is None:
+                self._highlighted = np.zeros(len(self._data), dtype=bool)
+            self._highlighted[highlight_indices] = True
+        
+        self.highlighted = self._highlighted
+
     def draw(self):
         """Draws or redraws the artist."""
         self.ax.figure.canvas.draw_idle()
