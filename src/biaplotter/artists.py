@@ -415,6 +415,7 @@ class Histogram2D(Artist):
             raise ValueError("Alpha array must match the shape of the histogram.")
         self._bin_alpha = value
         self._refresh(force_redraw=False)
+        self._colorize(self._color_indices)
 
     @property
     def bins(self) -> int:
