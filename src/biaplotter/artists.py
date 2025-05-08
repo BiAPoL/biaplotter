@@ -69,7 +69,7 @@ class Scatter(Artist):
         self._alpha = self.ALPHA  # Default alpha
         self._size = self.SIZE  # Default size
         self._edgecolor = "white"  # Default edge color
-        self._highlight_edgecolor = "black"  # Default highlight edge color
+        self._highlight_edgecolor = "magenta"  # Default highlight edge color
         self._highlighted = None  # Initialize highlight mask
         self.draw()  # Initial draw of the scatter plot
 
