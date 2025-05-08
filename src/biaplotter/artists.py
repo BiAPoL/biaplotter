@@ -500,8 +500,6 @@ class Histogram2D(Artist):
         alphas = np.full_like(self._histogram[0], 0.25)
         alphas[highlighted_bins] = 1  # Fully opaque for highlighted bins
         self.bin_alpha = alphas
-        self._refresh(force_redraw=False)
-        self._colorize(self._color_indices)
         self.draw()
 
     @property
