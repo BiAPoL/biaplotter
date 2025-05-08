@@ -208,7 +208,7 @@ class Scatter(Artist):
         rgba = colormap(norm(indices))
         return rgba
     
-    def highlight_points_by_ids(
+    def highlight_data_by_ids(
         self, ids: Union[int, List[int], None] = None, color: str = None, unhighlight: bool = False
     ):
         """
@@ -655,7 +655,7 @@ class Histogram2D(Artist):
 
         return rgba
 
-    def highlight_bins_by_ids(self, ids: Union[int, List[int], None] = None):
+    def highlight_data_by_ids(self, ids: Union[int, List[int], None] = None, unhighlight: bool = False):
         """
         Highlights bins in the histogram that contain points with the specified IDs.
         Bins without the desired points are made half transparent.
@@ -664,10 +664,11 @@ class Histogram2D(Artist):
         ----------
         ids : int, List[int], or None, optional
             A single ID, a list of IDs to highlight, or None to reset all bins.
+        unhighlight : bool, optional
+            If True, removes the specified IDs from the highlighted bins. Default is False.
         """
         if ids is None or len(ids) == 0:
-            # Reset all bins to fully opaque
-            self.bin_alpha = np.ones_like(self._histogram[0])
+            self.highlighted = None
             return
 
         if isinstance(ids, int):
@@ -676,21 +677,17 @@ class Histogram2D(Artist):
         # Find the indices of the points corresponding to the given IDs
         highlight_indices = np.isin(self.ids, ids)
 
-        # Identify bins containing the highlighted points
-        x_edges, y_edges = self._histogram[1], self._histogram[2]
-        highlighted_bins = np.zeros_like(self._histogram[0], dtype=bool)
-
-        for idx in np.where(highlight_indices)[0]:
-            x, y = self._data[idx]
-            bin_x = np.digitize(x, x_edges) - 1
-            bin_y = np.digitize(y, y_edges) - 1
-            if 0 <= bin_x < highlighted_bins.shape[0] and 0 <= bin_y < highlighted_bins.shape[1]:
-                highlighted_bins[bin_x, bin_y] = True
-
-        # Update alpha values: half transparent for bins without highlighted points
-        alphas = np.full_like(self._histogram[0], 0.25)
-        alphas[highlighted_bins] = 1  # Fully opaque for highlighted bins
-        self.bin_alpha = alphas
+        if unhighlight:
+            # Remove the specified IDs from the highlighted bins
+            if self._highlighted is not None:
+                self._highlighted[highlight_indices] = False
+        else:
+            # Add the specified IDs to the highlighted bins
+            if self._highlighted is None:
+                self._highlighted = np.zeros(len(self._data), dtype=bool)
+            self._highlighted[highlight_indices] = True
+        
+        self.highlighted = self._highlighted
 
     def indices_in_patches_above_threshold(self, threshold: int) -> List[int]:
         """
