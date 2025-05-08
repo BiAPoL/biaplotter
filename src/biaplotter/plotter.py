@@ -227,6 +227,13 @@ class CanvasWidget(BaseNapariMPLWidget):
         event : matplotlib.backend_bases.MouseEvent
             The mouse click event triggered by the user.
         """
+        # Ensure no selectors are active
+        if self.active_selector is not None:
+            return
+
+        # Ensure the click is inside the plot
+        if not self._is_click_inside_axes(event):
+            return
         # Handle right-click event
         if event.button == 3:
             for artist in self.artists.values():
@@ -239,14 +246,6 @@ class CanvasWidget(BaseNapariMPLWidget):
         elif event.button == 1:
             # Ensure the active artist is a Histogram2D instance
             if isinstance(self.active_artist, Histogram2D):
-                # Ensure no selectors are active
-                if self.active_selector is not None:
-                    return
-
-                # Ensure the click is inside the plot
-                if not self._is_click_inside_axes(event):
-                    return
-
                 # Print the xdata and ydata of the mouse click
                 print(f"xdata: {event.xdata}, ydata: {event.ydata}")
 
