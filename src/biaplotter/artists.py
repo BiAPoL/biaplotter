@@ -212,6 +212,7 @@ class Scatter(Artist):
     def _highlight_data(self, indices: np.ndarray):
         """Highlight data points based on the provided indices."""
         if indices is None or len(indices) == 0:
+            self.alpha = self.ALPHA
             self.size = self.SIZE
             self._mpl_artists["scatter"].set_edgecolor(self._edgecolor)
             self._highlighted = None
@@ -219,6 +220,10 @@ class Scatter(Artist):
 
         if indices.shape != (len(self._data),):
             raise ValueError("Highlight indices must be a 1D boolean array of the same length as the data.")
+
+        # Update alpha: make non-highlighted points more transparent
+        alphas = np.full(len(self._data), self.ALPHA, dtype=float)
+        alphas[~indices] *= 0.25
 
         # Update sizes: double the size for highlighted points
         sizes = np.full(len(self._data), self.SIZE, dtype=float)
@@ -228,7 +233,8 @@ class Scatter(Artist):
         edge_colors = np.array([self._edgecolor] * len(self._data), dtype=object)
         edge_colors[indices] = self._highlight_edgecolor
 
-        # Apply the updated size adn edge color to the scatter plot
+        # Apply the updated alpha and size to the scatter plot
+        self.alpha = alphas
         self.size = sizes
         if "scatter" in self._mpl_artists.keys():
             self._mpl_artists["scatter"].set_edgecolor(edge_colors)
