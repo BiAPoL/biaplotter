@@ -219,41 +219,39 @@ class CanvasWidget(BaseNapariMPLWidget):
         Handles mouse click events for the active artist.
 
         If the active artist is a Histogram2D and no selectors are active:
-        - Toggles highlighting for the clicked bin.
-
-        If the user double-clicks:
-        - Clears all highlighted points in Scatter and all highlighted bins in Histogram2D.
+        - Left-clicking toggles highlighting for the clicked bin.
+        - Right-clicking clears all highlighted points in Scatter and all highlighted bins in Histogram2D.
 
         Parameters
         ----------
         event : matplotlib.backend_bases.MouseEvent
             The mouse click event triggered by the user.
         """
-        # Handle double-click to clear all highlights
-        if event.dblclick:
+        # Handle right-click event
+        if event.button == 3:
             for artist in self.artists.values():
                 if isinstance(artist, Scatter):
                     artist.highlighted = None  # Clear highlighted points
                 elif isinstance(artist, Histogram2D):
                     artist.highlighted = None  # Clear highlighted bins
-            self.canvas.draw_idle()  # Redraw the canvas
+            self.canvas.draw_idle()
             return
+        elif event.button == 1:
+            # Ensure the active artist is a Histogram2D instance
+            if isinstance(self.active_artist, Histogram2D):
+                # Ensure no selectors are active
+                if self.active_selector is not None:
+                    return
 
-        # Ensure the active artist is a Histogram2D instance
-        if isinstance(self.active_artist, Histogram2D):
-            # Ensure no selectors are active
-            if self.active_selector is not None:
-                return
+                # Ensure the click is inside the plot
+                if not self._is_click_inside_axes(event):
+                    return
 
-            # Ensure the click is inside the plot
-            if not self._is_click_inside_axes(event):
-                return
+                # Print the xdata and ydata of the mouse click
+                print(f"xdata: {event.xdata}, ydata: {event.ydata}")
 
-            # Print the xdata and ydata of the mouse click
-            print(f"xdata: {event.xdata}, ydata: {event.ydata}")
-
-            # Toggle the highlight state of the clicked bin
-            self._toggle_bin_highlight(event.xdata, event.ydata)
+                # Toggle the highlight state of the clicked bin
+                self._toggle_bin_highlight(event.xdata, event.ydata)
 
     def _is_click_inside_axes(self, event):
         """
