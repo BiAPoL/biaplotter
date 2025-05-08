@@ -78,6 +78,9 @@ class CanvasWidget(BaseNapariMPLWidget):
 
         # Connect signals
         self._connect_signals()
+        self._xdata_clicked = None
+        self._ydata_clicked = None
+        self._highlighted_point_ids = set()
 
     def _initialize_toolbar(self, label_text: str):
         """
@@ -200,18 +203,36 @@ class CanvasWidget(BaseNapariMPLWidget):
         scatter = self.active_artist
 
         # Single click: Toggle highlight for the picked point
-        print(f"xdata: {mouse_event.xdata}, ydata: {mouse_event.ydata}")
+        self._xdata_clicked = mouse_event.xdata
+        self._ydata_clicked = mouse_event.ydata
         ind = event.ind
         if ind is None or len(ind) == 0:
             return
 
-        point_id = scatter.ids[ind[0]]  # Get the ID of the picked point
+        # Toggle highlight for the picked point
+        self._toggle_point_highlight(ind[0])
+
+    def _toggle_point_highlight(self, index: int):
+        """
+        Toggles the highlight state of a point based on its ID.
+
+        Parameters
+        ----------
+        point_id : int
+            The ID of the point to toggle.
+        """
+        scatter = self.active_artist
         if scatter.highlighted is None:
             scatter.highlighted = np.zeros(len(scatter.data), dtype=bool)
 
         # Toggle highlight for the picked point
         highlighted = scatter.highlighted
-        highlighted[ind[0]] = not highlighted[ind[0]]
+        # Stores or removes the point ID from the highlighted list
+        if highlighted[index]:
+            self._highlighted_point_ids.discard(int(scatter.ids[index]))
+        else:
+            self._highlighted_point_ids.add(int(scatter.ids[index]))
+        highlighted[index] = not highlighted[index]
         scatter.highlighted = highlighted
 
     def _on_click(self, event):
@@ -241,13 +262,14 @@ class CanvasWidget(BaseNapariMPLWidget):
                     artist.highlighted = None  # Clear highlighted points
                 elif isinstance(artist, Histogram2D):
                     artist.highlighted = None  # Clear highlighted bins
+            self._highlighted_point_ids.clear()  # Clear highlighted point IDs
             self.canvas.draw_idle()
             return
         elif event.button == 1:
             # Ensure the active artist is a Histogram2D instance
             if isinstance(self.active_artist, Histogram2D):
-                # Print the xdata and ydata of the mouse click
-                print(f"xdata: {event.xdata}, ydata: {event.ydata}")
+                self._xdata_clicked = event.xdata
+                self._ydata_clicked = event.ydata
 
                 # Toggle the highlight state of the clicked bin
                 self._toggle_bin_highlight(event.xdata, event.ydata)
@@ -303,12 +325,17 @@ class CanvasWidget(BaseNapariMPLWidget):
                 & (histogram.data[:, 1] < y_edges[bin_y + 1])
             )
             indices = np.where(mask)[0]
-            print(f"Indices in bin: {indices}")
             # Toggle the highlight state for the bin
             highlighted = histogram.highlighted
             if np.any(highlighted[indices]):
+                self._highlighted_point_ids.difference_update(
+                    histogram.ids[indices].tolist()
+                )
                 highlighted[indices] = False  # Unhighlight the bin
             else:
+                self._highlighted_point_ids.update(
+                    histogram.ids[indices].tolist()
+                )
                 highlighted[indices] = True  # Highlight the bin
             histogram.highlighted = highlighted
 
