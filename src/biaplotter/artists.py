@@ -222,7 +222,7 @@ class Scatter(Artist):
 
         # Update sizes: double the size for highlighted points
         sizes = np.full(len(self._data), self.SIZE, dtype=float)
-        sizes[indices] *= 2
+        sizes[indices] *= 3
 
         # Update edge colors: use highlight edge color for highlighted points
         edge_colors = np.array([self._edgecolor] * len(self._data), dtype=object)
