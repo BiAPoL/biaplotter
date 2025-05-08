@@ -226,7 +226,7 @@ class Scatter(Artist):
 
         # Update edge colors: use highlight edge color for highlighted points
         edge_colors = np.array([self._edgecolor] * len(self._data), dtype=object)
-        edge_colors[self._highlighted] = self._highlight_edgecolor
+        edge_colors[indices] = self._highlight_edgecolor
 
         # Apply the updated size adn edge color to the scatter plot
         self.size = sizes
