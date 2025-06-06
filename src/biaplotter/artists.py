@@ -663,6 +663,11 @@ class Histogram2D(Artist):
     def _highlight_data(self, indices: np.ndarray):
         """Highlight data points based on the provided indices."""
         if indices is None or len(indices) == 0:
+            # Remove previous highlighted patches if they exist
+            if hasattr(self, "_highlighted_bin_patches"):
+                for patch in self._highlighted_bin_patches:
+                    patch.remove()
+                self._highlighted_bin_patches = []
             # Reset all bins to fully opaque
             self.bin_alpha = np.ones_like(self._histogram[0])
             self._highlighted = None
@@ -686,6 +691,36 @@ class Histogram2D(Artist):
         alphas = np.full_like(self._histogram[0], 0.25)
         alphas[highlighted_bins] = 1  # Fully opaque for highlighted bins
         self.bin_alpha = alphas
+
+        # Draw rectangle patches around highlighted bins
+        # Draw rectangle patches around highlighted bins
+        import matplotlib.patches as mpatches
+
+        # Remove previous rectangle patches if they exist
+        if hasattr(self, "_highlighted_bin_patches"):
+            for patch in self._highlighted_bin_patches:
+                patch.remove()
+        self._highlighted_bin_patches = []
+
+        # Add new rectangle patches for currently highlighted bins
+        for bin_x in range(highlighted_bins.shape[0]):
+            for bin_y in range(highlighted_bins.shape[1]):
+                if highlighted_bins[bin_x, bin_y]:
+                    x_min, x_max = x_edges[bin_x], x_edges[bin_x + 1]
+                    y_min, y_max = y_edges[bin_y], y_edges[bin_y + 1]
+                    rect = mpatches.Rectangle(
+                        (x_min, y_min),
+                        x_max - x_min,
+                        y_max - y_min,
+                        linewidth=2,
+                        edgecolor="magenta",
+                        facecolor="none",
+                        linestyle="dotted",
+                        zorder=10,
+                    )
+                    self.ax.add_patch(rect)
+                    self._highlighted_bin_patches.append(rect)
+
         self.draw()
 
     def _is_categorical_colormap(self, colormap):
