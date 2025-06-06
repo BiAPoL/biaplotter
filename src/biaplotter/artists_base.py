@@ -198,6 +198,8 @@ class Artist(ABC):
         value : (N,) np.ndarray[int]
             Array of IDs. Must have the same length as the data.
         """
+        if self._data is None:
+            raise ValueError("Cannot set ids because data is not initialized.")
         if value is not None and len(value) != len(self._data):
             raise ValueError("Length of ids must match the length of data.")
         self._ids = value
