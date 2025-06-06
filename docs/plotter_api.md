@@ -29,7 +29,7 @@
 
       ~CanvasWidget.artist_changed_signal
       ~CanvasWidget.selector_changed_signal
-      ~CanvasWidget.show_overlay_signal
+      ~CanvasWidget.show_color_overlay_signal
 
    .. rubric:: Properties Documentation
 
@@ -49,5 +49,5 @@
 
    .. autoattribute:: artist_changed_signal
    .. autoattribute:: selector_changed_signal
-   .. autoattribute:: show_overlay_signal
+   .. autoattribute:: show_color_overlay_signal
 ```

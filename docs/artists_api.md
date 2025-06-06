@@ -9,13 +9,14 @@
 
    .. autosummary::
 
-      ~Artist.data
-      ~Artist.visible
       ~Artist.color_indices
+      ~Artist.data
+      ~Artist.ids
       ~Artist.overlay_colormap
+      ~Artist.visible
       ~Artist.x_label_text
-      ~Artist.y_label_text
       ~Artist.x_label_color
+      ~Artist.y_label_text
       ~Artist.y_label_color
 
    .. rubric:: Attributes Summary
@@ -32,13 +33,14 @@
 
    .. rubric:: Properties Documentation
 
-   .. autoattribute:: data
-   .. autoattribute:: visible
    .. autoattribute:: color_indices
+   .. autoattribute:: data
+   .. autoattribute:: ids
    .. autoattribute:: overlay_colormap
+   .. autoattribute:: visible
    .. autoattribute:: x_label_text
-   .. autoattribute:: y_label_text
    .. autoattribute:: x_label_color
+   .. autoattribute:: y_label_text
    .. autoattribute:: y_label_color
 
    .. rubric:: Attributes Documentation
