@@ -209,7 +209,8 @@ class CanvasWidget(BaseNapariMPLWidget):
             return
 
         # Toggle highlight for the picked point
-        self._toggle_point_highlight(ind[0])
+        if mouse_event.button == 1:
+            self._toggle_point_highlight(ind[0])
 
     def _toggle_point_highlight(self, index: int):
         """
