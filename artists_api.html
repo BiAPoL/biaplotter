@@ -405,13 +405,14 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist"><code class="docutils literal notranslate"><span class="pre">Artist</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.data"><code class="docutils literal notranslate"><span class="pre">Artist.data</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.visible"><code class="docutils literal notranslate"><span class="pre">Artist.visible</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.color_indices"><code class="docutils literal notranslate"><span class="pre">Artist.color_indices</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.data"><code class="docutils literal notranslate"><span class="pre">Artist.data</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.ids"><code class="docutils literal notranslate"><span class="pre">Artist.ids</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.overlay_colormap"><code class="docutils literal notranslate"><span class="pre">Artist.overlay_colormap</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.visible"><code class="docutils literal notranslate"><span class="pre">Artist.visible</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.x_label_text"><code class="docutils literal notranslate"><span class="pre">Artist.x_label_text</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.y_label_text"><code class="docutils literal notranslate"><span class="pre">Artist.y_label_text</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.x_label_color"><code class="docutils literal notranslate"><span class="pre">Artist.x_label_color</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.y_label_text"><code class="docutils literal notranslate"><span class="pre">Artist.y_label_text</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.y_label_color"><code class="docutils literal notranslate"><span class="pre">Artist.y_label_color</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.ax"><code class="docutils literal notranslate"><span class="pre">Artist.ax</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.draw"><code class="docutils literal notranslate"><span class="pre">Artist.draw()</span></code></a></li>
@@ -485,28 +486,31 @@ document.write(`
 <p class="rubric">Properties Summary</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#biaplotter.artists.Artist.data" title="biaplotter.artists.Artist.data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">data</span></code></a></p></td>
-<td><p>Gets or sets the data associated with the artist.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#biaplotter.artists.Artist.visible" title="biaplotter.artists.Artist.visible"><code class="xref py py-obj docutils literal notranslate"><span class="pre">visible</span></code></a></p></td>
-<td><p>Gets or sets the visibility of the artist.</p></td>
-</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#biaplotter.artists.Artist.color_indices" title="biaplotter.artists.Artist.color_indices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">color_indices</span></code></a></p></td>
 <td><p>Gets or sets the current color indices used for the artist.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#biaplotter.artists.Artist.data" title="biaplotter.artists.Artist.data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">data</span></code></a></p></td>
+<td><p>Gets or sets the data associated with the artist.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#biaplotter.artists.Artist.ids" title="biaplotter.artists.Artist.ids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ids</span></code></a></p></td>
+<td><p>Gets or sets the IDs associated with the data.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#biaplotter.artists.Artist.overlay_colormap" title="biaplotter.artists.Artist.overlay_colormap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">overlay_colormap</span></code></a></p></td>
 <td><p>Gets or sets the overlay colormap for the artist.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#biaplotter.artists.Artist.x_label_text" title="biaplotter.artists.Artist.x_label_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">x_label_text</span></code></a></p></td>
-<td><p>Gets or sets the x-axis label.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#biaplotter.artists.Artist.visible" title="biaplotter.artists.Artist.visible"><code class="xref py py-obj docutils literal notranslate"><span class="pre">visible</span></code></a></p></td>
+<td><p>Gets or sets the visibility of the artist.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#biaplotter.artists.Artist.y_label_text" title="biaplotter.artists.Artist.y_label_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">y_label_text</span></code></a></p></td>
-<td><p>Gets or sets the y-axis label.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#biaplotter.artists.Artist.x_label_text" title="biaplotter.artists.Artist.x_label_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">x_label_text</span></code></a></p></td>
+<td><p>Gets or sets the x-axis label.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#biaplotter.artists.Artist.x_label_color" title="biaplotter.artists.Artist.x_label_color"><code class="xref py py-obj docutils literal notranslate"><span class="pre">x_label_color</span></code></a></p></td>
 <td><p>Gets or sets the x-axis label color.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#biaplotter.artists.Artist.y_label_color" title="biaplotter.artists.Artist.y_label_color"><code class="xref py py-obj docutils literal notranslate"><span class="pre">y_label_color</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#biaplotter.artists.Artist.y_label_text" title="biaplotter.artists.Artist.y_label_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">y_label_text</span></code></a></p></td>
+<td><p>Gets or sets the y-axis label.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#biaplotter.artists.Artist.y_label_color" title="biaplotter.artists.Artist.y_label_color"><code class="xref py py-obj docutils literal notranslate"><span class="pre">y_label_color</span></code></a></p></td>
 <td><p>Gets or sets the y-axis label color.</p></td>
 </tr>
 </tbody>
@@ -532,41 +536,6 @@ document.write(`
 </div>
 <p class="rubric">Properties Documentation</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="biaplotter.artists.Artist.data">
-<span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#biaplotter.artists.Artist.data" title="Link to this definition">#</a></dt>
-<dd><p>Gets or sets the data associated with the artist.</p>
-<p>Updates colors if color_indices are set. Triggers a draw idle command.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>data</strong> – data for the artist. Does not respond if set to None or empty array.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>(N, 2) np.ndarray</p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<dl class="simple">
-<dt>data_changed_signal<span class="classifier">Signal</span></dt><dd><p>Signal emitted when the data are changed.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="biaplotter.artists.Artist.visible">
-<span class="sig-name descname"><span class="pre">visible</span></span><a class="headerlink" href="#biaplotter.artists.Artist.visible" title="Link to this definition">#</a></dt>
-<dd><p>Gets or sets the visibility of the artist.</p>
-<p>Triggers a draw idle command.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>visible</strong> – visibility of the artist.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="biaplotter.artists.Artist.color_indices">
 <span class="sig-name descname"><span class="pre">color_indices</span></span><a class="headerlink" href="#biaplotter.artists.Artist.color_indices" title="Link to this definition">#</a></dt>
 <dd><p>Gets or sets the current color indices used for the artist.</p>
@@ -587,6 +556,40 @@ document.write(`
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="biaplotter.artists.Artist.data">
+<span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#biaplotter.artists.Artist.data" title="Link to this definition">#</a></dt>
+<dd><p>Gets or sets the data associated with the artist.</p>
+<p>Updates colors if color_indices are set. Triggers a draw idle command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> – data for the artist. Does not respond if set to None or empty array.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>(N, 2) np.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<dl class="simple">
+<dt>data_changed_signal<span class="classifier">Signal</span></dt><dd><p>Signal emitted when the data are changed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biaplotter.artists.Artist.ids">
+<span class="sig-name descname"><span class="pre">ids</span></span><a class="headerlink" href="#biaplotter.artists.Artist.ids" title="Link to this definition">#</a></dt>
+<dd><p>Gets or sets the IDs associated with the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ids</strong> – Array of IDs corresponding to the data points.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>(N,) np.ndarray[int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="biaplotter.artists.Artist.overlay_colormap">
 <span class="sig-name descname"><span class="pre">overlay_colormap</span></span><a class="headerlink" href="#biaplotter.artists.Artist.overlay_colormap" title="Link to this definition">#</a></dt>
 <dd><p>Gets or sets the overlay colormap for the artist.</p>
@@ -601,21 +604,36 @@ document.write(`
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="biaplotter.artists.Artist.visible">
+<span class="sig-name descname"><span class="pre">visible</span></span><a class="headerlink" href="#biaplotter.artists.Artist.visible" title="Link to this definition">#</a></dt>
+<dd><p>Gets or sets the visibility of the artist.</p>
+<p>Triggers a draw idle command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>visible</strong> – visibility of the artist.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="biaplotter.artists.Artist.x_label_text">
 <span class="sig-name descname"><span class="pre">x_label_text</span></span><a class="headerlink" href="#biaplotter.artists.Artist.x_label_text" title="Link to this definition">#</a></dt>
 <dd><p>Gets or sets the x-axis label.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="biaplotter.artists.Artist.y_label_text">
-<span class="sig-name descname"><span class="pre">y_label_text</span></span><a class="headerlink" href="#biaplotter.artists.Artist.y_label_text" title="Link to this definition">#</a></dt>
-<dd><p>Gets or sets the y-axis label.</p>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="biaplotter.artists.Artist.x_label_color">
 <span class="sig-name descname"><span class="pre">x_label_color</span></span><a class="headerlink" href="#biaplotter.artists.Artist.x_label_color" title="Link to this definition">#</a></dt>
 <dd><p>Gets or sets the x-axis label color.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biaplotter.artists.Artist.y_label_text">
+<span class="sig-name descname"><span class="pre">y_label_text</span></span><a class="headerlink" href="#biaplotter.artists.Artist.y_label_text" title="Link to this definition">#</a></dt>
+<dd><p>Gets or sets the y-axis label.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1322,13 +1340,14 @@ of the 2D histogram exceeding a specified threshold counts value.</p>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist"><code class="docutils literal notranslate"><span class="pre">Artist</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.data"><code class="docutils literal notranslate"><span class="pre">Artist.data</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.visible"><code class="docutils literal notranslate"><span class="pre">Artist.visible</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.color_indices"><code class="docutils literal notranslate"><span class="pre">Artist.color_indices</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.data"><code class="docutils literal notranslate"><span class="pre">Artist.data</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.ids"><code class="docutils literal notranslate"><span class="pre">Artist.ids</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.overlay_colormap"><code class="docutils literal notranslate"><span class="pre">Artist.overlay_colormap</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.visible"><code class="docutils literal notranslate"><span class="pre">Artist.visible</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.x_label_text"><code class="docutils literal notranslate"><span class="pre">Artist.x_label_text</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.y_label_text"><code class="docutils literal notranslate"><span class="pre">Artist.y_label_text</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.x_label_color"><code class="docutils literal notranslate"><span class="pre">Artist.x_label_color</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.y_label_text"><code class="docutils literal notranslate"><span class="pre">Artist.y_label_text</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.y_label_color"><code class="docutils literal notranslate"><span class="pre">Artist.y_label_color</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.ax"><code class="docutils literal notranslate"><span class="pre">Artist.ax</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biaplotter.artists.Artist.draw"><code class="docutils literal notranslate"><span class="pre">Artist.draw()</span></code></a></li>
