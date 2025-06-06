@@ -241,7 +241,7 @@ class CanvasWidget(BaseNapariMPLWidget):
 
         If the active artist is a Histogram2D and no selectors are active:
         - Left-clicking toggles highlighting for the clicked bin.
-        - Right-clicking clears all highlighted points in Scatter and all highlighted bins in Histogram2D.
+        - Double-clicking clears all highlighted points in Scatter and all highlighted bins in Histogram2D.
 
         Parameters
         ----------
@@ -255,8 +255,8 @@ class CanvasWidget(BaseNapariMPLWidget):
         # Ensure the click is inside the plot
         if not self._is_click_inside_axes(event):
             return
-        # Handle right-click event
-        if event.button == 3:
+        # Handle double-click event
+        if event.dblclick:
             for artist in self.artists.values():
                 if isinstance(artist, Scatter):
                     artist.highlighted = None  # Clear highlighted points
