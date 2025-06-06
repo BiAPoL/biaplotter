@@ -50,7 +50,8 @@ class Scatter(Artist):
     >>> scatter.color_indices = np.linspace(start=0, stop=5, num=100, endpoint=False, dtype=int)
     >>> plt.show()
     """
-
+    SIZE = 50  #: Default size of the scatter points
+    ALPHA = 1  #: Default alpha of the scatter points
     def __init__(
         self,
         ax: plt.Axes = None,
@@ -65,8 +66,11 @@ class Scatter(Artist):
         self._overlay_visible = True
         self._color_normalization_method = "linear"
         self.data = data
-        self._alpha = 1  # Default alpha
-        self._size = 50  # Default size
+        self._alpha = self.ALPHA  # Default alpha
+        self._size = self.SIZE  # Default size
+        self._edgecolor = "white"  # Default edge color
+        self._highlight_edgecolor = "magenta"  # Default highlight edge color
+        self._highlighted = None  # Initialize highlight mask
         self.draw()  # Initial draw of the scatter plot
 
     @property
@@ -168,14 +172,16 @@ class Scatter(Artist):
             self._mpl_artists["scatter"].set_facecolor(
                 self._scatter_overlay_rgba
             )
-            self._mpl_artists["scatter"].set_edgecolor("white")
+            self._mpl_artists["scatter"].set_edgecolor(self._edgecolor)
         else:
             # Set colors to the first color of the colormap (index 0)
             default_rgba = self.color_indices_to_rgba(
                 np.zeros_like(indices)
             )
             self._mpl_artists["scatter"].set_facecolor(default_rgba)
-            self._mpl_artists["scatter"].set_edgecolor("white")
+            self._mpl_artists["scatter"].set_edgecolor(self._edgecolor)
+        if self._highlighted is not None:
+            self.highlighted = self._highlighted
 
     def _get_normalization(self, values: np.ndarray) -> Normalize:
         """Determine the normalization method and return the normalization object."""
@@ -203,24 +209,49 @@ class Scatter(Artist):
             warnings.filterwarnings("ignore", r"All-NaN slice encountered")
             return normalization_func()
 
+    def _highlight_data(self, indices: np.ndarray):
+        """Highlight data points based on the provided indices."""
+        if indices is None or len(indices) == 0:
+            self.size = self.SIZE
+            self._mpl_artists["scatter"].set_edgecolor(self._edgecolor)
+            self._highlighted = None
+            return
+
+        if indices.shape != (len(self._data),):
+            raise ValueError("Highlight indices must be a 1D boolean array of the same length as the data.")
+
+        # Update sizes: double the size for highlighted points
+        sizes = np.full(len(self._data), self.SIZE, dtype=float)
+        sizes[indices] *= 3
+
+        # Update edge colors: use highlight edge color for highlighted points
+        edge_colors = np.array([self._edgecolor] * len(self._data), dtype=object)
+        edge_colors[indices] = self._highlight_edgecolor
+
+        # Apply the updated size adn edge color to the scatter plot
+        self.size = sizes
+        if "scatter" in self._mpl_artists.keys():
+            self._mpl_artists["scatter"].set_edgecolor(edge_colors)
+
     def _refresh(self, force_redraw: bool = True):
         """Creates the scatter plot with the data and default properties."""
         if force_redraw or self._mpl_artists.get("scatter") is None:
             self._remove_artists()
             # Create a new scatter plot with the updated data
             self._mpl_artists["scatter"] = self.ax.scatter(
-                self._data[:, 0], self._data[:, 1]
+                self._data[:, 0], self._data[:, 1], picker=True
             )
-            self.size = 50  # Default size
-            self.alpha = 1  # Default alpha
+            self.size = self.SIZE  # Default size
+            self.alpha = self.ALPHA  # Default alpha
+            self.highlighted = None  # Reset highlight mask
             self.color_indices = 0
         else:
             self._mpl_artists["scatter"].set_offsets(
                 self._data
             )  # Somehow resets the size and alpha
-            self.color_indices = self._color_indices
             self.size = self._size
             self.alpha = self._alpha
+            self.color_indices = self._color_indices
 
     def _validate_categorical_colormap(self):
         """Validate settings for a categorical colormap."""
@@ -282,7 +313,9 @@ class Histogram2D(Artist):
         super().__init__(ax, data, overlay_colormap, color_indices)
         self._histogram = None
         self._overlay_histogram_rgba = None  # Store precomputed overlay image
+        self._bin_alpha = None
         self._bins = bins
+        self._highlighted = None  # Initialize highlight mask
         self._histogram_colormap = BiaColormap(histogram_colormap)
         self._histogram_interpolation = "nearest"
         self._overlay_interpolation = "nearest"
@@ -294,6 +327,29 @@ class Histogram2D(Artist):
         self._cmin = cmin
         self.data = data
         self.draw()
+
+    @property
+    def bin_alpha(self) -> np.ndarray:
+        """Gets or sets the alpha values for the bins.
+
+        Returns
+        -------
+        bin_alpha : np.ndarray
+            Alpha values for each bin.
+        """
+        if self._bin_alpha is None:
+            # Default to fully opaque if not set
+            self._bin_alpha = np.ones_like(self._histogram[0])
+        return self._bin_alpha
+
+    @bin_alpha.setter
+    def bin_alpha(self, value: np.ndarray):
+        """Sets the alpha values for the bins."""
+        if value.shape != self._histogram[0].shape:
+            raise ValueError("Alpha array must match the shape of the histogram.")
+        self._bin_alpha = value
+        self._refresh(force_redraw=False)
+        self._colorize(self._color_indices)
 
     @property
     def bins(self) -> int:
@@ -544,7 +600,9 @@ class Histogram2D(Artist):
             self._overlay_histogram_rgba = self.color_indices_to_rgba(
                 statistic_histogram.T, is_overlay=True
             )
-        
+        # Apply bin alpha values to the RGBA array
+        if self._bin_alpha is not None:
+            self._overlay_histogram_rgba[..., -1] *= self.bin_alpha.T
         # Update the overlay visibility
         self._remove_artists(["overlay_histogram_image"])
         if self._overlay_visible and self._overlay_histogram_rgba is not None:
@@ -602,6 +660,69 @@ class Histogram2D(Artist):
 
         return norm_dispatch.get((is_categorical, norm_method))()
 
+    def _highlight_data(self, indices: np.ndarray):
+        """Highlight data points based on the provided indices."""
+        if indices is None or len(indices) == 0:
+            # Remove previous highlighted patches if they exist
+            if hasattr(self, "_highlighted_bin_patches"):
+                for patch in self._highlighted_bin_patches:
+                    patch.remove()
+                self._highlighted_bin_patches = []
+            # Reset all bins to fully opaque
+            self.bin_alpha = np.ones_like(self._histogram[0])
+            self._highlighted = None
+            return
+
+        if indices.shape != (len(self._data),):
+            raise ValueError("Highlight mask must be a 1D boolean array of the same length as the data.")
+
+        # Identify bins containing the highlighted points
+        x_edges, y_edges = self._histogram[1], self._histogram[2]
+        highlighted_bins = np.zeros_like(self._histogram[0], dtype=bool)
+
+        for idx in np.where(indices)[0]:
+            x, y = self._data[idx]
+            bin_x = np.digitize(x, x_edges) - 1
+            bin_y = np.digitize(y, y_edges) - 1
+            if 0 <= bin_x < highlighted_bins.shape[0] and 0 <= bin_y < highlighted_bins.shape[1]:
+                highlighted_bins[bin_x, bin_y] = True
+
+        # Update alpha values: half transparent for bins without highlighted points
+        alphas = np.full_like(self._histogram[0], 0.25)
+        alphas[highlighted_bins] = 1  # Fully opaque for highlighted bins
+        self.bin_alpha = alphas
+
+        # Draw rectangle patches around highlighted bins
+        # Draw rectangle patches around highlighted bins
+        import matplotlib.patches as mpatches
+
+        # Remove previous rectangle patches if they exist
+        if hasattr(self, "_highlighted_bin_patches"):
+            for patch in self._highlighted_bin_patches:
+                patch.remove()
+        self._highlighted_bin_patches = []
+
+        # Add new rectangle patches for currently highlighted bins
+        for bin_x in range(highlighted_bins.shape[0]):
+            for bin_y in range(highlighted_bins.shape[1]):
+                if highlighted_bins[bin_x, bin_y]:
+                    x_min, x_max = x_edges[bin_x], x_edges[bin_x + 1]
+                    y_min, y_max = y_edges[bin_y], y_edges[bin_y + 1]
+                    rect = mpatches.Rectangle(
+                        (x_min, y_min),
+                        x_max - x_min,
+                        y_max - y_min,
+                        linewidth=2,
+                        edgecolor="magenta",
+                        facecolor="none",
+                        linestyle="dotted",
+                        zorder=10,
+                    )
+                    self.ax.add_patch(rect)
+                    self._highlighted_bin_patches.append(rect)
+
+        self.draw()
+
     def _is_categorical_colormap(self, colormap):
         """
         Check if the colormap is categorical.
@@ -637,6 +758,9 @@ class Histogram2D(Artist):
         self._histogram_rgba = self.color_indices_to_rgba(
             counts.T, is_overlay=False
         )
+        # Apply bin alpha values to the RGBA array
+        if self._bin_alpha is not None:
+            self._histogram_rgba[..., -1] *= self.bin_alpha.T
         self._mpl_artists["histogram_image"] = self.ax.imshow(
             self._histogram_rgba,
             extent=[x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]],
