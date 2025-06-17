@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Optional, Union
 
 from nap_plot_tools import (CustomToolbarWidget, CustomToolButton,
                             QtColorSpinBox)
-from napari_matplotlib.base import BaseNapariMPLWidget
+from napari_matplotlib.base import BaseNapariMPLWidget, NapariNavigationToolbar
 from psygnal import Signal
 from qtpy.QtWidgets import QHBoxLayout, QLabel, QWidget
 
@@ -20,6 +20,29 @@ if TYPE_CHECKING:
     import napari
 
 icon_folder_path = Path(__file__).parent / "icons"
+
+class NapariNavigationToolbarWithSignals(NapariNavigationToolbar):
+    """A custom navigation toolbar that emits signals when zoom or pan modes are toggled.
+
+    This toolbar inherits from NapariNavigationToolbar and overrides the zoom and pan methods
+    to emit signals when the mode changes.
+    """
+    #. Signal emitted when the zoom mode is toggled
+    zoom_toggled_signal: Signal = Signal(bool)
+    #. Signal emitted when the pan mode is toggled
+    pan_toggled_signal: Signal = Signal(bool)
+    def __init__(self, canvas, parent=None):
+        super().__init__(canvas, parent)
+
+    def zoom(self, *args):
+        super().zoom(*args)
+        # Emit the zoom toggled signal
+        self.zoom_toggled_signal.emit(self.mode == 'zoom rect')
+
+    def pan(self, *args):
+        super().pan(*args)
+        # Emit the pan toggled signal
+        self.pan_toggled_signal.emit(self.mode == 'pan/zoom')
 
 
 class CanvasWidget(BaseNapariMPLWidget):
@@ -73,7 +96,8 @@ class CanvasWidget(BaseNapariMPLWidget):
         self.add_single_axes()
 
         # Initialize UI components
-        self._initialize_toolbar(label_text)
+        self._initialize_mpl_toolbar()
+        self._initialize_selector_toolbar(label_text)
         self._initialize_artists()
         self._initialize_selectors()
 
@@ -94,7 +118,24 @@ class CanvasWidget(BaseNapariMPLWidget):
         self.napari_viewer.bind_key("Escape", None, overwrite=True)
         super().hideEvent(event)
 
-    def _initialize_toolbar(self, label_text: str):
+    def _initialize_mpl_toolbar(self):
+        """
+        Replaces the default matplotlib toolbar with a custom one that emits signals.
+        """
+        # Remove the first widget (the default toolbar)
+        if self.toolbar is not None:
+            self.layout().removeWidget(self.toolbar)
+            self.toolbar.deleteLater()
+        # Create a new custom toolbar with signals
+        self.toolbar = NapariNavigationToolbarWithSignals(
+            self.canvas, self
+        )
+        self._replace_toolbar_icons()
+        self.layout().insertWidget(0, self.toolbar)
+        self.toolbar.zoom_toggled_signal.connect(self.on_toggle_button)
+        self.toolbar.pan_toggled_signal.connect(self.on_toggle_button)
+
+    def _initialize_selector_toolbar(self, label_text: str):
         """
         Initializes the selection toolbar and layout.
         """
@@ -116,7 +157,7 @@ class CanvasWidget(BaseNapariMPLWidget):
             default_icon_path=icon_folder_path / "lasso.png",
             checkable=True,
             checked_icon_path=icon_folder_path / "lasso_checked.png",
-            callback=self.on_enable_selector,
+            callback=self.on_toggle_button,
         )
         self.selection_toolbar.add_custom_button(
             name="ELLIPSE",
@@ -124,7 +165,7 @@ class CanvasWidget(BaseNapariMPLWidget):
             default_icon_path=icon_folder_path / "ellipse.png",
             checkable=True,
             checked_icon_path=icon_folder_path / "ellipse_checked.png",
-            callback=self.on_enable_selector,
+            callback=self.on_toggle_button,
         )
         self.selection_toolbar.add_custom_button(
             name="RECTANGLE",
@@ -132,7 +173,7 @@ class CanvasWidget(BaseNapariMPLWidget):
             default_icon_path=icon_folder_path / "rectangle.png",
             checkable=True,
             checked_icon_path=icon_folder_path / "rectangle_checked.png",
-            callback=self.on_enable_selector,
+            callback=self.on_toggle_button,
         )
 
         # Add selection tools layout to the main layout
@@ -253,9 +294,7 @@ class CanvasWidget(BaseNapariMPLWidget):
         """
         # Deactivate any active selector
         if self.active_selector is not None:
-            for button in self.selection_toolbar.buttons.values():
-                button.setChecked(False)
-            self._disable_all_selectors()
+            self._deactivate_all_selectors()
         # Clear all highlighted points in Scatter and all highlighted bins in Histogram2D
         self._clear_all_highlights()
 
@@ -470,7 +509,7 @@ class CanvasWidget(BaseNapariMPLWidget):
             raise ValueError(f"Selector '{selector_name}' does not exist.")
 
         # Disable all selectors without emitting the signal
-        self._disable_all_selectors(emit_signal=False)
+        self._remove_all_selectors(emit_signal=False)
 
         # Activate the new selector
         self.selectors[normalized_name].create_selector()
@@ -479,9 +518,9 @@ class CanvasWidget(BaseNapariMPLWidget):
         # Emit signal to notify that the current selector has changed
         self.selector_changed_signal.emit(normalized_name)
 
-    def _disable_all_selectors(self, emit_signal: bool = True):
+    def _remove_all_selectors(self, emit_signal: bool = True):
         """
-        Disables (removes) all selectors from the canvas.
+        Removes all selectors from the canvas.
 
         Parameters
         ----------
@@ -496,6 +535,14 @@ class CanvasWidget(BaseNapariMPLWidget):
         # Emit signal only if requested
         if emit_signal:
             self.selector_changed_signal.emit("")
+
+    def _deactivate_all_selectors(self):
+        """
+        Deactivates all selector buttons in the selection toolbar and removes all selectors.
+        """
+        for button in self.selection_toolbar.buttons.values():
+            button.setChecked(False)
+        self._remove_all_selectors()
 
     # Public Properties
     @property
@@ -633,6 +680,37 @@ class CanvasWidget(BaseNapariMPLWidget):
         self.selectors[normalized_name].remove()
         del self.selectors[normalized_name]
 
+    def on_toggle_button(self, checked: bool):
+        sender_name = self.sender().text()
+        print(f"Toggle button clicked: {sender_name}, checked: {checked}")
+        if sender_name in self.selection_toolbar.buttons:
+            if checked:
+                # Disable zoom and pan modes without emitting signals
+                if self.toolbar.mode == 'zoom rect':
+                    # TODO: This causes the signal to be emitted again, which then disables the selector
+                    # self.toolbar.zoom_toggled_signal.disconnect(self.on_toggle_button)
+                    # with self.toolbar.zoom_toggled_signal.blocked():
+                        # self.toolbar.zoom()
+                    self.toolbar.zoom_toggled_signal.block()
+                    self.toolbar.zoom()
+                    self.toolbar.zoom_toggled_signal.unblock()
+                elif self.toolbar.mode == 'pan/zoom':
+                    # with self.toolbar.pan_toggled_signal.blocked():
+                    #     self.toolbar.pan()
+                    self.toolbar.pan_toggled_signal.block()
+                    self.toolbar.pan()
+                    self.toolbar.pan_toggled_signal.unblock()
+                # Disable all other selector buttons
+                self._deactivate_all_selectors()
+                # Set the active selector
+                self.active_selector = sender_name
+            else:
+                # If the button is unchecked, disable all selectors
+                self._remove_all_selectors()
+        elif sender_name in ["Pan", "Zoom"] and checked:
+            # Deactivate all selectors when zoom or pan is toggled
+            self._deactivate_all_selectors()
+
     def on_enable_selector(self, checked: bool):
         """
         Enables or disables the selected selector.
@@ -647,14 +725,12 @@ class CanvasWidget(BaseNapariMPLWidget):
         sender_name = self.sender().text()
         if checked:
             # If the button is checked, disable all other buttons
-            for button_name, button in self.selection_toolbar.buttons.items():
-                if button.isChecked() and button_name != sender_name:
-                    button.setChecked(False)
+            self._deactivate_all_selectors()
             # Set the active selector
             self.active_selector = sender_name
         else:
             # If the button is unchecked, disable all selectors
-            self._disable_all_selectors()
+            self._remove_all_selectors()
 
     def _toggle_show_color_overlay(self, checked: bool):
         """Show or hide the plot overlay.
