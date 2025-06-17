@@ -257,13 +257,8 @@ class CanvasWidget(BaseNapariMPLWidget):
             return
         # Handle double-click event
         if event.dblclick:
-            for artist in self.artists.values():
-                if isinstance(artist, Scatter):
-                    artist.highlighted = None  # Clear highlighted points
-                elif isinstance(artist, Histogram2D):
-                    artist.highlighted = None  # Clear highlighted bins
-            self._highlighted_point_ids.clear()  # Clear highlighted point IDs
-            self.canvas.draw_idle()
+            # Clear all highlighted points in Scatter and all highlighted bins in Histogram2D
+            self._clear_all_highlights()
             return
         elif event.button == 1:
             # Ensure the active artist is a Histogram2D instance
@@ -338,6 +333,18 @@ class CanvasWidget(BaseNapariMPLWidget):
                 )
                 highlighted[indices] = True  # Highlight the bin
             histogram.highlighted = highlighted
+
+    def _clear_all_highlights(self):
+        """
+        Clears all highlighted points and bins in the active artist.
+        """
+        for artist in self.artists.values():
+            if isinstance(artist, Scatter):
+                artist.highlighted = None  # Clear highlighted points
+            elif isinstance(artist, Histogram2D):
+                artist.highlighted = None  # Clear highlighted bins
+        self._highlighted_point_ids.clear()  # Clear highlighted point IDs
+        self.canvas.draw_idle()
 
     def _on_finish_drawing(self, *args):
         """
