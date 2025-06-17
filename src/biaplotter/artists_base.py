@@ -31,6 +31,8 @@ class Artist(ABC):
     data_changed_signal: Signal = Signal(np.ndarray)
     #: Signal emitted when the `color_indices` are changed.
     color_indices_changed_signal: Signal = Signal(np.ndarray)
+    #: Signal emitted when the `highlighted` data are changed.
+    highlighted_changed_signal: Signal = Signal(np.ndarray)
 
     def __init__(
         self,
@@ -353,6 +355,7 @@ class Artist(ABC):
             return
         self._highlight_data(value)
         self._highlighted = value
+        self.highlighted_changed_signal.emit(self._highlighted)
 
     def highlight_data_by_ids(
         self, ids: Union[int, List[int], None] = None, color: Union[str, tuple] = None, unhighlight: bool = False

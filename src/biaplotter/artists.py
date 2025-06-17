@@ -36,6 +36,7 @@ class Scatter(Artist):
 
         * **data_changed_signal** emitted when the data are changed.
         * **color_indices_changed_signal** emitted when the color indices are changed.
+        * **highlighted_changed_signal** emitted when the highlighted data points are changed.
 
     Examples
     --------
@@ -296,6 +297,7 @@ class Histogram2D(Artist):
 
         * **data_changed_signal** emitted when the data are changed.
         * **color_indices_changed_signal** emitted when the color indices are changed.
+        * **highlighted_changed_signal** emitted when the highlighted data points are changed.
 
     """
 
