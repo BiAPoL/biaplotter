@@ -69,6 +69,7 @@ class CanvasWidget(BaseNapariMPLWidget):
         label_text: str = "Class:",
     ):
         super().__init__(napari_viewer, parent=parent)
+        self.napari_viewer = napari_viewer
         self.add_single_axes()
 
         # Initialize UI components
@@ -78,9 +79,20 @@ class CanvasWidget(BaseNapariMPLWidget):
 
         # Connect signals
         self._connect_signals()
+        self.napari_viewer.bind_key(
+            "Escape", self._on_escape, overwrite=True
+        )
         self._xdata_clicked = None
         self._ydata_clicked = None
         self._highlighted_point_ids = set()
+
+    def hideEvent(self, event):
+        """Handles the hide event of the widget.
+
+        Cleans up connections and removes selectors.
+        """
+        self.napari_viewer.bind_key("Escape", None, overwrite=True)
+        super().hideEvent(event)
 
     def _initialize_toolbar(self, label_text: str):
         """
@@ -234,6 +246,18 @@ class CanvasWidget(BaseNapariMPLWidget):
             self._highlighted_point_ids.add(int(scatter.ids[index]))
         highlighted[index] = not highlighted[index]
         scatter.highlighted = highlighted
+
+    def _on_escape(self, event):
+        """
+        Handles the escape key event to clear all highlights and active selectors.
+        """
+        # Deactivate any active selector
+        if self.active_selector is not None:
+            for button in self.selection_toolbar.buttons.values():
+                button.setChecked(False)
+            self._disable_all_selectors()
+        # Clear all highlighted points in Scatter and all highlighted bins in Histogram2D
+        self._clear_all_highlights()
 
     def _on_click(self, event):
         """
