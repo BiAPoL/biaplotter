@@ -297,6 +297,13 @@ class CanvasWidget(BaseNapariMPLWidget):
         # Deactivate any active selector
         if self.active_selector is not None:
             self._deactivate_and_remove_all_selectors()
+        # Deactivate pan and zoom modes in the matplotlib toolbar
+        if self.toolbar.mode == 'zoom rect':
+            with self.toolbar.zoom_toggled_signal.blocked():
+                self.toolbar.zoom()
+        elif self.toolbar.mode == 'pan/zoom':
+            with self.toolbar.pan_toggled_signal.blocked():
+                self.toolbar.pan()
         # Clear all highlighted points in Scatter and all highlighted bins in Histogram2D
         self._clear_all_highlights()
 
