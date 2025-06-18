@@ -294,7 +294,7 @@ class CanvasWidget(BaseNapariMPLWidget):
         """
         # Deactivate any active selector
         if self.active_selector is not None:
-            self._deactivate_all_selectors()
+            self._deactivate_and_remove_all_selectors()
         # Clear all highlighted points in Scatter and all highlighted bins in Histogram2D
         self._clear_all_highlights()
 
@@ -536,12 +536,22 @@ class CanvasWidget(BaseNapariMPLWidget):
         if emit_signal:
             self.selector_changed_signal.emit("")
 
-    def _deactivate_all_selectors(self):
+    def _deactivate_and_remove_all_selectors(self, except_this_button_name: str = None):
         """
         Deactivates all selector buttons in the selection toolbar and removes all selectors.
+
+        Parameters
+        ----------
+        except_this_button_name : str, optional
+            The name of the button that should remain active, by default None.
         """
-        for button in self.selection_toolbar.buttons.values():
-            button.setChecked(False)
+        for button_name, button in self.selection_toolbar.buttons.items():
+            if except_this_button_name is not None and button_name.upper() == except_this_button_name.upper():
+                # Skip the button that should remain active
+                continue
+            else:
+                if button.isChecked():
+                    button.setChecked(False)
         self._remove_all_selectors()
 
     # Public Properties
@@ -681,35 +691,40 @@ class CanvasWidget(BaseNapariMPLWidget):
         del self.selectors[normalized_name]
 
     def on_toggle_button(self, checked: bool):
+        """
+        Handles the toggling of buttons in the selection toolbar and matplotlib toolbar.
+
+        
+        If a button in the selection toolbar is toggled, it disables all other selectors and sets the active selector.
+        If the matplotlib toolbar's zoom or pan button is toggled, it deactivates all selectors.
+
+        Parameters
+        ----------
+        checked : bool
+            Whether the button is checked or not.
+        """
         sender_name = self.sender().text()
-        print(f"Toggle button clicked: {sender_name}, checked: {checked}")
-        if sender_name in self.selection_toolbar.buttons:
+        # Check if the sender is a button in the selection toolbar
+        if sender_name in self.selection_toolbar.buttons.keys():
             if checked:
-                # Disable zoom and pan modes without emitting signals
+                # Disable zoom and pan modes from matplotlib toolbar without emitting signals
                 if self.toolbar.mode == 'zoom rect':
-                    # TODO: This causes the signal to be emitted again, which then disables the selector
-                    # self.toolbar.zoom_toggled_signal.disconnect(self.on_toggle_button)
-                    # with self.toolbar.zoom_toggled_signal.blocked():
-                        # self.toolbar.zoom()
-                    self.toolbar.zoom_toggled_signal.block()
-                    self.toolbar.zoom()
-                    self.toolbar.zoom_toggled_signal.unblock()
+                    with self.toolbar.zoom_toggled_signal.blocked():
+                        self.toolbar.zoom()
                 elif self.toolbar.mode == 'pan/zoom':
-                    # with self.toolbar.pan_toggled_signal.blocked():
-                    #     self.toolbar.pan()
-                    self.toolbar.pan_toggled_signal.block()
-                    self.toolbar.pan()
-                    self.toolbar.pan_toggled_signal.unblock()
+                    with self.toolbar.pan_toggled_signal.blocked():
+                        self.toolbar.pan()
                 # Disable all other selector buttons
-                self._deactivate_all_selectors()
+                self._deactivate_and_remove_all_selectors(except_this_button_name=sender_name)
                 # Set the active selector
                 self.active_selector = sender_name
             else:
-                # If the button is unchecked, disable all selectors
+                # If the button is unchecked, remove all selectors from canvas
                 self._remove_all_selectors()
+        # Check if the sender is the matplotlib toolbar for zoom or pan
         elif sender_name in ["Pan", "Zoom"] and checked:
             # Deactivate all selectors when zoom or pan is toggled
-            self._deactivate_all_selectors()
+            self._deactivate_and_remove_all_selectors()
 
     def on_enable_selector(self, checked: bool):
         """
@@ -725,7 +740,7 @@ class CanvasWidget(BaseNapariMPLWidget):
         sender_name = self.sender().text()
         if checked:
             # If the button is checked, disable all other buttons
-            self._deactivate_all_selectors()
+            self._deactivate_and_remove_all_selectors()
             # Set the active selector
             self.active_selector = sender_name
         else:
