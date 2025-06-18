@@ -327,11 +327,7 @@ class CanvasWidget(BaseNapariMPLWidget):
         # Ensure the click is inside the plot
         if not self._is_click_inside_axes(event):
             return
-        # Handle double-click event
-        if event.dblclick:
-            # Clear all highlighted points in Scatter and all highlighted bins in Histogram2D
-            self._clear_all_highlights()
-            return
+
         elif event.button == 1:
             # Ensure the active artist is a Histogram2D instance
             if isinstance(self.active_artist, Histogram2D):
