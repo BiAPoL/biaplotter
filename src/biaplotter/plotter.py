@@ -111,6 +111,7 @@ class CanvasWidget(BaseNapariMPLWidget):
         self._xdata_clicked = None
         self._ydata_clicked = None
         self._highlighted_point_ids = set()
+        self._allow_multiple_highlights = False
 
     def hideEvent(self, event):
         """Handles the hide event of the widget.
@@ -265,9 +266,9 @@ class CanvasWidget(BaseNapariMPLWidget):
 
         # Toggle highlight for the picked point
         if mouse_event.button == 1:
-            self._toggle_point_highlight(ind[0])
+            self._toggle_point_highlight(ind[0], allow_multiple_highlights=self._allow_multiple_highlights)
 
-    def _toggle_point_highlight(self, index: int):
+    def _toggle_point_highlight(self, index: int, allow_multiple_highlights: bool = False):
         """
         Toggles the highlight state of a point based on its ID.
 
@@ -275,18 +276,30 @@ class CanvasWidget(BaseNapariMPLWidget):
         ----------
         point_id : int
             The ID of the point to toggle.
+        allow_multiple_highlights : bool, optional
+            Whether to allow multiple highlights in the scatter plot, by default False.
         """
         scatter = self.active_artist
-        # if scatter.highlighted is None:
-        scatter.highlighted = np.zeros(len(scatter.data), dtype=bool)
 
-        # Toggle highlight for the picked point
+        # Single point highlighting
+        if not allow_multiple_highlights:
+            # Clear all previous highlights and ensure highlighted is initialized
+            scatter.highlighted = np.zeros(len(scatter.data), dtype=bool)
+            highlighted = scatter.highlighted
+            highlighted[index] = True
+            scatter.highlighted = highlighted
+            return
+
+        # Multiple point highlighting
+        if scatter.highlighted is None:
+            scatter.highlighted = np.zeros(len(scatter.data), dtype=bool)
+        # Get the current highlight mask
         highlighted = scatter.highlighted
         # Stores or removes the point ID from the highlighted list
-        # if highlighted[index]:
-        #     self._highlighted_point_ids.discard(int(scatter.ids[index]))
-        # else:
-        #     self._highlighted_point_ids.add(int(scatter.ids[index]))
+        if highlighted[index]:
+            self._highlighted_point_ids.discard(int(scatter.ids[index]))
+        else:
+            self._highlighted_point_ids.add(int(scatter.ids[index]))
         highlighted[index] = not highlighted[index]
         scatter.highlighted = highlighted
 
@@ -335,7 +348,7 @@ class CanvasWidget(BaseNapariMPLWidget):
                 self._ydata_clicked = event.ydata
 
                 # Toggle the highlight state of the clicked bin
-                self._toggle_bin_highlight(event.xdata, event.ydata)
+                self._toggle_bin_highlight(event.xdata, event.ydata, allow_multiple_highlights= self._allow_multiple_highlights)
 
     def _is_click_inside_axes(self, event):
         """
@@ -356,7 +369,7 @@ class CanvasWidget(BaseNapariMPLWidget):
             and self.axes.get_ylim()[0] <= event.ydata <= self.axes.get_ylim()[1]
         )
 
-    def _toggle_bin_highlight(self, xdata, ydata):
+    def _toggle_bin_highlight(self, xdata, ydata, allow_multiple_highlights: bool = False):
         """
         Toggles the highlight state of a histogram bin based on the clicked coordinates.
 
@@ -366,6 +379,8 @@ class CanvasWidget(BaseNapariMPLWidget):
             The x-coordinate of the mouse click.
         ydata : float
             The y-coordinate of the mouse click.
+        allow_multiple_highlights : bool, optional
+            Whether to allow multiple highlights in the histogram, by default False.
         """
         histogram = self.active_artist
 
@@ -379,7 +394,6 @@ class CanvasWidget(BaseNapariMPLWidget):
             # Get the current highlight mask
             if histogram.highlighted is None:
                 histogram.highlighted = np.zeros(len(histogram.data), dtype=bool)
-
             # Find the indices of points in the clicked bin
             mask = (
                 (histogram.data[:, 0] >= x_edges[bin_x])
@@ -388,8 +402,30 @@ class CanvasWidget(BaseNapariMPLWidget):
                 & (histogram.data[:, 1] < y_edges[bin_y + 1])
             )
             indices = np.where(mask)[0]
-            # Toggle the highlight state for the bin
             highlighted = histogram.highlighted
+            # If clicked on empty bin preserve the current highlights 
+            if len(indices) == 0:
+                # Clear all highlights if no points in the bin
+                if not np.any(highlighted):
+                    self._clear_all_highlights()
+                return
+            
+            # Single bin highlighting
+            if not allow_multiple_highlights:
+                # Find the index of the point closest to the average of the bin center
+                bin_x_center = (x_edges[bin_x] + x_edges[bin_x + 1]) / 2
+                bin_y_center = (y_edges[bin_y] + y_edges[bin_y + 1]) / 2
+                distances = np.sqrt(
+                    (histogram.data[indices, 0] - bin_x_center) ** 2 +
+                    (histogram.data[indices, 1] - bin_y_center) ** 2)
+                index_of_point_closest_to_bin_center = indices[np.argmin(distances)]
+                highlighted[:] = False  # Unhighlight all bins
+                highlighted[index_of_point_closest_to_bin_center] = True  # Highlight the bin with the calculated index
+                histogram.highlighted = highlighted
+                return
+            
+            # Multiple bin highlighting
+            # Toggle the highlight state for the bin
             if np.any(highlighted[indices]):
                 self._highlighted_point_ids.difference_update(
                     histogram.ids[indices].tolist()
