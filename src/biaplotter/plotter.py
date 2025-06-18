@@ -10,6 +10,8 @@ from nap_plot_tools import (CustomToolbarWidget, CustomToolButton,
 from napari_matplotlib.base import BaseNapariMPLWidget, NapariNavigationToolbar
 from psygnal import Signal
 from qtpy.QtWidgets import QHBoxLayout, QLabel, QWidget
+from qtpy.QtCore import Qt
+from qtpy.QtGui import QCursor
 
 from biaplotter.artists import Histogram2D, Scatter
 from biaplotter.selectors import (InteractiveEllipseSelector,
@@ -694,7 +696,7 @@ class CanvasWidget(BaseNapariMPLWidget):
         """
         Handles the toggling of buttons in the selection toolbar and matplotlib toolbar.
 
-        
+
         If a button in the selection toolbar is toggled, it disables all other selectors and sets the active selector.
         If the matplotlib toolbar's zoom or pan button is toggled, it deactivates all selectors.
 
@@ -721,6 +723,8 @@ class CanvasWidget(BaseNapariMPLWidget):
             else:
                 # If the button is unchecked, remove all selectors from canvas
                 self._remove_all_selectors()
+                # Reset the cursor to the default arrow cursor
+                self.canvas.setCursor(QCursor(Qt.ArrowCursor))
         # Check if the sender is the matplotlib toolbar for zoom or pan
         elif sender_name in ["Pan", "Zoom"] and checked:
             # Deactivate all selectors when zoom or pan is toggled
