@@ -277,16 +277,16 @@ class CanvasWidget(BaseNapariMPLWidget):
             The ID of the point to toggle.
         """
         scatter = self.active_artist
-        if scatter.highlighted is None:
-            scatter.highlighted = np.zeros(len(scatter.data), dtype=bool)
+        # if scatter.highlighted is None:
+        scatter.highlighted = np.zeros(len(scatter.data), dtype=bool)
 
         # Toggle highlight for the picked point
         highlighted = scatter.highlighted
         # Stores or removes the point ID from the highlighted list
-        if highlighted[index]:
-            self._highlighted_point_ids.discard(int(scatter.ids[index]))
-        else:
-            self._highlighted_point_ids.add(int(scatter.ids[index]))
+        # if highlighted[index]:
+        #     self._highlighted_point_ids.discard(int(scatter.ids[index]))
+        # else:
+        #     self._highlighted_point_ids.add(int(scatter.ids[index]))
         highlighted[index] = not highlighted[index]
         scatter.highlighted = highlighted
 
