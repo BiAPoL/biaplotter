@@ -12,7 +12,7 @@ from nap_plot_tools.cmap import (cat10_mod_cmap,
                                  cat10_mod_cmap_first_transparent)
 from psygnal import Signal
 from qtpy.QtCore import Qt
-from qtpy.QtGui import QGuiApplication
+from qtpy.QtGui import QGuiApplication, QCursor
 
 from .artists import Histogram2D, Scatter
 
@@ -74,9 +74,25 @@ class MplRectangleSelector(RectangleSelector):
     """Custom rectangle selector class.
 
     Sub-class of matplotlib RectangleSelector to ensure, via 'qtpy', the option to draw a square when holding the SHIFT key.
-
+    It also sets the cursor to a cross cursor.
+    
     Note: matplotlib RectangleSelector already has this functionality via the 'state_modifier_keys' argument, but it doesn't work if the canvas is used inside napari.
     """
+    def __init__(self, ax, onselect, **kwargs):
+        self._canvas = ax.figure.canvas
+        super().__init__(ax, onselect, **kwargs)
+        self._set_cursor()
+
+    def _set_cursor(self):
+        self._canvas.setCursor(QCursor(Qt.CrossCursor))
+
+    def onpress(self, event):
+        super().onpress(event)
+        self._set_cursor()
+
+    def onrelease(self, event):
+        super().onrelease(event)
+        self._set_cursor()
 
     def _onmove(self, event):
         modifiers = QGuiApplication.keyboardModifiers()
@@ -86,6 +102,7 @@ class MplRectangleSelector(RectangleSelector):
             if "square" in self._state:
                 self._state.remove("square")
         super()._onmove(event)
+        self._set_cursor()
 
 
 class BaseRectangleSelector(Selector):
@@ -184,14 +201,29 @@ class BaseRectangleSelector(Selector):
             ),
         )
 
-
 class MplEllipseSelector(EllipseSelector):
     """Custom ellipse selector class.
 
     Sub-class of matplotlib EllipseSelector to ensure, via 'qtpy', the option to draw a circle when holding the SHIFT key.
+    It also sets the cursor to a cross cursor.
 
     Note: matplotlib EllipeseSelector already has this functionality via the 'state_modifier_keys' argument, but it doesn't work if the canvas is used inside napari.
     """
+    def __init__(self, ax, onselect, **kwargs):
+        self._canvas = ax.figure.canvas
+        super().__init__(ax, onselect, **kwargs)
+        self._set_cursor()
+    
+    def _set_cursor(self):
+        self._canvas.setCursor(QCursor(Qt.CrossCursor))
+
+    def onpress(self, event):
+        super().onpress(event)
+        self._set_cursor()
+
+    def onrelease(self, event):
+        super().onrelease(event)
+        self._set_cursor()
 
     def _onmove(self, event):
         modifiers = QGuiApplication.keyboardModifiers()
@@ -201,7 +233,7 @@ class MplEllipseSelector(EllipseSelector):
             if "square" in self._state:
                 self._state.remove("square")
         super()._onmove(event)
-
+        self._set_cursor()
 
 class BaseEllipseSelector(Selector):
     """Base class for creating an ellipse selector.
@@ -302,6 +334,31 @@ class BaseEllipseSelector(Selector):
             ),
         )
 
+class MplLassoSelector(LassoSelector):
+    """Custom lasso selector class.
+
+    Sub-class of matplotlib LassoSelector to draw a lasso with a cross cursor.
+    """
+    def __init__(self, ax, onselect, **kwargs):
+        self._canvas = ax.figure.canvas
+        super().__init__(ax, onselect, **kwargs)
+        self._set_cursor()
+
+    def _set_cursor(self):
+        self._canvas.setCursor(QCursor(Qt.CrossCursor))
+
+    def onpress(self, event):
+        super().onpress(event)
+        self._set_cursor()
+
+    def onrelease(self, event):
+        super().onrelease(event)
+        self._set_cursor()
+
+    def onmove(self, event):
+        super().onmove(event)
+        self._set_cursor()
+
 
 class BaseLassoSelector(Selector):
     """Base class for creating a lasso selector.
@@ -366,7 +423,7 @@ class BaseLassoSelector(Selector):
         Useblit is set to True to improve performance.
         Left mouse button is used to draw the lasso.
         """
-        self._selector = LassoSelector(
+        self._selector = MplLassoSelector(
             self.ax,
             self.on_select,
             useblit=True,
