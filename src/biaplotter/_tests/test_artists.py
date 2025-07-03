@@ -122,7 +122,18 @@ def test_scatter():
     assert scatter.x_label_color == "red"
     assert scatter.y_label_color == (0, 0, 1, 1)
 
+    # check highlighted points is empty
+    assert scatter.highlighted is None
 
+    # set scatter highlighted to a boolean array same size as data
+    highlighted = np.zeros(size, dtype=bool)
+    highlighted[0] = True
+    scatter.highlighted = highlighted
+    assert np.all(scatter.highlighted == highlighted)
+    # check highlighted points are correctly set
+    assert scatter.size[0] == scatter.DEFAULT_SIZE * 3
+    # check if it is magenta
+    assert np.array_equal(scatter._mpl_artists["scatter"].get_edgecolors()[0], (1, 0, 1, 1))
 
 def test_histogram2d():
     # Inputs
@@ -245,6 +256,23 @@ def test_histogram2d():
     # Don't draw overlay histogram if color_indices are nan
     histogram.color_indices = np.nan
     assert "overlay_histogram_image" not in histogram._mpl_artists.keys()
+
+    # Set histogram2D highlighted to a boolean array same size as data
+    assert histogram.highlighted is None
+    highlighted = np.zeros(size, dtype=bool)
+    # Highlight the first point
+    highlighted[0] = True
+    histogram.highlighted = highlighted
+    assert np.all(histogram.highlighted == highlighted)
+    # Find the bin of the highlighted point
+    x_edges, y_edges = histogram._histogram[1], histogram._histogram[2]
+    bin_x = np.digitize(data[0, 0], x_edges) - 1
+    bin_y = np.digitize(data[0, 1], y_edges) - 1
+    histogram_array = histogram._mpl_artists["histogram_image"].get_array()
+    # Check if the highlighted bin is set to 1.0
+    assert histogram_array[bin_y, bin_x, -1] == 1.0  # histogram array is RGBA and is transposed regarding y and x
+    # Check if rectangle patches around highlighted bins are drawn
+    assert len(histogram._highlighted_bin_patches) > 0
 
 
 # Test calculate_statistic_histogram_method for different statistics
