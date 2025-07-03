@@ -79,9 +79,10 @@ def test_scatter():
 
     # Test size reset when new data is set
     scatter.data = np.random.rand(size // 2, 2)
-    assert np.all(scatter.size == 50.0)  # that's the default
+    correct_size = min(10, (max(0.1, 8000 / len(scatter.data)))) * 4
+    assert np.all(scatter.size == correct_size)  # that's the default
     sizes = scatter._mpl_artists["scatter"].get_sizes()
-    assert np.all(sizes == 50.0)
+    assert np.all(sizes == correct_size)
 
     # test alpha
     scatter.alpha = 0.5
