@@ -689,7 +689,7 @@ class Histogram2D(Artist):
             if 0 <= bin_x < highlighted_bins.shape[0] and 0 <= bin_y < highlighted_bins.shape[1]:
                 highlighted_bins[bin_x, bin_y] = True
 
-        # Update alpha values: half transparent for bins without highlighted points
+        # Update alpha values: 1/4 transparent for bins without highlighted points
         alphas = np.full_like(self._histogram[0], 0.25)
         alphas[highlighted_bins] = 1  # Fully opaque for highlighted bins
         self.bin_alpha = alphas
