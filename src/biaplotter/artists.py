@@ -695,7 +695,6 @@ class Histogram2D(Artist):
         self.bin_alpha = alphas
 
         # Draw rectangle patches around highlighted bins
-        # Draw rectangle patches around highlighted bins
         import matplotlib.patches as mpatches
 
         # Remove previous rectangle patches if they exist
