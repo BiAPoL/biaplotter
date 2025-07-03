@@ -51,8 +51,8 @@ class Scatter(Artist):
     >>> scatter.color_indices = np.linspace(start=0, stop=5, num=100, endpoint=False, dtype=int)
     >>> plt.show()
     """
-    SIZE = 50  #: Default size of the scatter points
-    ALPHA = 1  #: Default alpha of the scatter points
+    DEFAULT_SIZE = 50  #: Default size of the scatter points
+    DEFAULT_ALPHA = 1  #: Default alpha of the scatter points
     def __init__(
         self,
         ax: plt.Axes = None,
@@ -67,8 +67,8 @@ class Scatter(Artist):
         self._overlay_visible = True
         self._color_normalization_method = "linear"
         self.data = data
-        self._alpha = self.ALPHA  # Default alpha
-        self._size = self.SIZE  # Default size
+        self._alpha = self.DEFAULT_ALPHA  # Default alpha
+        self._size = self.DEFAULT_SIZE  # Default size
         self._edgecolor = "white"  # Default edge color
         self._highlight_edgecolor = "magenta"  # Default highlight edge color
         self._highlighted = None  # Initialize highlight mask
@@ -213,7 +213,7 @@ class Scatter(Artist):
     def _highlight_data(self, indices: np.ndarray):
         """Highlight data points based on the provided indices."""
         if indices is None or len(indices) == 0:
-            self.size = self.SIZE
+            self.size = self.DEFAULT_SIZE
             self._mpl_artists["scatter"].set_edgecolor(self._edgecolor)
             self._highlighted = None
             return
@@ -222,7 +222,7 @@ class Scatter(Artist):
             raise ValueError("Highlight indices must be a 1D boolean array of the same length as the data.")
 
         # Update sizes: double the size for highlighted points
-        sizes = np.full(len(self._data), self.SIZE, dtype=float)
+        sizes = np.full(len(self._data), self.DEFAULT_SIZE, dtype=float)
         sizes[indices] *= 3
 
         # Update edge colors: use highlight edge color for highlighted points
@@ -242,8 +242,8 @@ class Scatter(Artist):
             self._mpl_artists["scatter"] = self.ax.scatter(
                 self._data[:, 0], self._data[:, 1], picker=True
             )
-            self.size = self.SIZE  # Default size
-            self.alpha = self.ALPHA  # Default alpha
+            self.size = self.DEFAULT_SIZE  # Default size
+            self.alpha = self.DEFAULT_ALPHA  # Default alpha
             self.highlighted = None  # Reset highlight mask
             self.color_indices = 0
         else:
