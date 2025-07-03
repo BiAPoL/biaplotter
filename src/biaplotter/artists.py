@@ -211,7 +211,9 @@ class Scatter(Artist):
             self._mpl_artists["scatter"] = self.ax.scatter(
                 self._data[:, 0], self._data[:, 1]
             )
-            self.size = 50  # Default size
+
+            # rule of thumb for good point size
+            self.size = min(10, (max(0.1, 8000 / len(self._data)))) * 2
             self.alpha = 1  # Default alpha
             self.color_indices = 0
         else:
