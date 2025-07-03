@@ -213,7 +213,12 @@ class Scatter(Artist):
             )
 
             # rule of thumb for good point size
-            self.size = min(10, (max(0.1, 8000 / len(self._data)))) * 2
+            _size = min(10, (max(0.1, 8000 / len(self._data)))) * 4
+            _edge_width = np.sqrt(_size/np.pi) / 8
+            self.size = _size
+
+            if "scatter" in self._mpl_artists.keys():
+                self._mpl_artists["scatter"].set_linewidth(_edge_width)
             self.alpha = 1  # Default alpha
             self.color_indices = 0
         else:
