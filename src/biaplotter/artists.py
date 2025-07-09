@@ -228,7 +228,7 @@ class Scatter(Artist):
     @property
     def default_size(self) -> float:
         """rule of thumb for good point size"""
-        return min(10, (max(0.1, 8000 / len(self._data)))) * 4
+        return min(10, (max(0.1, 8000 / len(self._data)))) * 2
 
     @property
     def default_edge_width(self) -> float:
