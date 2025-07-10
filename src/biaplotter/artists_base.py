@@ -249,10 +249,6 @@ class Artist(ABC):
         # Check if indices are a scalar
         if np.isscalar(indices):
             indices = np.full(len(self._data), indices)
-        # elif len(indices) != len(self._data):
-        #     raise ValueError(
-        #         f"Length of indices ({len(indices)}) must match length of data ({len(self._data)})"
-        #     )
         self._color_indices = indices
 
         if indices is not None and self._mpl_artists:
