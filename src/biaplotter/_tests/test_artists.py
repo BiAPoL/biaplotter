@@ -270,10 +270,14 @@ def test_histogram2d():
     bin_x = np.digitize(data[0, 0], x_edges) - 1
     bin_y = np.digitize(data[0, 1], y_edges) - 1
     histogram_array = histogram._mpl_artists["histogram_image"].get_array()
-    # Check if the highlighted bin is set to 1.0
-    assert histogram_array[bin_y, bin_x, -1] == 1.0  # histogram array is RGBA and is transposed regarding y and x
+    # Check if the highlighted bin alpha is set to 1.0
+    assert histogram_array[bin_y, bin_x, -1] == 1.0  # Histogram array is a 3D array colored image (RGBA)), so it is transposed regarding y and x
     # Check if rectangle patches around highlighted bins are drawn
     assert len(histogram._highlighted_bin_patches) > 0
+    # Check position of the highlighted bin patch
+    highlighted_patch = histogram._highlighted_bin_patches[0]
+    assert highlighted_patch.get_x() == x_edges[bin_x]
+    assert highlighted_patch.get_y() == y_edges[bin_y]
 
 
 # Test calculate_statistic_histogram_method for different statistics
