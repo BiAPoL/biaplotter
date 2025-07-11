@@ -112,3 +112,9 @@ def test_signals(canvas_widget, qtbot):
     ) as signal:
         canvas_widget._deactivate_and_remove_all_selectors()
     assert signal.args == [""]
+
+    with qtbot.waitSignal(
+        canvas_widget.show_color_overlay_signal, timeout=100
+    ) as signal:
+        canvas_widget.show_color_overlay = True
+    assert signal.args == [True]
