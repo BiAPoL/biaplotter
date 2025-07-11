@@ -84,7 +84,9 @@ class MplRectangleSelector(RectangleSelector):
         self._set_cursor()
 
     def _set_cursor(self):
-        self._canvas.setCursor(QCursor(Qt.CrossCursor))
+        # only Qt‐based FigureCanvases have setCursor(), macosx backends might not have this method
+        if hasattr(self._canvas, "setCursor"):
+            self._canvas.setCursor(QCursor(Qt.CrossCursor))
 
     def onpress(self, event):
         super().onpress(event)
@@ -215,7 +217,9 @@ class MplEllipseSelector(EllipseSelector):
         self._set_cursor()
     
     def _set_cursor(self):
-        self._canvas.setCursor(QCursor(Qt.CrossCursor))
+        # only Qt‐based FigureCanvases have setCursor(), macosx backends might not have this method
+        if hasattr(self._canvas, "setCursor"):
+            self._canvas.setCursor(QCursor(Qt.CrossCursor))
 
     def onpress(self, event):
         super().onpress(event)
@@ -345,7 +349,9 @@ class MplLassoSelector(LassoSelector):
         self._set_cursor()
 
     def _set_cursor(self):
-        self._canvas.setCursor(QCursor(Qt.CrossCursor))
+        # only Qt‐based FigureCanvases have setCursor(), macosx backends might not have this method
+        if hasattr(self._canvas, "setCursor"):
+            self._canvas.setCursor(QCursor(Qt.CrossCursor))
 
     def onpress(self, event):
         super().onpress(event)
