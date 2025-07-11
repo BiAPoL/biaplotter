@@ -107,8 +107,8 @@ class Artist(ABC):
         )
     
     @abstractmethod
-    def _highlight_data(self, indices: np.ndarray):
-        """Highlight data points based on the provided indices."""
+    def _highlight_data(self, highlight_mask: np.ndarray):
+        """Highlight data points based on the provided boolean mask."""
         raise NotImplementedError(
             "This method should be implemented in the derived class."
         )

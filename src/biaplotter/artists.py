@@ -230,26 +230,35 @@ class Scatter(Artist):
             warnings.filterwarnings("ignore", r"All-NaN slice encountered")
             return normalization_func()
 
-    def _highlight_data(self, indices: np.ndarray):
+    def _highlight_data(self, highlight_mask: np.ndarray):
         """Highlight data points based on the provided indices."""
-        if indices is None or len(indices) == 0:
+        if highlight_mask is None or len(highlight_mask) == 0:
             self.size = self.default_size  # Reset to default size
             self._mpl_artists["scatter"].set_edgecolor(self._edgecolor)
             self._highlighted = None
             return
 
-        if indices.shape != (len(self._data),):
+        if highlight_mask.shape != (len(self._data),):
             raise ValueError("Highlight indices must be a 1D boolean array of the same length as the data.")
 
-        # Update sizes: triples the size for highlighted points
-        size_array = [np.full(len(self._data), self.size)
-                if np.isscalar(self.size)
-                else self.size][0]
-        size_array[indices] *= 3
+        # Prepare size array: keep current sizes unless changed
+        size_array = np.array(self.size if not np.isscalar(self.size) else np.full(len(self._data), self.size), copy=True)
+
+        if self._highlighted is not None:
+            # Restore previous sizes for points that are no longer highlighted
+            previously_highlighted = self._highlighted
+            points_to_unhighlight = previously_highlighted & ~highlight_mask
+            size_array[points_to_unhighlight] = self.default_size
+            # Triple size for newly highlighted points
+            newly_highlighted = ~previously_highlighted & highlight_mask
+            size_array[newly_highlighted] *= 3
+        else:
+            # No previous highlight: triple size for all highlighted points
+            size_array[highlight_mask] *= 3
 
         # Update edge colors: use _highlight_edgecolor for highlighted points
         edge_colors = np.array([self._edgecolor] * len(self._data), dtype=object)
-        edge_colors[indices] = self._highlight_edgecolor
+        edge_colors[highlight_mask] = self._highlight_edgecolor
 
         # Apply the updated size adn edge color to the scatter plot
         self.size = size_array
@@ -723,9 +732,9 @@ class Histogram2D(Artist):
 
         return norm_dispatch.get((is_categorical, norm_method))()
 
-    def _highlight_data(self, indices: np.ndarray):
+    def _highlight_data(self, boolean_mask: np.ndarray):
         """Highlight data points based on the provided indices."""
-        if indices is None or len(indices) == 0:
+        if boolean_mask is None or len(boolean_mask) == 0:
             # Remove previous highlighted patches if they exist
             if hasattr(self, "_highlighted_bin_patches"):
                 for patch in self._highlighted_bin_patches:
@@ -736,14 +745,14 @@ class Histogram2D(Artist):
             self._highlighted = None
             return
 
-        if indices.shape != (len(self._data),):
+        if boolean_mask.shape != (len(self._data),):
             raise ValueError("Highlight mask must be a 1D boolean array of the same length as the data.")
 
         # Identify bins containing the highlighted points
         x_edges, y_edges = self._histogram[1], self._histogram[2]
         highlighted_bins = np.zeros_like(self._histogram[0], dtype=bool)
 
-        for idx in np.where(indices)[0]:
+        for idx in np.where(boolean_mask)[0]:
             x, y = self._data[idx]
             bin_x = np.digitize(x, x_edges) - 1
             bin_y = np.digitize(y, y_edges) - 1
