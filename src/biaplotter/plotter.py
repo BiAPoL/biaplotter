@@ -135,8 +135,8 @@ class CanvasWidget(BaseNapariMPLWidget):
         )
         self._replace_toolbar_icons()
         self.layout().insertWidget(0, self.toolbar)
-        self.toolbar.zoom_toggled_signal.connect(self.on_toggle_button)
-        self.toolbar.pan_toggled_signal.connect(self.on_toggle_button)
+        self.toolbar.zoom_toggled_signal.connect(self._on_toggle_button)
+        self.toolbar.pan_toggled_signal.connect(self._on_toggle_button)
 
     def _initialize_selector_toolbar(self, label_text: str):
         """
@@ -160,7 +160,7 @@ class CanvasWidget(BaseNapariMPLWidget):
             default_icon_path=icon_folder_path / "lasso.png",
             checkable=True,
             checked_icon_path=icon_folder_path / "lasso_checked.png",
-            callback=self.on_toggle_button,
+            callback=self._on_toggle_button,
         )
         self.selection_toolbar.add_custom_button(
             name="ELLIPSE",
@@ -168,7 +168,7 @@ class CanvasWidget(BaseNapariMPLWidget):
             default_icon_path=icon_folder_path / "ellipse.png",
             checkable=True,
             checked_icon_path=icon_folder_path / "ellipse_checked.png",
-            callback=self.on_toggle_button,
+            callback=self._on_toggle_button,
         )
         self.selection_toolbar.add_custom_button(
             name="RECTANGLE",
@@ -176,7 +176,7 @@ class CanvasWidget(BaseNapariMPLWidget):
             default_icon_path=icon_folder_path / "rectangle.png",
             checkable=True,
             checked_icon_path=icon_folder_path / "rectangle_checked.png",
-            callback=self.on_toggle_button,
+            callback=self._on_toggle_button,
         )
 
         # Add selection tools layout to the main layout
@@ -731,7 +731,7 @@ class CanvasWidget(BaseNapariMPLWidget):
         self.selectors[normalized_name].remove()
         del self.selectors[normalized_name]
 
-    def on_toggle_button(self, checked: bool):
+    def _on_toggle_button(self, checked: bool):
         """
         Handles the toggling of buttons in the selection toolbar and matplotlib toolbar.
 
@@ -771,24 +771,15 @@ class CanvasWidget(BaseNapariMPLWidget):
 
     def on_enable_selector(self, checked: bool):
         """
-        Enables or disables the selected selector.
-
-        Enabling a selector disables all other selectors.
-
-        Parameters
-        ----------
-        checked : bool
-            Whether the button is checked or not.
+        Deprecated method to handle enabling a selector.
+        This method is deprecated and should not be used. It is now handled by the internal `_on_toggle_button` method.
         """
-        sender_name = self.sender().text()
-        if checked:
-            # If the button is checked, disable all other buttons
-            self._deactivate_and_remove_all_selectors()
-            # Set the active selector
-            self.active_selector = sender_name
-        else:
-            # If the button is unchecked, disable all selectors
-            self._remove_all_selectors()
+        import warnings
+        warnings.warn(
+            "on_enable_selector is deprecated after 0.3.3. Use _on_toggle_button instead, which now handles all button toggling.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
 
     def _toggle_show_color_overlay(self, checked: bool):
         """Show or hide the plot overlay.
