@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 
 icon_folder_path = Path(__file__).parent / "icons"
 
-class NapariNavigationToolbarWithSignals(NapariNavigationToolbar):
+class _NapariNavigationToolbarWithSignals(NapariNavigationToolbar):
     """A custom navigation toolbar that emits signals when zoom or pan modes are toggled.
 
     This toolbar inherits from NapariNavigationToolbar and overrides the zoom and pan methods
@@ -130,7 +130,7 @@ class CanvasWidget(BaseNapariMPLWidget):
             self.layout().removeWidget(self.toolbar)
             self.toolbar.deleteLater()
         # Create a new custom toolbar with signals
-        self.toolbar = NapariNavigationToolbarWithSignals(
+        self.toolbar = _NapariNavigationToolbarWithSignals(
             self.canvas, self
         )
         self._replace_toolbar_icons()
