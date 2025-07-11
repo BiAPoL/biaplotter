@@ -281,12 +281,26 @@ class Scatter(Artist):
 
     @property
     def default_size(self) -> float:
-        """rule of thumb for good point size"""
+        """Rule of thumb for good point size based on the number of points.
+        
+        Returns
+        -------
+        default_size : float
+            Default size ("area") of the points in the scatter plot.
+            This is calculated based on the number of data points.
+        """
         return min(10, (max(0.1, 8000 / len(self._data)))) * 2
 
     @property
     def default_edge_width(self) -> float:
-        """Calculate the default edge width based on the point size."""
+        """Calculate the default edge width based on the point size.
+        
+        Returns
+        -------
+        default_edge_width : float
+            Default edge width (line thickness) of the points in the scatter plot.
+            This is calculated based on the default size.
+        """
         return np.sqrt(self.default_size / np.pi) / 8
 
     def _validate_categorical_colormap(self):
