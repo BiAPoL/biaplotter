@@ -70,7 +70,7 @@ class Selector(ABC):
             self._selector = None
 
 
-class MplRectangleSelector(RectangleSelector):
+class _MplRectangleSelector(RectangleSelector):
     """Custom rectangle selector class.
 
     Sub-class of matplotlib RectangleSelector to ensure, via 'qtpy', the option to draw a square when holding the SHIFT key.
@@ -183,7 +183,7 @@ class BaseRectangleSelector(Selector):
         Interactive is set to True to allow for interaction.
         Drag from anywhere is set to True to allow for drawing from any point.
         """
-        self._selector = MplRectangleSelector(
+        self._selector = _MplRectangleSelector(
             self.ax,
             self.on_select,
             useblit=True,
@@ -203,7 +203,7 @@ class BaseRectangleSelector(Selector):
             ),
         )
 
-class MplEllipseSelector(EllipseSelector):
+class _MplEllipseSelector(EllipseSelector):
     """Custom ellipse selector class.
 
     Sub-class of matplotlib EllipseSelector to ensure, via 'qtpy', the option to draw a circle when holding the SHIFT key.
@@ -318,7 +318,7 @@ class BaseEllipseSelector(Selector):
         Interactive is set to True to allow for interaction.
         Drag from anywhere is set to True to allow for drawing from any point.
         """
-        self._selector = MplEllipseSelector(
+        self._selector = _MplEllipseSelector(
             self.ax,
             self.on_select,
             useblit=True,
@@ -338,7 +338,7 @@ class BaseEllipseSelector(Selector):
             ),
         )
 
-class MplLassoSelector(LassoSelector):
+class _MplLassoSelector(LassoSelector):
     """Custom lasso selector class.
 
     Sub-class of matplotlib LassoSelector to draw a lasso with a cross cursor.
@@ -429,7 +429,7 @@ class BaseLassoSelector(Selector):
         Useblit is set to True to improve performance.
         Left mouse button is used to draw the lasso.
         """
-        self._selector = MplLassoSelector(
+        self._selector = _MplLassoSelector(
             self.ax,
             self.on_select,
             useblit=True,
