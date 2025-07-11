@@ -207,6 +207,8 @@ class Artist(ABC):
         value : (N,) np.ndarray[int]
             Array of IDs. Must have the same length as the data.
         """
+        if self._data is None:
+            raise ValueError("Cannot set ids because data is not initialized.")
         if value is not None and len(value) != len(self._data):
             raise ValueError("Length of ids must match the length of data.")
         self._ids = value
@@ -256,10 +258,6 @@ class Artist(ABC):
         # Check if indices are a scalar
         if np.isscalar(indices):
             indices = np.full(len(self._data), indices)
-        elif len(indices) != len(self._data):
-            raise ValueError(
-                f"Length of indices ({len(indices)}) must match length of data ({len(self._data)})"
-            )
         self._color_indices = indices
 
         if indices is not None and self._mpl_artists:

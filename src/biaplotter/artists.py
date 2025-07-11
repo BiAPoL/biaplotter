@@ -242,8 +242,11 @@ class Scatter(Artist):
             self._mpl_artists["scatter"] = self.ax.scatter(
                 self._data[:, 0], self._data[:, 1], picker=True
             )
-            self.size = self.DEFAULT_SIZE  # Default size
-            self.alpha = self.DEFAULT_ALPHA  # Default alpha
+            self.size = self.default_size
+
+            if "scatter" in self._mpl_artists.keys():
+                self._mpl_artists["scatter"].set_linewidth(self.default_edge_width)
+            self.alpha = 1  # Default alpha
             self.highlighted = None  # Reset highlight mask
             self.color_indices = 0
         else:
@@ -253,6 +256,16 @@ class Scatter(Artist):
             self.size = self._size
             self.alpha = self._alpha
             self.color_indices = self._color_indices
+
+    @property
+    def default_size(self) -> float:
+        """rule of thumb for good point size"""
+        return min(10, (max(0.1, 8000 / len(self._data)))) * 2
+
+    @property
+    def default_edge_width(self) -> float:
+        """Calculate the default edge width based on the point size."""
+        return np.sqrt(self.default_size / np.pi) / 8
 
     def _validate_categorical_colormap(self):
         """Validate settings for a categorical colormap."""
