@@ -51,8 +51,8 @@ class Scatter(Artist):
     >>> scatter.color_indices = np.linspace(start=0, stop=5, num=100, endpoint=False, dtype=int)
     >>> plt.show()
     """
-    DEFAULT_SIZE = 50  #: Default size of the scatter points
-    DEFAULT_ALPHA = 1  #: Default alpha of the scatter points
+    INITIAL_SIZE = 50  #: Default size of the scatter points
+    INITIAL_ALPHA = 1  #: Default alpha of the scatter points
     def __init__(
         self,
         ax: plt.Axes = None,
@@ -67,8 +67,8 @@ class Scatter(Artist):
         self._overlay_visible = True
         self._color_normalization_method = "linear"
         self.data = data
-        self._alpha = self.DEFAULT_ALPHA  # Default alpha
-        self._size = self.DEFAULT_SIZE  # Default size
+        self._alpha = self.INITIAL_ALPHA  # Initial alpha
+        self._size = self.INITIAL_SIZE  # Initial size
         self._edgecolor = "white"  # Default edge color
         self._highlight_edgecolor = "magenta"  # Default highlight edge color
         self._highlighted = None  # Initialize highlight mask
@@ -213,7 +213,7 @@ class Scatter(Artist):
     def _highlight_data(self, indices: np.ndarray):
         """Highlight data points based on the provided indices."""
         if indices is None or len(indices) == 0:
-            self.size = self.DEFAULT_SIZE
+            self.size = self.default_size  # Reset to default size
             self._mpl_artists["scatter"].set_edgecolor(self._edgecolor)
             self._highlighted = None
             return
