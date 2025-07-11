@@ -127,12 +127,13 @@ def test_scatter():
 
     # set scatter highlighted to a boolean array same size as data
     highlighted = np.zeros(size, dtype=bool)
+    # Highglight the first point
     highlighted[0] = True
     scatter.highlighted = highlighted
     assert np.all(scatter.highlighted == highlighted)
     # check highlighted points are correctly set
-    assert scatter.size[0] == scatter.DEFAULT_SIZE * 3
-    # check if it is magenta
+    assert scatter.size[0] == scatter.default_size * 3
+    # check if edgecolor is magenta
     assert np.array_equal(scatter._mpl_artists["scatter"].get_edgecolors()[0], (1, 0, 1, 1))
 
 def test_histogram2d():
