@@ -185,8 +185,15 @@ class Scatter(Artist):
         """
         if indices is None:
             return
-        # Always calculate and store the overlay colors
-        self._scatter_overlay_rgba = self.color_indices_to_rgba(indices)
+
+        if np.all(np.isnan(indices)):
+            # If all indices are NaN, overlay colors are set to the first color of the colormap (index 0)
+            self._scatter_overlay_rgba = self.color_indices_to_rgba(
+                np.zeros_like(indices)
+            )
+        else:
+            # Calculate and store the overlay colors
+            self._scatter_overlay_rgba = self.color_indices_to_rgba(indices)
 
         # Update the overlay visibility
         if self._overlay_visible:
@@ -661,20 +668,25 @@ class Histogram2D(Artist):
             return
         # Always calculate and store the overlay image
         _, x_edges, y_edges = self._histogram
-        statistic_histogram, _, _, _ = binned_statistic_2d(
-            x=self._data[:, 0],
-            y=self._data[:, 1],
-            values=indices,
-            statistic=_median_np,
-            bins=[x_edges, y_edges],
-        )
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", r"All-NaN slice encountered")
+            statistic_histogram, _, _, _ = binned_statistic_2d(
+                x=self._data[:, 0],
+                y=self._data[:, 1],
+                values=indices,
+                statistic=_median_np,
+                bins=[x_edges, y_edges],
+            )
         if not np.all(np.isnan(statistic_histogram)):
             self._overlay_histogram_rgba = self.color_indices_to_rgba(
                 statistic_histogram.T, is_overlay=True
             )
-        # Apply bin alpha values to the RGBA array
-        if self._bin_alpha is not None:
-            self._overlay_histogram_rgba[..., -1] *= self.bin_alpha.T
+            # Apply bin alpha values to the RGBA array
+            if self._bin_alpha is not None:
+                self._overlay_histogram_rgba[..., -1] *= self.bin_alpha.T
+        else:
+            # If all values are NaN, set the overlay histogram to None
+            self._overlay_histogram_rgba = None
         # Update the overlay visibility
         self._remove_artists(["overlay_histogram_image"])
         if self._overlay_visible and self._overlay_histogram_rgba is not None:
@@ -786,7 +798,7 @@ class Histogram2D(Artist):
                         linewidth=2,
                         edgecolor="magenta",
                         facecolor="none",
-                        linestyle="dotted",
+                        linestyle="-",
                         zorder=10,
                     )
                     self.ax.add_patch(rect)
