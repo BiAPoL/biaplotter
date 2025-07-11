@@ -286,7 +286,12 @@ class Artist(ABC):
 
     @property
     def x_label_text(self) -> str:
-        """Gets or sets the x-axis label."""
+        """Gets or sets the x-axis label.
+        
+        Returns
+        -------
+        x_label_text : str
+            Text of the x-axis label."""
         return self.ax.xaxis.label.get_text()
     
     @x_label_text.setter
@@ -296,7 +301,13 @@ class Artist(ABC):
 
     @property
     def y_label_text(self) -> str:
-        """Gets or sets the y-axis label."""
+        """Gets or sets the y-axis label.
+        
+        Returns
+        -------
+        y_label_text : str
+            Text of the y-axis label.
+        """
         return self.ax.yaxis.label.get_text()
     
     @y_label_text.setter
@@ -306,7 +317,13 @@ class Artist(ABC):
 
     @property
     def x_label_color(self) -> Union[str, tuple]:
-        """Gets or sets the x-axis label color."""
+        """Gets or sets the x-axis label color.
+        
+        Returns
+        -------
+        x_label_color : str or tuple
+            Color value for the x-axis label.
+            Check more at https://matplotlib.org/stable/users/explain/colors/colors.html#colors-def"""
         return self.ax.xaxis.label.get_color()
 
     @x_label_color.setter
@@ -324,7 +341,14 @@ class Artist(ABC):
 
     @property
     def y_label_color(self) -> Union[str, tuple]:
-        """Gets or sets the y-axis label color."""
+        """Gets or sets the y-axis label color.
+        
+        Returns
+        -------
+        y_label_color : str or tuple
+            Color value for the y-axis label.
+            Check more at https://matplotlib.org/stable/users/explain/colors/colors.html#colors-def
+        """
         return self.ax.yaxis.label.get_color()
     
     @y_label_color.setter
@@ -342,12 +366,25 @@ class Artist(ABC):
     
     @property
     def highlighted(self) -> np.ndarray:
-        """Gets or sets the highlighted data points."""
+        """Gets or sets the highlighted data points.
+        
+        Returns
+        -------
+        highlighted : (N,) np.ndarray[bool]
+            Boolean array indicating which data points are highlighted.
+            If None, no points are highlighted.
+
+        Notes
+        -----
+        highlighted_changed_signal : Signal
+            Signal emitted when the highlighted data points are changed.
+        """
         return self._highlighted
     
     @highlighted.setter
     def highlighted(self, value: np.ndarray):
-        """Sets the highlighted data points."""
+        """Sets the highlighted data points.
+        """
         if self._data is None or len(self._data) == 0:
             self._highlighted = None
             return
