@@ -221,16 +221,18 @@ class Scatter(Artist):
         if indices.shape != (len(self._data),):
             raise ValueError("Highlight indices must be a 1D boolean array of the same length as the data.")
 
-        # Update sizes: double the size for highlighted points
-        sizes = np.full(len(self._data), self.DEFAULT_SIZE, dtype=float)
-        sizes[indices] *= 3
+        # Update sizes: triples the size for highlighted points
+        size_array = [np.full(len(self._data), self.size)
+                if np.isscalar(self.size)
+                else self.size][0]
+        size_array[indices] *= 3
 
-        # Update edge colors: use highlight edge color for highlighted points
+        # Update edge colors: use _highlight_edgecolor for highlighted points
         edge_colors = np.array([self._edgecolor] * len(self._data), dtype=object)
         edge_colors[indices] = self._highlight_edgecolor
 
         # Apply the updated size adn edge color to the scatter plot
-        self.size = sizes
+        self.size = size_array
         if "scatter" in self._mpl_artists.keys():
             self._mpl_artists["scatter"].set_edgecolor(edge_colors)
 
