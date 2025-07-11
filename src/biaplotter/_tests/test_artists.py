@@ -300,18 +300,3 @@ def test_histogram2d():
 
     # Check signal is emitted
     assert len(collected_highlighted_signals) == 1
-
-
-# Test calculate_statistic_histogram_method for different statistics
-statistics = ["sum", "median", "mean"]
-expected_results = [
-    np.array(
-        [[0.0, np.nan, np.nan], [np.nan, 9.0, np.nan], [np.nan, np.nan, 15.0]]
-    ),
-    np.array(
-        [[0.0, np.nan, np.nan], [np.nan, 2.0, np.nan], [np.nan, np.nan, 7.0]]
-    ),
-    np.array(
-        [[0.0, np.nan, np.nan], [np.nan, 3.0, np.nan], [np.nan, np.nan, 7.5]]
-    ),
-]
