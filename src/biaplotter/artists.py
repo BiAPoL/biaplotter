@@ -115,6 +115,13 @@ class Scatter(Artist):
 
     @property
     def overlay_visible(self) -> bool:
+        """Gets or sets the visibility of the scatter overlay.
+
+        Returns
+        -------
+        overlay_visible : bool
+            visibility of the scatter overlay.
+        """
         return self._overlay_visible
 
     @overlay_visible.setter
@@ -152,6 +159,19 @@ class Scatter(Artist):
     ) -> np.ndarray:
         """
         Convert color indices to RGBA colors using the colormap.
+
+        Parameters
+        ----------
+        indices : (N,) np.ndarray[int]
+            Array of indices to map to the colormap.
+        is_overlay : bool, optional
+            Whether to use the overlay colormap, by default True.
+            Unused for the Scatter artist, but included for consistency with Histogram2D.
+
+        Returns
+        -------
+        rgba : (N, 4) np.ndarray[float]
+            RGBA colors corresponding to the indices.
         """
         norm = self._get_normalization(indices)
         colormap = self.overlay_colormap.cmap
@@ -546,6 +566,18 @@ class Histogram2D(Artist):
     ) -> np.ndarray:
         """
         Convert color indices to RGBA colors using the overlay colormap.
+
+        Parameters
+        ----------
+        indices : (N,) np.ndarray[int]
+            Array of indices to map to the colormap.
+        is_overlay : bool, optional
+            Whether to use the overlay colormap or the histogram colormap, by default True.
+
+        Returns
+        -------
+        rgba : (N, 4) np.ndarray[float]
+            RGBA colors corresponding to the indices.
         """
         norm = self._get_normalization(indices, is_overlay=is_overlay)
 
