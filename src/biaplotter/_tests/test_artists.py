@@ -125,6 +125,13 @@ def test_scatter():
     # check highlighted points is empty
     assert scatter.highlighted is None
 
+    # Test highlighted_changed_signal
+    collected_highlighted_signals = []
+    def on_highlighted_changed(highlighted):
+        collected_highlighted_signals.append(highlighted)
+    scatter.highlighted_changed_signal.connect(on_highlighted_changed)
+    assert len(collected_highlighted_signals) == 0
+
     # set scatter highlighted to a boolean array same size as data
     highlighted = np.zeros(size, dtype=bool)
     # Highglight the first point
@@ -135,6 +142,9 @@ def test_scatter():
     assert scatter.size[0] == scatter.default_size * 3
     # check if edgecolor is magenta
     assert np.array_equal(scatter._mpl_artists["scatter"].get_edgecolors()[0], (1, 0, 1, 1))
+
+    # check highlighted_changed_signal is emitted
+    assert len(collected_highlighted_signals) == 1
 
 def test_histogram2d():
     # Inputs
@@ -258,6 +268,15 @@ def test_histogram2d():
     histogram.color_indices = np.nan
     assert "overlay_histogram_image" not in histogram._mpl_artists.keys()
 
+
+    # Test highlighted property
+    ## Test highlighted_changed_signal
+    collected_highlighted_signals = []
+    def on_highlighted_changed(highlighted):
+        collected_highlighted_signals.append(highlighted)
+    histogram.highlighted_changed_signal.connect(on_highlighted_changed)
+    assert len(collected_highlighted_signals) == 0
+
     # Set histogram2D highlighted to a boolean array same size as data
     assert histogram.highlighted is None
     highlighted = np.zeros(size, dtype=bool)
@@ -278,6 +297,9 @@ def test_histogram2d():
     highlighted_patch = histogram._highlighted_bin_patches[0]
     assert highlighted_patch.get_x() == x_edges[bin_x]
     assert highlighted_patch.get_y() == y_edges[bin_y]
+
+    # Check signal is emitted
+    assert len(collected_highlighted_signals) == 1
 
 
 # Test calculate_statistic_histogram_method for different statistics
