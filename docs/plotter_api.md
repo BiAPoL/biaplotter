@@ -21,7 +21,6 @@
       ~CanvasWidget.remove_artist
       ~CanvasWidget.add_selector
       ~CanvasWidget.remove_selector
-      ~CanvasWidget.on_enable_selector
 
    .. rubric:: Signals Summary
 
@@ -43,7 +42,6 @@
    .. automethod:: remove_artist
    .. automethod:: add_selector
    .. automethod:: remove_selector
-   .. automethod:: on_enable_selector
 
    .. rubric:: Signals Documentation
 

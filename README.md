@@ -32,7 +32,7 @@ The full documentation with API and examples can be found [here](https://biapol.
 * Create a new environment, for example, like this:
 
 ```
-mamba create --name biaplotter-env python=3.9
+mamba create --name biaplotter-env python=3.11
 ```
 
 If you never used mamba/conda environments before, take a look at [this blog post](https://biapol.github.io/blog/mara_lampert/getting_started_with_mambaforge_and_python/readme.html).

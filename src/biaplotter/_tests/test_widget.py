@@ -75,10 +75,10 @@ def test_set_active_selector(canvas_widget):
     )
 
 
-def test_disable_all_selectors(canvas_widget):
+def test_deactivate_and_remove_all_selectors(canvas_widget):
     """Test disabling all selectors."""
     canvas_widget.active_selector = "LASSO"
-    canvas_widget._disable_all_selectors()
+    canvas_widget._deactivate_and_remove_all_selectors()
     assert canvas_widget.active_selector is None
     for selector in canvas_widget.selectors.values():
         assert selector._selector is None
@@ -110,5 +110,11 @@ def test_signals(canvas_widget, qtbot):
     with qtbot.waitSignal(
         canvas_widget.selector_changed_signal, timeout=100
     ) as signal:
-        canvas_widget._disable_all_selectors()
+        canvas_widget._deactivate_and_remove_all_selectors()
     assert signal.args == [""]
+
+    with qtbot.waitSignal(
+        canvas_widget.show_color_overlay_signal, timeout=100
+    ) as signal:
+        canvas_widget.show_color_overlay = True
+    assert signal.args == [True]

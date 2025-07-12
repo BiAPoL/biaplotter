@@ -122,7 +122,29 @@ def test_scatter():
     assert scatter.x_label_color == "red"
     assert scatter.y_label_color == (0, 0, 1, 1)
 
+    # check highlighted points is empty
+    assert scatter.highlighted is None
 
+    # Test highlighted_changed_signal
+    collected_highlighted_signals = []
+    def on_highlighted_changed(highlighted):
+        collected_highlighted_signals.append(highlighted)
+    scatter.highlighted_changed_signal.connect(on_highlighted_changed)
+    assert len(collected_highlighted_signals) == 0
+
+    # set scatter highlighted to a boolean array same size as data
+    highlighted = np.zeros(size, dtype=bool)
+    # Highlight the first point
+    highlighted[0] = True
+    scatter.highlighted = highlighted
+    assert np.all(scatter.highlighted == highlighted)
+    # check highlighted points are correctly set
+    assert scatter.size[0] == scatter.default_size * 3
+    # check if edgecolor is magenta
+    assert np.array_equal(scatter._mpl_artists["scatter"].get_edgecolors()[0], (1, 0, 1, 1))
+
+    # check highlighted_changed_signal is emitted
+    assert len(collected_highlighted_signals) == 1
 
 def test_histogram2d():
     # Inputs
@@ -247,16 +269,34 @@ def test_histogram2d():
     assert "overlay_histogram_image" not in histogram._mpl_artists.keys()
 
 
-# Test calculate_statistic_histogram_method for different statistics
-statistics = ["sum", "median", "mean"]
-expected_results = [
-    np.array(
-        [[0.0, np.nan, np.nan], [np.nan, 9.0, np.nan], [np.nan, np.nan, 15.0]]
-    ),
-    np.array(
-        [[0.0, np.nan, np.nan], [np.nan, 2.0, np.nan], [np.nan, np.nan, 7.0]]
-    ),
-    np.array(
-        [[0.0, np.nan, np.nan], [np.nan, 3.0, np.nan], [np.nan, np.nan, 7.5]]
-    ),
-]
+    # Test highlighted property
+    ## Test highlighted_changed_signal
+    collected_highlighted_signals = []
+    def on_highlighted_changed(highlighted):
+        collected_highlighted_signals.append(highlighted)
+    histogram.highlighted_changed_signal.connect(on_highlighted_changed)
+    assert len(collected_highlighted_signals) == 0
+
+    # Set histogram2D highlighted to a boolean array same size as data
+    assert histogram.highlighted is None
+    highlighted = np.zeros(size, dtype=bool)
+    # Highlight the first point
+    highlighted[0] = True
+    histogram.highlighted = highlighted
+    assert np.all(histogram.highlighted == highlighted)
+    # Find the bin of the highlighted point
+    x_edges, y_edges = histogram._histogram[1], histogram._histogram[2]
+    bin_x = np.digitize(data[0, 0], x_edges) - 1
+    bin_y = np.digitize(data[0, 1], y_edges) - 1
+    histogram_array = histogram._mpl_artists["histogram_image"].get_array()
+    # Check if the highlighted bin alpha is set to 1.0
+    assert histogram_array[bin_y, bin_x, -1] == 1.0  # Histogram array is a 3D array colored image (RGBA)), so it is transposed regarding y and x
+    # Check if rectangle patches around highlighted bins are drawn
+    assert len(histogram._highlighted_bin_patches) > 0
+    # Check position of the highlighted bin patch
+    highlighted_patch = histogram._highlighted_bin_patches[0]
+    assert highlighted_patch.get_x() == x_edges[bin_x]
+    assert highlighted_patch.get_y() == y_edges[bin_y]
+
+    # Check signal is emitted
+    assert len(collected_highlighted_signals) == 1
