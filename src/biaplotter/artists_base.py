@@ -11,6 +11,8 @@ from psygnal import Signal
 
 from biaplotter.colormap import BiaColormap
 
+from .backend_axis import MatplotlibAxis
+
 
 class Artist(ABC):
     """Abstract base class for artists in the BiAPlotter.
@@ -34,7 +36,7 @@ class Artist(ABC):
 
     def __init__(
         self,
-        ax: plt.Axes = None,
+        ax: MatplotlibAxis = None,
         data: np.ndarray = None,
         overlay_colormap: Colormap = cat10_mod_cmap,
         color_indices: np.ndarray = None,
@@ -44,7 +46,7 @@ class Artist(ABC):
         #: Stores data to be plotted
         self._data: np.ndarray = data
         #: Stores axes to plot on
-        self.ax: plt.Axes = ax if ax is not None else plt.gca()
+        self.ax: MatplotlibAxis = MatplotlibAxis(ax)
         #: Stores visibility of the artist
         self._visible: bool = True
         #: Stores the colormap to use for the artist

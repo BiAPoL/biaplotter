@@ -12,6 +12,12 @@ from biaplotter.colormap import BiaColormap
 
 from .artists_base import Artist
 
+from .backend_plot_handles import (
+    MatplotlibScatterArtist
+)
+
+from .backend_axis import MatplotlibAxis
+
 
 class Scatter(Artist):
     """Scatter plot artist for the BiAPlotter.
@@ -53,10 +59,11 @@ class Scatter(Artist):
 
     def __init__(
         self,
-        ax: plt.Axes = None,
+        ax = None,
         data: np.ndarray = None,
         overlay_colormap: Colormap = cat10_mod_cmap,
         color_indices: np.ndarray = None,
+        backend: str = "matplotlib",
     ):
         """Initializes the scatter plot artist."""
         super().__init__(ax, data, overlay_colormap, color_indices)
@@ -78,7 +85,7 @@ class Scatter(Artist):
         alpha : float
             alpha value of the scatter plot.
         """
-        return self._mpl_artists["scatter"].get_alpha()
+        return self._plot_artists["scatter"].get_alpha()
 
     @alpha.setter
     def alpha(self, value: Union[float, np.ndarray]):
@@ -87,8 +94,8 @@ class Scatter(Artist):
 
         if np.isscalar(value):
             value = np.ones(len(self._data)) * value
-        if "scatter" in self._mpl_artists.keys():
-            self._mpl_artists["scatter"].set_alpha(value)
+        if "scatter" in self._plot_artists.keys():
+            self._plot_artists["scatter"].set_alpha(value)
         self.draw()
 
     @property
@@ -134,8 +141,8 @@ class Scatter(Artist):
     def size(self, value: Union[float, np.ndarray]):
         """Sets the size of the points in the scatter plot."""
         self._size = value
-        if "scatter" in self._mpl_artists.keys():
-            self._mpl_artists["scatter"].set_sizes(
+        if "scatter" in self._plot_artists.keys():
+            self._plot_artists["scatter"].set_sizes(
                 np.full(len(self._data), value)
                 if np.isscalar(value)
                 else value
@@ -165,17 +172,17 @@ class Scatter(Artist):
 
         # Update the overlay visibility
         if self._overlay_visible:
-            self._mpl_artists["scatter"].set_facecolor(
+            self._plot_artists["scatter"].set_facecolor(
                 self._scatter_overlay_rgba
             )
-            self._mpl_artists["scatter"].set_edgecolor("white")
+            self._plot_artists["scatter"].set_edgecolor("white")
         else:
             # Set colors to the first color of the colormap (index 0)
             default_rgba = self.color_indices_to_rgba(
                 np.zeros_like(indices)
             )
-            self._mpl_artists["scatter"].set_facecolor(default_rgba)
-            self._mpl_artists["scatter"].set_edgecolor("white")
+            self._plot_artists["scatter"].set_facecolor(default_rgba)
+            self._plot_artists["scatter"].set_edgecolor("white")
 
     def _get_normalization(self, values: np.ndarray) -> Normalize:
         """Determine the normalization method and return the normalization object."""
@@ -205,20 +212,20 @@ class Scatter(Artist):
 
     def _refresh(self, force_redraw: bool = True):
         """Creates the scatter plot with the data and default properties."""
-        if force_redraw or self._mpl_artists.get("scatter") is None:
+        if force_redraw or self._plot_artists.get("scatter") is None:
             self._remove_artists()
             # Create a new scatter plot with the updated data
-            self._mpl_artists["scatter"] = self.ax.scatter(
-                self._data[:, 0], self._data[:, 1]
+            self._plot_artists["scatter"] = MatplotlibScatterArtist(
+                self.ax.scatter(self._data[:, 0], self._data[:, 1])
             )
             self.size = self.default_size
 
-            if "scatter" in self._mpl_artists.keys():
-                self._mpl_artists["scatter"].set_linewidth(self.default_edge_width)
+            if "scatter" in self._plot_artists.keys():
+                self._plot_artists["scatter"].set_linewidth(_edge_width)
             self.alpha = 1  # Default alpha
             self.color_indices = 0
         else:
-            self._mpl_artists["scatter"].set_offsets(
+            self._plot_artists["scatter"].set_data(
                 self._data
             )  # Somehow resets the size and alpha
             self.color_indices = self._color_indices
@@ -562,7 +569,7 @@ class Histogram2D(Artist):
         self._remove_artists(["overlay_histogram_image"])
         if self._overlay_visible and self._overlay_histogram_rgba is not None:
             _, x_edges, y_edges = self._histogram
-            self._mpl_artists["overlay_histogram_image"] = self.ax.imshow(
+            self._plot_artists["overlay_histogram_image"] = self.ax.imshow(
                 self._overlay_histogram_rgba,
                 extent=[x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]],
                 origin="lower",
@@ -650,7 +657,7 @@ class Histogram2D(Artist):
         self._histogram_rgba = self.color_indices_to_rgba(
             counts.T, is_overlay=False
         )
-        self._mpl_artists["histogram_image"] = self.ax.imshow(
+        self._plot_artists["histogram_image"] = self.ax.imshow(
             self._histogram_rgba,
             extent=[x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]],
             origin="lower",
