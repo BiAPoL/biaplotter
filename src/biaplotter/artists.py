@@ -267,7 +267,7 @@ class Scatter(Artist):
         edge_colors = np.array([self._edgecolor] * len(self._data), dtype=object)
         edge_colors[highlight_mask] = self._highlight_edgecolor
 
-        # Apply the updated size adn edge color to the scatter plot
+        # Apply the updated size and edge color to the scatter plot
         self.size = size_array
         if "scatter" in self._mpl_artists.keys():
             self._mpl_artists["scatter"].set_edgecolor(edge_colors)
