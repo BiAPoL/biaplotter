@@ -56,7 +56,7 @@ class Artist(ABC):
         #: Stores the array of indices to map to the colormap
         self._color_indices: np.array = color_indices
         # store handles to mpl artists for modifying plots
-        self._mpl_artists: dict = {}
+        self._plot_artists: dict = {}
         self._margins = 0.05
 
         self._normalization_methods = {
@@ -91,7 +91,7 @@ class Artist(ABC):
         self._ids = None
         self._visible = True
         self._overlay_colormap = BiaColormap(cat10_mod_cmap, categorical=True)
-        self._mpl_artists = {}
+        self._plot_artists = {}
         self._margins = 0.05
 
     @abstractmethod
@@ -130,13 +130,13 @@ class Artist(ABC):
         """
 
         if not keys:
-            [artist.remove() for artist in self._mpl_artists.values()]
-            self._mpl_artists = {}
+            [artist.remove() for artist in self._plot_artists.values()]
+            self._plot_artists = {}
         else:
             for key in keys:
-                if key in self._mpl_artists.keys():
-                    self._mpl_artists[key].remove()
-                    del self._mpl_artists[key]
+                if key in self._plot_artists.keys():
+                    self._plot_artists[key].remove()
+                    del self._plot_artists[key]
 
     @property
     def data(self) -> np.ndarray:
@@ -223,7 +223,7 @@ class Artist(ABC):
     def visible(self, value: bool):
         """Sets the visibility of the artists."""
         self._visible = value
-        [a.set_visible(value) for a in self._mpl_artists.values()]
+        [a.set_visible(value) for a in self._plot_artists.values()]
         self.draw()
 
     @property
@@ -253,7 +253,7 @@ class Artist(ABC):
             indices = np.full(len(self._data), indices)
         self._color_indices = indices
 
-        if indices is not None and self._mpl_artists:
+        if indices is not None and self._plot_artists:
             self._colorize(indices)
 
         # emit signal
