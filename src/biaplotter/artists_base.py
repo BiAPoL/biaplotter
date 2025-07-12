@@ -137,11 +137,21 @@ class Artist(ABC):
         """
 
         if not keys:
-            [artist.remove() for artist in self._mpl_artists.values()]
+            # Remove rectangle pacthes if any
+            if hasattr(self, "_highlighted_bin_patches"):
+                for patch in self._highlighted_bin_patches:
+                    patch.remove()
+            for artist in self._mpl_artists.values():
+                artist.remove()
             self._mpl_artists = {}
         else:
             for key in keys:
                 if key in self._mpl_artists.keys():
+                    if key == "histogram_image":
+                        # Remove rectangle patches if any
+                        if hasattr(self, "_highlighted_bin_patches"):
+                            for patch in self._highlighted_bin_patches:
+                                patch.remove()
                     self._mpl_artists[key].remove()
                     del self._mpl_artists[key]
 
