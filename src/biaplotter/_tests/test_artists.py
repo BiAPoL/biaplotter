@@ -134,7 +134,7 @@ def test_scatter():
 
     # set scatter highlighted to a boolean array same size as data
     highlighted = np.zeros(size, dtype=bool)
-    # Highglight the first point
+    # Highlight the first point
     highlighted[0] = True
     scatter.highlighted = highlighted
     assert np.all(scatter.highlighted == highlighted)
