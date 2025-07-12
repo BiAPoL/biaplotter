@@ -280,22 +280,22 @@ class Artist(ABC):
     @property
     def x_label_text(self) -> str:
         """Gets or sets the x-axis label."""
-        return self.ax.xaxis.label.get_text()
+        return self.ax.get_xlabel()
     
     @x_label_text.setter
     def x_label_text(self, value: str):
         """Sets the x-axis label."""
-        self.ax.xaxis.label.set_text(value)
+        self.ax.set_xlabel(value)
 
     @property
     def y_label_text(self) -> str:
         """Gets or sets the y-axis label."""
-        return self.ax.yaxis.label.get_text()
+        return self.ax.get_ylabel
     
     @y_label_text.setter
     def y_label_text(self, value: str):
         """Sets the y-axis label."""
-        self.ax.yaxis.label.set_text(value)
+        self.ax.set_ylabel(value)
 
     @property
     def x_label_color(self) -> Union[str, tuple]:
@@ -335,7 +335,7 @@ class Artist(ABC):
     
     def draw(self):
         """Draws or redraws the artist."""
-        self.ax.figure.canvas.draw_idle()
+        self.ax.draw()
 
     def _log_normalization(self, values: np.ndarray):
         """Log normalization."""
