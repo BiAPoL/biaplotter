@@ -23,7 +23,7 @@ https://napari.org/stable/plugins/index.html
 
 ## Documentation
 
-The full documentation with API and examples can be found [here](https://biapol.github.io/biaplotter/).
+The full documentation with API and examples can be found [here](https://biapol-biaplotter.readthedocs.io/en/stable).
 
 ## Installation
 
