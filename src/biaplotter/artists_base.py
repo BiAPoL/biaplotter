@@ -243,6 +243,9 @@ class Artist(ABC):
         """Sets the visibility of the artists."""
         self._visible = value
         [a.set_visible(value) for a in self._mpl_artists.values()]
+        if hasattr(self, "_highlighted_bin_patches"):
+            for patch in self._highlighted_bin_patches:
+                patch.set_visible(value)
         self.draw()
 
     @property
