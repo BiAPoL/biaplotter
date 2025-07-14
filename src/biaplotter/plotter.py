@@ -121,6 +121,14 @@ class CanvasWidget(BaseNapariMPLWidget):
         self.napari_viewer.bind_key("Escape", None, overwrite=True)
         super().hideEvent(event)
 
+    def showEvent(self, event):
+        """Handles the show event of the widget.
+
+        Re-binds Escape to clear selections and highlights.
+        """
+        super().showEvent(event)
+        self.napari_viewer.bind_key("Escape", self._on_escape, overwrite=True)
+
     def _initialize_mpl_toolbar(self):
         """
         Replaces the default matplotlib toolbar with a custom one that emits signals.
