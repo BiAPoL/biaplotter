@@ -141,6 +141,7 @@ class Artist(ABC):
             if hasattr(self, "_highlighted_bin_patches"):
                 for patch in self._highlighted_bin_patches:
                     patch.remove()
+                self._highlighted_bin_patches = []
             for artist in self._mpl_artists.values():
                 artist.remove()
             self._mpl_artists = {}
@@ -152,6 +153,7 @@ class Artist(ABC):
                         if hasattr(self, "_highlighted_bin_patches"):
                             for patch in self._highlighted_bin_patches:
                                 patch.remove()
+                            self._highlighted_bin_patches = []
                     self._mpl_artists[key].remove()
                     del self._mpl_artists[key]
 

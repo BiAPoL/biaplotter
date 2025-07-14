@@ -2,6 +2,7 @@ import warnings
 from typing import List, Tuple, Union
 
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 import numpy as np
 from matplotlib.colors import Colormap, Normalize
 from nap_plot_tools.cmap import (cat10_mod_cmap,
@@ -383,6 +384,7 @@ class Histogram2D(Artist):
         self._bin_alpha = None
         self._bins = bins
         self._highlighted = None  # Initialize highlight mask
+        self._highlighted_bin_patches = []
         self._histogram_colormap = BiaColormap(histogram_colormap)
         self._histogram_interpolation = "nearest"
         self._overlay_interpolation = "nearest"
@@ -747,11 +749,6 @@ class Histogram2D(Artist):
     def _highlight_data(self, boolean_mask: np.ndarray):
         """Highlight data points based on the provided indices."""
         if boolean_mask is None or len(boolean_mask) == 0:
-            # Remove previous highlighted patches if they exist
-            if hasattr(self, "_highlighted_bin_patches"):
-                for patch in self._highlighted_bin_patches:
-                    patch.remove()
-                self._highlighted_bin_patches = []
             # Reset all bins to fully opaque
             self.bin_alpha = np.ones_like(self._histogram[0])
             self._highlighted = None
@@ -777,15 +774,6 @@ class Histogram2D(Artist):
         self.bin_alpha = alphas
 
         # Draw rectangle patches around highlighted bins
-        import matplotlib.patches as mpatches
-
-        # Remove previous rectangle patches if they exist
-        if hasattr(self, "_highlighted_bin_patches"):
-            for patch in self._highlighted_bin_patches:
-                patch.remove()
-        self._highlighted_bin_patches = []
-
-        # Add new rectangle patches for currently highlighted bins
         for bin_x in range(highlighted_bins.shape[0]):
             for bin_y in range(highlighted_bins.shape[1]):
                 if highlighted_bins[bin_x, bin_y]:
