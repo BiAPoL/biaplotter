@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 
-from biaplotter.artists import Scatter
 from biaplotter.plotter import CanvasWidget
 from biaplotter.selectors import (BaseEllipseSelector, BaseLassoSelector,
                                   BaseRectangleSelector,

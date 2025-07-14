@@ -31,6 +31,8 @@ class Artist(ABC):
     data_changed_signal: Signal = Signal(np.ndarray)
     #: Signal emitted when the `color_indices` are changed.
     color_indices_changed_signal: Signal = Signal(np.ndarray)
+    #: Signal emitted when the `highlighted` data are changed.
+    highlighted_changed_signal: Signal = Signal(np.ndarray)
 
     def __init__(
         self,
@@ -103,6 +105,13 @@ class Artist(ABC):
         raise NotImplementedError(
             "This method should be implemented in the derived class."
         )
+    
+    @abstractmethod
+    def _highlight_data(self, highlight_mask: np.ndarray):
+        """Highlight data points based on the provided boolean mask."""
+        raise NotImplementedError(
+            "This method should be implemented in the derived class."
+        )
 
     @abstractmethod
     def color_indices_to_rgba(self, indices: np.ndarray) -> np.ndarray:
@@ -128,11 +137,21 @@ class Artist(ABC):
         """
 
         if not keys:
-            [artist.remove() for artist in self._mpl_artists.values()]
+            # Remove rectangle pacthes if any
+            if hasattr(self, "_highlighted_bin_patches"):
+                for patch in self._highlighted_bin_patches:
+                    patch.remove()
+            for artist in self._mpl_artists.values():
+                artist.remove()
             self._mpl_artists = {}
         else:
             for key in keys:
                 if key in self._mpl_artists.keys():
+                    if key == "histogram_image":
+                        # Remove rectangle patches if any
+                        if hasattr(self, "_highlighted_bin_patches"):
+                            for patch in self._highlighted_bin_patches:
+                                patch.remove()
                     self._mpl_artists[key].remove()
                     del self._mpl_artists[key]
 
@@ -277,7 +296,12 @@ class Artist(ABC):
 
     @property
     def x_label_text(self) -> str:
-        """Gets or sets the x-axis label."""
+        """Gets or sets the x-axis label.
+        
+        Returns
+        -------
+        x_label_text : str
+            Text of the x-axis label."""
         return self.ax.xaxis.label.get_text()
     
     @x_label_text.setter
@@ -287,7 +311,13 @@ class Artist(ABC):
 
     @property
     def y_label_text(self) -> str:
-        """Gets or sets the y-axis label."""
+        """Gets or sets the y-axis label.
+        
+        Returns
+        -------
+        y_label_text : str
+            Text of the y-axis label.
+        """
         return self.ax.yaxis.label.get_text()
     
     @y_label_text.setter
@@ -297,7 +327,13 @@ class Artist(ABC):
 
     @property
     def x_label_color(self) -> Union[str, tuple]:
-        """Gets or sets the x-axis label color."""
+        """Gets or sets the x-axis label color.
+        
+        Returns
+        -------
+        x_label_color : str or tuple
+            Color value for the x-axis label.
+            Check more at https://matplotlib.org/stable/users/explain/colors/colors.html#colors-def"""
         return self.ax.xaxis.label.get_color()
 
     @x_label_color.setter
@@ -315,7 +351,14 @@ class Artist(ABC):
 
     @property
     def y_label_color(self) -> Union[str, tuple]:
-        """Gets or sets the y-axis label color."""
+        """Gets or sets the y-axis label color.
+        
+        Returns
+        -------
+        y_label_color : str or tuple
+            Color value for the y-axis label.
+            Check more at https://matplotlib.org/stable/users/explain/colors/colors.html#colors-def
+        """
         return self.ax.yaxis.label.get_color()
     
     @y_label_color.setter
@@ -331,6 +374,76 @@ class Artist(ABC):
         """
         self.ax.yaxis.label.set_color(value)
     
+    @property
+    def highlighted(self) -> np.ndarray:
+        """Gets or sets the highlighted data points.
+        
+        Returns
+        -------
+        highlighted : (N,) np.ndarray[bool]
+            Boolean array indicating which data points are highlighted.
+            If None, no points are highlighted.
+
+        Notes
+        -----
+        highlighted_changed_signal : Signal
+            Signal emitted when the highlighted data points are changed.
+        """
+        return self._highlighted
+    
+    @highlighted.setter
+    def highlighted(self, value: np.ndarray):
+        """Sets the highlighted data points.
+        """
+        if self._data is None or len(self._data) == 0:
+            self._highlighted = None
+            return
+        self._highlight_data(value)
+        self._highlighted = value
+        self.highlighted_changed_signal.emit(self._highlighted)
+
+    def highlight_data_by_ids(
+        self, ids: Union[int, List[int], None] = None, color: Union[str, tuple] = None, unhighlight: bool = False
+    ):
+        """
+        Highlights or unhighlights data (points/bins) based on their IDs.
+
+        Parameters
+        ----------
+        ids : int, List[int], or None, optional
+            A single ID, a list of IDs to highlight/unhighlight, or None to reset all highlighted data.
+        color : str or tuple, optional
+            The color to use for the highlighted data (points/bins).
+            Not used if histogram artist.
+        unhighlight : bool, optional
+            If True, removes the specified IDs from the highlighted data.
+            Default is False.
+        """
+        if color is not None and hasattr(self, "_highlight_edgecolor"):
+            self._highlight_edgecolor = color
+
+        if ids is None or len(ids) == 0:
+            self.highlighted = None
+            return
+
+        if isinstance(ids, int):
+            ids = [ids]
+
+        # Find the indices of the points corresponding to the given IDs
+        highlight_indices = np.isin(self.ids, ids)
+
+        if unhighlight:
+            # Remove the specified IDs from the highlighted bins
+            if self._highlighted is not None:
+                self._highlighted[highlight_indices] = False
+        else:
+            # Add the specified IDs to the highlighted bins
+            if self._highlighted is None:
+                self._highlighted = np.zeros(len(self._data), dtype=bool)
+            self._highlighted[highlight_indices] = True
+        
+        self.highlighted = self._highlighted
+
     def draw(self):
         """Draws or redraws the artist."""
         self.ax.figure.canvas.draw_idle()
