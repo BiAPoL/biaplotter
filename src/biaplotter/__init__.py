@@ -1,4 +1,8 @@
-__version__ = "0.4.1"
+try:
+    from ._version import version as __version__
+except ImportError:
+    __version__ = "unknown"
+
 from .artists import Histogram2D, Scatter
 from .colormap import BiaColormap
 from .plotter import CanvasWidget
