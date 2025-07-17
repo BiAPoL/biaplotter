@@ -24,13 +24,6 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Image Processing",
     "Topic :: Scientific/Engineering :: Visualization",
 ]
-urls = {
-    "Homepage" = "https://github.com/BiAPoL/biaplotter",
-    "Bug Tracker" = "https://github.com/BiAPoL/biaplotter/issues",
-    "Documentation" = "https://github.com/BiAPoL/biaplotter#README.md",
-    "Source Code" = "https://github.com/BiAPoL/biaplotter",
-    "User Support" = "https://github.com/BiAPoL/biaplotter/issues"
-}
 dependencies = [
     "numpy>=1.22.0,<2.0.0",
     "magicgui",
@@ -52,14 +45,22 @@ testing = [
 [project.entry-points."napari.manifest"]
 biaplotter = "biaplotter:napari.yaml"
 
+[project.urls]
+"Homepage" = "https://github.com/BiAPoL/biaplotter",
+"Bug Tracker" = "https://github.com/BiAPoL/biaplotter/issues",
+"Documentation" = "https://biapol-biaplotter.readthedocs.io/en/stable/",
+"Source Code" = "https://github.com/BiAPoL/biaplotter",
+"User Support" = "https://github.com/BiAPoL/biaplotter/issues"
+
 [build-system]
 requires = ["setuptools>=42.0.0", "wheel", "setuptools_scm"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-package-dir = { "" = "src" }
-packages = ["biaplotter"]
 include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.setuptools.package-data]
 "*" = ["*.yaml"]
