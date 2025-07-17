@@ -32,7 +32,7 @@ urls = {
     "User Support" = "https://github.com/BiAPoL/biaplotter/issues"
 }
 dependencies = [
-    "numpy>=1.22.0&<2.0.0",
+    "numpy>=1.22.0,<2.0.0",
     "magicgui",
     "qtpy",
     "napari-matplotlib",
