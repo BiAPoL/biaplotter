@@ -46,10 +46,10 @@ testing = [
 biaplotter = "biaplotter:napari.yaml"
 
 [project.urls]
-"Homepage" = "https://github.com/BiAPoL/biaplotter",
-"Bug Tracker" = "https://github.com/BiAPoL/biaplotter/issues",
-"Documentation" = "https://biapol-biaplotter.readthedocs.io/en/stable/",
-"Source Code" = "https://github.com/BiAPoL/biaplotter",
+"Homepage" = "https://github.com/BiAPoL/biaplotter"
+"Bug Tracker" = "https://github.com/BiAPoL/biaplotter/issues"
+"Documentation" = "https://biapol-biaplotter.readthedocs.io/en/stable/"
+"Source Code" = "https://github.com/BiAPoL/biaplotter"
 "User Support" = "https://github.com/BiAPoL/biaplotter/issues"
 
 [build-system]
