@@ -92,10 +92,14 @@ class CanvasWidget(BaseNapariMPLWidget):
         napari_viewer: "napari.viewer.Viewer",
         parent: Optional[QWidget] = None,
         label_text: str = "Class:",
+        highlight_enabled: bool = True,
     ):
         super().__init__(napari_viewer, parent=parent)
         self.napari_viewer = napari_viewer
         self.add_single_axes()
+
+        # Highlighting feature toggle
+        self.highlight_enabled = highlight_enabled
 
         # Initialize UI components
         self._initialize_mpl_toolbar()
@@ -272,8 +276,8 @@ class CanvasWidget(BaseNapariMPLWidget):
         if ind is None or len(ind) == 0:
             return
 
-        # Toggle highlight for the picked point
-        if mouse_event.button == 1:
+        # Toggle highlight for the picked point if enabled
+        if mouse_event.button == 1 and self.highlight_enabled:
             self._toggle_point_highlight(ind[0], allow_multiple_highlights=self._allow_multiple_highlights)
 
     def _toggle_point_highlight(self, index: int, allow_multiple_highlights: bool = False):
@@ -325,8 +329,9 @@ class CanvasWidget(BaseNapariMPLWidget):
         elif self.toolbar.mode == 'pan/zoom':
             with self.toolbar.pan_toggled_signal.blocked():
                 self.toolbar.pan()
-        # Clear all highlighted points in Scatter and all highlighted bins in Histogram2D
-        self._clear_all_highlights()
+        # Only clear highlights if highlighting is enabled
+        if self.highlight_enabled:
+            self._clear_all_highlights()
 
     def _on_click(self, event):
         """
@@ -351,7 +356,7 @@ class CanvasWidget(BaseNapariMPLWidget):
 
         elif event.button == 1:
             # Ensure the active artist is a Histogram2D instance
-            if isinstance(self.active_artist, Histogram2D):
+            if isinstance(self.active_artist, Histogram2D) and self.highlight_enabled:
                 self._xdata_clicked = event.xdata
                 self._ydata_clicked = event.ydata
 
