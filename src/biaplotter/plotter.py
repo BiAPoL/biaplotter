@@ -14,9 +14,12 @@ from qtpy.QtCore import Qt
 from qtpy.QtGui import QCursor
 
 from biaplotter.artists import Histogram2D, Scatter
-from biaplotter.selectors import (InteractiveEllipseSelector,
-                                  InteractiveLassoSelector,
-                                  InteractiveRectangleSelector)
+from biaplotter.selectors import (
+    InteractiveEllipseSelector,
+    InteractiveLassoSelector,
+    InteractiveRectangleSelector,
+    InteractiveClickSelector,
+)
 
 if TYPE_CHECKING:
     import napari
@@ -53,6 +56,12 @@ class CanvasWidget(BaseNapariMPLWidget):
     The widget includes a selection toolbar with buttons to enable/disable selection tools.
     The selection toolbar includes a color class spinbox to select the class to assign to selections.
     The widget includes artists and selectors to plot data and select points.
+    
+    Available selectors:
+        * Lasso
+        * Ellipse
+        * Rectangle
+        * Click (single-point picker)
 
     Parameters
     ----------
@@ -165,6 +174,7 @@ class CanvasWidget(BaseNapariMPLWidget):
         self.class_spinbox: QtColorSpinBox = class_spinbox
         self.show_overlay_button: CustomToolButton = show_overlay_button
 
+
         # Add buttons to the toolbar
         self.selection_toolbar.add_custom_button(
             name="LASSO",
@@ -190,6 +200,14 @@ class CanvasWidget(BaseNapariMPLWidget):
             checked_icon_path=icon_folder_path / "rectangle_checked.png",
             callback=self._on_toggle_button,
         )
+        self.selection_toolbar.add_custom_button(
+            name="CLICK",
+            tooltip="Click to enable/disable single-point selection",
+            default_icon_path=icon_folder_path / "picker.png",
+            checkable=True,
+            checked_icon_path=icon_folder_path / "picker_checked.png",
+            callback=self._on_toggle_button,
+        )
 
         # Add selection tools layout to the main layout
         self.layout().insertLayout(1, self.selection_tools_layout)
@@ -212,6 +230,7 @@ class CanvasWidget(BaseNapariMPLWidget):
             InteractiveRectangleSelector
             | InteractiveEllipseSelector
             | InteractiveLassoSelector
+            | InteractiveClickSelector
         ) = None
         self.selectors: dict = {}
         self.add_selector(
@@ -225,6 +244,10 @@ class CanvasWidget(BaseNapariMPLWidget):
         self.add_selector(
             "RECTANGLE",
             InteractiveRectangleSelector(self.axes, self),
+        )
+        self.add_selector(
+            "CLICK",
+            InteractiveClickSelector(ax=self.axes, canvas_widget=self),
         )
 
     def _connect_signals(self):
