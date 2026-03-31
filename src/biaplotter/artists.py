@@ -297,8 +297,8 @@ class Scatter(Artist):
             self.color_indices = self._color_indices
 
         # update x/y-limits to data range
-        self.ax.set_xlim(np.min(self._data[:, 0]), np.max(self._data[:, 0]))
-        self.ax.set_ylim(np.min(self._data[:, 1]), np.max(self._data[:, 1]))
+        self.ax.set_xlim(np.nanmin(self._data[:, 0]), np.nanmax(self._data[:, 0]))
+        self.ax.set_ylim(np.nanmin(self._data[:, 1]), np.nanmax(self._data[:, 1]))
 
 
     @property
