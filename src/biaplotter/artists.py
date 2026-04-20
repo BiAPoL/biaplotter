@@ -296,6 +296,11 @@ class Scatter(Artist):
             self.alpha = self._alpha
             self.color_indices = self._color_indices
 
+        # update x/y-limits to data range
+        self.ax.set_xlim(np.nanmin(self._data[:, 0]), np.nanmax(self._data[:, 0]))
+        self.ax.set_ylim(np.nanmin(self._data[:, 1]), np.nanmax(self._data[:, 1]))
+
+
     @property
     def default_size(self) -> float:
         """Rule of thumb for good point size based on the number of points.
