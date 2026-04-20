@@ -3,11 +3,39 @@ import numpy as np
 import pytest
 
 from biaplotter.plotter import CanvasWidget
-from biaplotter.selectors import (BaseEllipseSelector, BaseLassoSelector,
-                                  BaseRectangleSelector,
-                                  InteractiveEllipseSelector,
-                                  InteractiveLassoSelector,
-                                  InteractiveRectangleSelector)
+from biaplotter.selectors import (
+    BaseEllipseSelector, BaseLassoSelector, BaseRectangleSelector,
+    InteractiveEllipseSelector, InteractiveLassoSelector, InteractiveRectangleSelector,
+    InteractiveClickSelector, BaseClickSelector
+)
+
+# --- Parametrized tests for BaseClickSelector threshold functionality ---
+@pytest.mark.parametrize(
+    "data, click, threshold, expected_indices",
+    [
+        # Click near [1, 1], within threshold
+        (np.array([[0, 0], [1, 1], [2, 2]]), (1.025, 1.025), 0.2, [1]),
+        # Click far from all points, outside threshold
+        (np.array([[0, 0], [1, 1], [2, 2]]), (10, 10), 0.5, []),
+        # Click exactly on [2, 2], within threshold
+        (np.array([[0, 0], [1, 1], [2, 2]]), (2, 2), 0.1, [2]),
+        # Click between [0,0] and [1,1], closer to [0,0]
+        (np.array([[0, 0], [1, 1], [2, 2]]), (0.1, 0.1), 0.5, [0]),
+        # Click between [0,0] and [1,1], but threshold too small
+        (np.array([[0, 0], [1, 1], [2, 2]]), (0.1, 0.1), 0.05, []),
+    ]
+)
+def test_base_click_selector_threshold(data, click, threshold, expected_indices):
+    fig, ax = plt.subplots()
+    ax.scatter(data[:, 0], data[:, 1])
+    selector = BaseClickSelector(ax)
+    selector.data = data
+    event = type('Event', (), {'xdata': click[0], 'ydata': click[1]})()
+    idx = selector.on_select(event, threshold=threshold)
+    if len(expected_indices) == 0:
+        assert len(idx) == 0, f"Expected empty array, got {idx}"
+    else:
+        assert np.array_equal(idx, expected_indices), f"Expected {expected_indices}, got {idx}"
 
 
 class MockMouseEvent:
@@ -102,13 +130,15 @@ def selector_class(request):
         (InteractiveEllipseSelector, [0, 0, 1, 1, 1, 0]),
         # Test case for InteractiveLassoSelector
         (InteractiveLassoSelector, [0, 0, 1, 1, 1, 0]),
+        # Test case for InteractiveClickSelector
+        (InteractiveClickSelector, [0, 0, 1, 1, 1, 0]),
     ],
     indirect=["selector_class"],
 )
 def test_interactive_selectors(
     make_napari_viewer, selector_class, expected_color_indices
 ):
-    """Test InteractiveRectangleSelector, InteractiveEllipseSelector, and InteractiveLassoSelector."""
+    """Test InteractiveRectangleSelector, InteractiveEllipseSelector, InteractiveLassoSelector, and InteractiveClickSelector."""
     viewer = make_napari_viewer()
     widget = CanvasWidget(viewer)
     selector = selector_class(widget.axes, widget)
@@ -131,3 +161,7 @@ def test_interactive_selectors(
     ), "Color indices {} do not match expected values {}.".format(
         selector.color_indices, expected_color_indices
     )
+
+
+if __name__ == "__main__":
+    pytest.main([__file__])

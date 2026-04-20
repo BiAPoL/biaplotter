@@ -440,6 +440,95 @@ class BaseLassoSelector(Selector):
         )
 
 
+# --- Single Click Selector ---
+class BaseClickSelector(Selector):
+    """Base class for creating a single-point (click) selector.
+
+    Inherits all parameters and attributes from Selector.
+    For parameter and attribute details, see the Selector class documentation.
+
+    Parameters
+    ----------
+    ax : plt.Axes
+        axes to which the selector will be applied.
+    data : (N, 2) np.ndarray
+        data to be selected.
+    """
+
+    def __init__(self, ax: plt.Axes, data: np.ndarray = None):
+        super().__init__(ax, data)
+        self.name: str = "Click Selector"
+        self.data = data
+        self._cid = None  # Matplotlib connection id
+
+    def on_select(self, event, threshold: float = 0.025) -> np.ndarray:
+        """Selects the closest point to the click and returns its index, if within a threshold distance.
+
+        Parameters
+        ----------
+        event : MouseEvent
+            The mouse click event.
+        threshold : float, optional
+            Maximum allowed distance from the click to a data point. If None, always select the closest.
+
+        Returns
+        -------
+        np.ndarray or None
+            The index of the selected point (as a 1-element array), or None if no data or too far.
+        """
+        if self._data is None or len(self._data) == 0:
+            return np.array([])
+        if event.xdata is None or event.ydata is None:
+            return np.array([])
+        click_point = np.array([event.xdata, event.ydata])
+        dists = np.linalg.norm(self._data - click_point, axis=1)
+        idx = np.argmin(dists)
+        min_dist = dists[idx]
+
+        # Default threshold: 2.5% of the max plot range
+        xlim = self.ax.get_xlim()
+        ylim = self.ax.get_ylim()
+        max_range = max(xlim[1] - xlim[0], ylim[1] - ylim[0])
+
+        if min_dist > threshold * max_range:
+            return np.array([])# Too far, do not select
+        return np.array([idx])
+
+    @property
+    def data(self) -> np.ndarray:
+        """Gets or sets the data from which points will be selected.
+
+        Returns
+        -------
+        np.ndarray
+            The data from which points will be selected.
+        """
+        return self._data
+
+    @data.setter
+    def data(self, value: np.ndarray):
+        self._data = value
+
+    def create_selector(self):
+        """Creates a click selector by connecting a pick event to the axes canvas."""
+        if self._cid is not None:
+            self.ax.figure.canvas.mpl_disconnect(self._cid)
+        self._cid = self.ax.figure.canvas.mpl_connect("button_press_event", self.on_select)
+        # Assign a dummy selector object for API consistency
+        # There is no actual selector widget for click selection in matplotlib,
+        # it's just the raw event that's used.
+        class DummySelector:
+            def clear(self): pass
+            def disconnect_events(self): pass
+        self._selector = DummySelector()
+
+    def remove(self):
+        """Removes the click selector from the canvas."""
+        if self._cid is not None:
+            self.ax.figure.canvas.mpl_disconnect(self._cid)
+            self._cid = None
+
+
 class Interactive(Selector):
     """Interactive selector class.
 
@@ -771,3 +860,61 @@ class InteractiveLassoSelector(Interactive, BaseLassoSelector):
         """
         self.selected_indices = super().on_select(vertices)
         self.apply_selection()
+
+
+# --- Interactive Click Selector ---
+class InteractiveClickSelector(Interactive, BaseClickSelector):
+    """Interactive click selector class.
+
+    Inherits all parameters and attributes from Interactive and BaseClickSelector.
+    To be used as an interactive single-point selector for Scatter, or bin selector for Histogram2D.
+
+    Parameters
+    ----------
+    ax : plt.Axes
+        The axes to which the selector will be applied.
+    canvas_widget : biaplotter.plotter.CanvasWidget
+        The canvas widget to which the selector will be applied.
+    data : (N, 2) np.ndarray, optional
+        The data to be selected.
+
+    Other Parameters
+    ----------------
+    name : str
+        The name of the selector, set to 'Interactive Click Selector' by default.
+    """
+
+    def __init__(
+        self,
+        ax: plt.Axes,
+        canvas_widget: "CanvasWidget",
+        data: np.ndarray = None,
+    ):
+        super().__init__(ax, canvas_widget, data)
+        self.name: str = "Interactive Click Selector"
+
+    def on_select(self, event):
+        """Selects the closest point to the click for Scatter, or all points in the clicked bin for Histogram2D."""
+        artist = self.active_artist
+        if isinstance(artist, Histogram2D):
+            # Find the bin for the click
+            x_edges, y_edges = artist.histogram[1], artist.histogram[2]
+            if event.xdata is None or event.ydata is None:
+                return
+            bin_x = np.digitize(event.xdata, x_edges) - 1
+            bin_y = np.digitize(event.ydata, y_edges) - 1
+            if 0 <= bin_x < len(x_edges) - 1 and 0 <= bin_y < len(y_edges) - 1:
+                mask = (
+                    (artist.data[:, 0] >= x_edges[bin_x])
+                    & (artist.data[:, 0] < x_edges[bin_x + 1])
+                    & (artist.data[:, 1] >= y_edges[bin_y])
+                    & (artist.data[:, 1] < y_edges[bin_y + 1])
+                )
+                indices = np.where(mask)[0]
+                if len(indices) > 0:
+                    self.selected_indices = indices
+                    self.apply_selection()
+        else:
+            indices = super().on_select(event)
+            self.selected_indices = indices
+            self.apply_selection()
